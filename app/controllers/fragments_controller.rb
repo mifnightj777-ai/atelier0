@@ -65,6 +65,6 @@ class FragmentsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def fragment_params
-      params.require(:fragment).permit(:description)
+      params.require(:fragment).permit(:description, :image)
     end
 end
