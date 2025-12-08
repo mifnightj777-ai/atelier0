@@ -3,7 +3,7 @@ class FragmentsController < ApplicationController
 
   # GET /fragments or /fragments.json
   def index
-    @fragments = Fragment.all
+    @fragments = current_user.fragments
   end
 
   # GET /fragments/1 or /fragments/1.json
@@ -21,7 +21,7 @@ class FragmentsController < ApplicationController
 
   # POST /fragments or /fragments.json
   def create
-    @fragment = Fragment.new(fragment_params)
+    @fragment = current_user.fragments.build(fragment_params)
 
     respond_to do |format|
       if @fragment.save

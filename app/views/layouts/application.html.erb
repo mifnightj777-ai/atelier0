@@ -18,14 +18,15 @@
 
       <nav>
         <% if user_signed_in? %>
-          <span class="text-sm text-stone-400 mr-4">おかえりなさい</span>
-          <%= link_to "ログアウト", destroy_user_session_path, data: { turbo_method: :delete }, class: "text-sm text-stone-600 hover:text-stone-900" %>
+          <%= link_to "My Atelier", fragments_path, class: "text-sm text-stone-600 mr-4 hover:text-black" %>
+          <span class="text-sm text-stone-400 mr-4">|</span> <%= link_to "ログアウト", destroy_user_session_path, data: { turbo_method: :delete }, class: "text-sm text-stone-400 hover:text-stone-600" %>
         <% else %>
           <%= link_to "アトリエ登録", new_user_registration_path, class: "text-sm text-stone-600 mr-4" %>
           <%= link_to "ログイン", new_user_session_path, class: "text-sm text-stone-600" %>
         <% end %>
       </nav>
     </header>
+    
     <main class="container mx-auto px-5 py-10">
       
       <p class="notice text-green-600 mb-4"><%= notice %></p>
