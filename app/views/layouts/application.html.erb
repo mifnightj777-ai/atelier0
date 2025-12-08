@@ -12,10 +12,27 @@
   </head>
 
   <body class="bg-white text-stone-700 antialiased">
-    <main class="container mx-auto mt-28 px-5 flex">
+    
+    <header class="p-5 border-b border-stone-100 flex justify-between items-center">
+      <%= link_to "Atelier0", root_path, class: "font-light tracking-widest text-stone-500" %>
+
+      <nav>
+        <% if user_signed_in? %>
+          <span class="text-sm text-stone-400 mr-4">おかえりなさい</span>
+          <%= link_to "ログアウト", destroy_user_session_path, data: { turbo_method: :delete }, class: "text-sm text-stone-600 hover:text-stone-900" %>
+        <% else %>
+          <%= link_to "アトリエ登録", new_user_registration_path, class: "text-sm text-stone-600 mr-4" %>
+          <%= link_to "ログイン", new_user_session_path, class: "text-sm text-stone-600" %>
+        <% end %>
+      </nav>
+    </header>
+    <main class="container mx-auto px-5 py-10">
+      
+      <p class="notice text-green-600 mb-4"><%= notice %></p>
+      <p class="alert text-red-600 mb-4"><%= alert %></p>
+
       <%= yield %>
     </main>
+
   </body>
 </html>
-
-
