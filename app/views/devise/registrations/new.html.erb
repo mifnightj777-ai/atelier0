@@ -1,29 +1,38 @@
-<h2>Sign up</h2>
+<div class="max-w-md mx-auto mt-10 bg-white p-8 rounded-2xl shadow-lg border border-slate-100">
+  <h2 class="font-['Poppins'] text-2xl font-bold text-center mb-8 text-slate-800">Join Atelier0.</h2>
 
-<%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
-  <%= render "devise/shared/error_messages", resource: resource %>
+  <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+    <%= render "devise/shared/error_messages", resource: resource %>
 
-  <div class="field">
-    <%= f.label :email %><br />
-    <%= f.email_field :email, autofocus: true, autocomplete: "email" %>
+    <div class="mb-6">
+      <%= f.label :username, "Atelier ID (@username)", class: "block text-sm font-['Poppins'] font-medium text-slate-600 mb-2" %>
+      <%= f.text_field :username, autofocus: true, placeholder: "yena_01", class: "w-full px-4 py-3 rounded-xl bg-slate-50 border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all font-['Inter'] text-sm" %>
+    </div>
+
+    <div class="mb-6">
+      <%= f.label :email, class: "block text-sm font-['Poppins'] font-medium text-slate-600 mb-2" %>
+      <%= f.email_field :email, autocomplete: "email", class: "w-full px-4 py-3 rounded-xl bg-slate-50 border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all font-['Inter'] text-sm" %>
+    </div>
+
+    <div class="mb-6">
+      <%= f.label :password, class: "block text-sm font-['Poppins'] font-medium text-slate-600 mb-2" %>
+      <% if @minimum_password_length %>
+      <em class="text-xs text-slate-400">(<%= @minimum_password_length %> characters minimum)</em>
+      <% end %>
+      <%= f.password_field :password, autocomplete: "new-password", class: "w-full px-4 py-3 rounded-xl bg-slate-50 border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all font-['Inter'] text-sm" %>
+    </div>
+
+    <div class="mb-8">
+      <%= f.label :password_confirmation, class: "block text-sm font-['Poppins'] font-medium text-slate-600 mb-2" %>
+      <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "w-full px-4 py-3 rounded-xl bg-slate-50 border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all font-['Inter'] text-sm" %>
+    </div>
+
+    <div class="actions">
+      <%= f.submit "Create Account", class: "w-full bg-indigo-700 text-white font-['Poppins'] font-bold py-3 rounded-full shadow-lg shadow-indigo-700/30 hover:bg-indigo-800 hover:shadow-xl hover:-translate-y-0.5 transition-all cursor-pointer" %>
+    </div>
+  <% end %>
+
+  <div class="mt-6 text-center">
+    <%= render "devise/shared/links" %>
   </div>
-
-  <div class="field">
-    <%= f.label :password %>
-    <% if @minimum_password_length %>
-    <em>(<%= @minimum_password_length %> characters minimum)</em>
-    <% end %><br />
-    <%= f.password_field :password, autocomplete: "new-password" %>
-  </div>
-
-  <div class="field">
-    <%= f.label :password_confirmation %><br />
-    <%= f.password_field :password_confirmation, autocomplete: "new-password" %>
-  </div>
-
-  <div class="actions">
-    <%= f.submit "Sign up" %>
-  </div>
-<% end %>
-
-<%= render "devise/shared/links" %>
+</div>
