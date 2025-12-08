@@ -93,6 +93,18 @@
              <% else %>
                <div class="mb-2"></div>
              <% end %>
+
+             <div class="flex items-center justify-end mb-2 h-6">
+               <% if fragment.likes.count > 0 %>
+                 <span class="text-[9px] font-['Space_Grotesk'] text-slate-300 mr-2"><%= fragment.likes.count %></span>
+               <% end %>
+               
+               <div class="relative z-20 scale-75 origin-right">
+                 <% if user_signed_in? %>
+                   <%= render 'likes/like_button', fragment: fragment %>
+                 <% end %>
+               </div>
+             </div>
              
              <div class="flex justify-between items-center text-[10px] font-['Inter'] text-slate-500">
                <%= link_to user_profile_path(username: fragment.user.username), class: "bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded-full font-medium truncate max-w-[50%] hover:bg-indigo-100 transition-colors relative z-20" do %>

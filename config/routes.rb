@@ -2,9 +2,12 @@ Rails.application.routes.draw do
   get 'notifications/index'
   root "fragments#index"
   get 'users/show'
-  
+
   devise_for :users
-  resources :fragments
+  resources :fragments do
+    resource :likes, only: [:create, :destroy]
+  end
+
   resources :relationships, only: [:create, :destroy, :update]
   resources :notifications, only: [:index]
 

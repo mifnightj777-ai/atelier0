@@ -29,4 +29,11 @@ class User < ApplicationRecord
     relation = Relationship.find_by(follower_id: id, followed_id: other_user.id)
     relation.destroy if relation
   end
+
+  has_many :likes, dependent: :destroy
+  has_many :liked_fragments, through: :likes, source: :fragment
+
+  def already_liked?(fragment)
+    likes.exists?(fragment_id: fragment.id)
+  end
 end
