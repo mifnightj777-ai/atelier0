@@ -1,21 +1,69 @@
-<% content_for :title, "Showing fragment" %>
+<div class="max-w-5xl mx-auto md:py-10">
+  
+  <div class="mb-6">
+    <%= link_to :back, class: "inline-flex items-center gap-2 text-sm font-['Poppins'] text-slate-500 hover:text-indigo-600 transition-colors" do %>
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+      </svg>
+      Back
+    <% end %>
+  </div>
 
-<% if @fragment.image.attached? %>
-    <div class="my-5">
-      <%= image_tag @fragment.image, class: "w-full max-w-sm rounded-lg shadow-lg" %>
+  <div class="bg-white rounded-[30px] shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden">
+    <div class="grid md:grid-cols-2">
+      
+      <div class="bg-slate-100 relative min-h-[400px] flex items-center justify-center">
+        <% if @fragment.image.attached? %>
+          <%= image_tag @fragment.image, class: "w-full h-full object-cover absolute inset-0" %>
+        <% else %>
+          <div class="flex flex-col items-center justify-center text-indigo-300">
+            <span class="font-['Poppins'] font-bold text-4xl mb-2">?</span>
+            <span class="text-sm">No Image</span>
+          </div>
+        <% end %>
+
+        <% if @fragment.private_view? %>
+           <div class="absolute top-6 left-6 bg-black/70 text-white px-3 py-1.5 rounded-full backdrop-blur-md border border-white/20 flex items-center gap-2 shadow-lg">
+             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-3 h-3">
+               <path fill-rule="evenodd" d="M10 1a4.5 4.5 0 00-4.5 4.5V9H5a2 2 0 00-2 2v6a2 2 0 002 2h10a2 2 0 002-2v-6a2 2 0 00-2-2h-.5V5.5A4.5 4.5 0 0010 1zm3 8V5.5a3 3 0 10-6 0V9h6z" clip-rule="evenodd" />
+             </svg>
+             <span class="text-xs font-['Poppins'] font-medium">Secret</span>
+           </div>
+        <% end %>
+      </div>
+
+      <div class="p-8 md:p-12 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center gap-3 mb-6">
+            <div class="w-10 h-10 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600 font-bold font-['Poppins']">
+              <%= @fragment.user.username.first.upcase %>
+            </div>
+            <div>
+              <%= link_to user_profile_path(@fragment.user.username), class: "block font-['Poppins'] font-bold text-slate-900 hover:text-indigo-600 transition-colors" do %>
+                @<%= @fragment.user.username %>
+              <% end %>
+              <p class="text-xs text-slate-400"><%= @fragment.created_at.strftime("%Y.%m.%d %H:%M") %></p>
+            </div>
+          </div>
+
+          <% if @fragment.description.present? %>
+            <p class="text-lg text-slate-700 font-['Inter'] leading-relaxed whitespace-pre-wrap">
+              <%= @fragment.description %>
+            </p>
+          <% else %>
+            <p class="text-slate-300 italic">No description provided.</p>
+          <% end %>
+        </div>
+
+        <% if user_signed_in? && current_user == @fragment.user %>
+          <div class="mt-10 pt-6 border-t border-slate-100 flex gap-4">
+            <%= link_to "Edit", edit_fragment_path(@fragment), class: "flex-1 py-3 border border-slate-200 rounded-xl text-center text-sm font-['Poppins'] font-medium text-slate-600 hover:bg-slate-50 hover:border-slate-300 transition-colors" %>
+            
+            <%= link_to "Delete", @fragment, data: { turbo_method: :delete, turbo_confirm: "Are you sure?" }, class: "flex-1 py-3 border border-red-100 rounded-xl text-center text-sm font-['Poppins'] font-medium text-red-500 hover:bg-red-50 transition-colors" %>
+          </div>
+        <% end %>
+
+      </div>
     </div>
-  <% end %>
-
-<div class="md:w-2/3 w-full">
-  <% if notice.present? %>
-    <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-md inline-block" id="notice"><%= notice %></p>
-  <% end %>
-
-  <h1 class="font-bold text-4xl">Showing fragment</h1>
-
-  <%= render @fragment %>
-
-  <%= link_to "Edit this fragment", edit_fragment_path(@fragment), class: "w-full sm:w-auto text-center rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-50 inline-block font-medium" %>
-  <%= link_to "Back to fragments", fragments_path, class: "w-full sm:w-auto text-center mt-2 sm:mt-0 sm:ml-2 rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-50 inline-block font-medium" %>
-  <%= button_to "Destroy this fragment", @fragment, method: :delete, form_class: "sm:inline-block mt-2 sm:mt-0 sm:ml-2", class: "w-full rounded-md px-3.5 py-2.5 text-white bg-red-600 hover:bg-red-500 font-medium cursor-pointer", data: { turbo_confirm: "Are you sure?" } %>
+  </div>
 </div>

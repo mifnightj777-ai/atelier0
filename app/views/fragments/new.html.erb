@@ -1,9 +1,14 @@
-<% content_for :title, "New fragment" %>
+<div class="max-w-2xl mx-auto py-10">
+  <div class="mb-8 text-center">
+    <h1 class="font-['Poppins'] text-3xl font-bold text-slate-900">New Fragment</h1>
+    <p class="text-slate-500 text-sm mt-1">今の思考を、カケラとして残しましょう。</p>
+  </div>
 
-<div class="md:w-2/3 w-full">
-  <h1 class="font-bold text-4xl">New fragment</h1>
+  <div class="bg-white rounded-[30px] shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden">
+    <%= render "form", fragment: @fragment %>
+  </div>
 
-  <%= render "form", fragment: @fragment %>
-
-  <%= link_to "Back to fragments", fragments_path, class: "w-full sm:w-auto text-center mt-2 sm:mt-0 sm:ml-2 rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-50 inline-block font-medium" %>
+  <div class="text-center mt-6">
+    <%= link_to "Back to Studio", fragments_path, class: "text-xs font-['Poppins'] text-slate-400 hover:text-slate-600 transition-colors" %>
+  </div>
 </div>

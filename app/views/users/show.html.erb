@@ -1,28 +1,28 @@
 <div class="w-full">
-
+  
   <div class="flex flex-col items-center text-center mb-16 pt-10">
-
-    <div class="w-24 h-24 rounded-full bg-indigo-50 border-2 border-indigo-100 flex items-center justify-center text-3xl font-['Poppins'] font-bold text-indigo-600 mb-4 shadow-lg shadow-indigo-100">
+    
+    <div class="w-24 h-24 rounded-full bg-gradient-to-br from-indigo-50 to-white border border-indigo-100 flex items-center justify-center text-4xl font-['Poppins'] font-bold text-indigo-600 mb-4 shadow-xl shadow-indigo-100/50">
       <%= @user.username.first.upcase %>
     </div>
-
-    <h1 class="font-['Poppins'] text-2xl font-bold text-slate-900 flex items-center gap-1">
+    
+    <h1 class="font-['Poppins'] text-2xl font-bold text-slate-900 flex items-center gap-2">
       @<%= @user.username %>
-      <svg class="w-5 h-5 text-indigo-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>
+      <span class="bg-indigo-100 text-indigo-600 text-[10px] px-2 py-0.5 rounded-full font-medium tracking-wide">CREATOR</span>
     </h1>
-
+    
     <p class="mt-2 text-sm text-slate-500 font-['Inter']">
-      Atelier0 Creator
+      Atelier0 Studio Member
     </p>
 
-    <div class="flex gap-8 mt-6">
+    <div class="flex gap-10 mt-8 border-t border-slate-100 pt-6 px-10">
       <div class="text-center">
-        <span class="block font-['Poppins'] font-bold text-lg text-slate-900"><%= @fragments.count %></span>
-        <span class="text-[10px] text-slate-400 uppercase tracking-widest">Fragments</span>
+        <span class="block font-['Poppins'] font-bold text-xl text-slate-900"><%= @fragments.count %></span>
+        <span class="text-[10px] text-slate-400 uppercase tracking-widest font-medium">Fragments</span>
       </div>
       <div class="text-center opacity-40">
-        <span class="block font-['Poppins'] font-bold text-lg text-slate-900">0</span>
-        <span class="text-[10px] text-slate-400 uppercase tracking-widest">Following</span>
+        <span class="block font-['Poppins'] font-bold text-xl text-slate-900">0</span>
+        <span class="text-[10px] text-slate-400 uppercase tracking-widest font-medium">Followers</span>
       </div>
     </div>
 
@@ -30,9 +30,9 @@
 
   <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6 md:gap-8">
     <% @fragments.each do |fragment| %>
-      <div class="group relative transition-all duration-300 ease-out hover:-translate-y-2 hover:rotate-1">
+      <div class="group relative transition-all duration-300 ease-out hover:-translate-y-2 hover:rotate-2">
         
-        <div class="bg-white p-2 rounded-[20px] shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-slate-100 group-hover:shadow-xl transition-shadow">
+        <div class="bg-white p-2 rounded-[20px] shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-slate-100 group-hover:shadow-[0_20px_40px_rgb(99,102,241,0.2)] transition-shadow">
 
           <div class="w-full aspect-[4/5] overflow-hidden rounded-[12px] bg-slate-100 relative mb-3">
             
@@ -43,6 +43,7 @@
                 </svg>
               </div>
             <% end %>
+
             <% if fragment.image.attached? %>
               <%= image_tag fragment.image, class: "w-full h-full object-cover" %>
             <% else %>
@@ -52,15 +53,21 @@
             <% end %>
           </div>
 
-          <div class="px-1 pb-1">
-            <% if fragment.description.present? %>
-              <h3 class="font-['Poppins'] font-bold text-slate-800 text-xs line-clamp-1 mb-1">
+          <div class="px-1 pb-2">
+             <% if fragment.description.present? %>
+              <h3 class="font-['Poppins'] font-bold text-slate-800 text-sm line-clamp-1 mb-1">
                 <%= fragment.description %>
               </h3>
-            <% else %>
-              <h3 class="font-['Poppins'] font-bold text-slate-300 text-xs mb-1">Untitled</h3>
-            <% end %>
-            <p class="text-[9px] text-slate-400 text-right"><%= fragment.created_at.strftime("%Y.%m.%d") %></p>
+             <% else %>
+              <h3 class="font-['Poppins'] font-bold text-slate-300 text-sm mb-1">Untitled</h3>
+             <% end %>
+             
+             <div class="flex justify-between items-center text-[10px] font-['Inter'] text-slate-500">
+               <span class="bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full font-medium truncate max-w-[50%]">
+                 @<%= fragment.user.username %>
+               </span>
+               <span><%= fragment.created_at.strftime("%Y.%m.%d") %></span>
+             </div>
           </div>
         </div>
         
@@ -70,8 +77,8 @@
   </div>
 
   <% if @fragments.empty? %>
-    <div class="text-center py-20 opacity-50">
-      <p class="font-['Poppins'] text-slate-400">No public fragments yet.</p>
+    <div class="mt-20 flex flex-col items-center justify-center text-center opacity-60">
+      <p class="font-['Poppins'] text-slate-500 font-medium">No fragments yet.</p>
     </div>
   <% end %>
 
