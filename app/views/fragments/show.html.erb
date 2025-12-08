@@ -10,11 +10,11 @@
   </div>
 
   <div class="bg-white rounded-[30px] shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden">
-    <div class="grid md:grid-cols-2">
+    <div class="grid md:grid-cols-2 gap-0 min-h-[500px]">
       
-      <div class="bg-slate-100 relative min-h-[400px] flex items-center justify-center">
+      <div class="bg-white relative flex items-center justify-center p-8 md:p-12 border-b md:border-b-0 md:border-r border-slate-50">
         <% if @fragment.image.attached? %>
-          <%= image_tag @fragment.image, class: "w-full h-full object-cover absolute inset-0" %>
+          <%= image_tag @fragment.image, class: "w-auto h-auto max-w-full max-h-[70vh] object-contain shadow-2xl rounded-sm transform hover:scale-[1.02] transition-transform duration-500" %>
         <% else %>
           <div class="flex flex-col items-center justify-center text-indigo-300">
             <span class="font-['Poppins'] font-bold text-4xl mb-2">?</span>
@@ -23,7 +23,7 @@
         <% end %>
 
         <% if @fragment.private_view? %>
-           <div class="absolute top-6 left-6 bg-black/70 text-white px-3 py-1.5 rounded-full backdrop-blur-md border border-white/20 flex items-center gap-2 shadow-lg">
+           <div class="absolute top-6 left-6 bg-black/70 text-white px-3 py-1.5 rounded-full backdrop-blur-md border border-white/20 flex items-center gap-2 shadow-lg z-10">
              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-3 h-3">
                <path fill-rule="evenodd" d="M10 1a4.5 4.5 0 00-4.5 4.5V9H5a2 2 0 00-2 2v6a2 2 0 002 2h10a2 2 0 002-2v-6a2 2 0 00-2-2h-.5V5.5A4.5 4.5 0 0010 1zm3 8V5.5a3 3 0 10-6 0V9h6z" clip-rule="evenodd" />
              </svg>
@@ -32,33 +32,39 @@
         <% end %>
       </div>
 
-      <div class="p-8 md:p-12 flex flex-col justify-between">
-        <div>
-          <div class="flex items-center gap-3 mb-6">
-            <div class="w-10 h-10 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600 font-bold font-['Poppins']">
-              <%= @fragment.user.username.first.upcase %>
-            </div>
-            <div>
-              <%= link_to user_profile_path(@fragment.user.username), class: "block font-['Poppins'] font-bold text-slate-900 hover:text-indigo-600 transition-colors" do %>
-                @<%= @fragment.user.username %>
-              <% end %>
-              <p class="text-xs text-slate-400"><%= @fragment.created_at.strftime("%Y.%m.%d %H:%M") %></p>
-            </div>
+      <div class="p-8 md:p-12 flex flex-col items-start justify-start h-full bg-white text-left">
+        
+        <div class="flex items-center gap-3 mb-4 w-full">
+          <div class="w-12 h-12 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600 font-bold font-['Poppins'] text-lg shrink-0 border border-indigo-100">
+            <%= @fragment.user.username.first.upcase %>
           </div>
-
-          <% if @fragment.description.present? %>
-            <p class="text-lg text-slate-700 font-['Inter'] leading-relaxed whitespace-pre-wrap">
-              <%= @fragment.description %>
+          
+          <div class="flex flex-col items-start">
+            <%= link_to user_profile_path(@fragment.user.username), class: "font-['Poppins'] font-bold text-lg text-slate-900 hover:text-indigo-600 transition-colors leading-none" do %>
+              @<%= @fragment.user.username %>
+            <% end %>
+            <p class="text-xs text-slate-400 mt-1.5 font-['Space_Grotesk'] tracking-wide">
+              <%= @fragment.created_at.strftime("%Y.%m.%d %H:%M") %>
             </p>
+          </div>
+        </div>
+
+        <div class="w-full text-left" data-controller="read-more">
+          <% if @fragment.description.present? %>
+            <p data-read-more-target="content" class="text-lg text-slate-800 font-['Inter'] leading-relaxed whitespace-pre-wrap line-clamp-3"><%= @fragment.description %></p>
+            
+            <button data-read-more-target="button" data-action="click->read-more#expand" class="hidden mt-2 text-xs font-['Poppins'] font-bold text-slate-400 hover:text-indigo-600 transition-colors flex items-center gap-1">
+              <span>Read more</span>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-3 h-3"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" /></svg>
+            </button>
           <% else %>
-            <p class="text-slate-300 italic">No description provided.</p>
+            <p class="text-slate-300 italic text-sm">No description provided.</p>
           <% end %>
         </div>
 
         <% if user_signed_in? && current_user == @fragment.user %>
-          <div class="mt-10 pt-6 border-t border-slate-100 flex gap-4">
-            <%= link_to "Edit", edit_fragment_path(@fragment), class: "flex-1 py-3 border border-slate-200 rounded-xl text-center text-sm font-['Poppins'] font-medium text-slate-600 hover:bg-slate-50 hover:border-slate-300 transition-colors" %>
-            
+          <div class="mt-auto pt-10 border-t border-slate-50 flex gap-4 w-full">
+            <%= link_to "Edit Fragment", edit_fragment_path(@fragment), class: "flex-1 py-3 border border-slate-200 rounded-xl text-center text-sm font-['Poppins'] font-medium text-slate-600 hover:bg-slate-50 hover:border-slate-300 transition-colors" %>
             <%= link_to "Delete", @fragment, data: { turbo_method: :delete, turbo_confirm: "Are you sure?" }, class: "flex-1 py-3 border border-red-100 rounded-xl text-center text-sm font-['Poppins'] font-medium text-red-500 hover:bg-red-50 transition-colors" %>
           </div>
         <% end %>

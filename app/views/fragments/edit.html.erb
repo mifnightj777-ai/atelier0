@@ -1,10 +1,22 @@
-<% content_for :title, "Editing fragment" %>
+<div class="max-w-2xl mx-auto py-10">
+  <div class="mb-8 text-center">
+    <h1 class="font-['Poppins'] text-3xl font-bold text-slate-900">Edit Fragment</h1>
+    <p class="text-slate-500 text-sm mt-1">カケラを磨き直す。</p>
+  </div>
 
-<div class="md:w-2/3 w-full">
-  <h1 class="font-bold text-4xl">Editing fragment</h1>
+  <div class="bg-white rounded-[30px] shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden">
+    <%= render "form", fragment: @fragment %>
+  </div>
 
-  <%= render "form", fragment: @fragment %>
+  <div class="flex justify-center gap-6 mt-8">
+    <%= link_to @fragment, class: "group flex items-center gap-2 text-sm font-['Poppins'] font-medium text-indigo-600 hover:text-indigo-800 transition-colors" do %>
+      <span>View Fragment</span>
+      <span class="block w-4 h-[1px] bg-indigo-600 group-hover:w-6 transition-all"></span>
+    <% end %>
 
-  <%= link_to "Show this fragment", @fragment, class: "w-full sm:w-auto text-center mt-2 sm:mt-0 sm:ml-2 rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-50 inline-block font-medium" %>
-  <%= link_to "Back to fragments", fragments_path, class: "w-full sm:w-auto text-center mt-2 sm:mt-0 sm:ml-2 rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-50 inline-block font-medium" %>
+    <%= link_to fragments_path, class: "group flex items-center gap-2 text-sm font-['Poppins'] font-medium text-slate-400 hover:text-slate-600 transition-colors" do %>
+      <span class="block w-4 h-[1px] bg-slate-400 group-hover:w-6 transition-all"></span>
+      <span>Back to Studio</span>
+    <% end %>
+  </div>
 </div>

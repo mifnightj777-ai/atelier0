@@ -2,14 +2,27 @@
   
   <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-16">
     <div>
-      <h1 class="font-['Poppins'] text-5xl md:text-6xl font-bold text-slate-900 leading-none tracking-tight">
+      <h1 class="font-['Poppins'] text-4xl md:text-5xl font-bold text-slate-900 leading-none tracking-tight">
         Studio
         <span class="text-indigo-700">Drops.</span>
       </h1>
-      <p class="mt-4 text-sm font-['Poppins'] text-slate-500 flex items-center gap-3">
-        <span class="w-6 h-[2px] bg-indigo-200"></span>
-        Collection of <%= @fragments.count %> creative fragments.
-      </p>
+
+      <div class="mt-6 flex items-center gap-4">
+        <div class="flex flex-col items-start">
+          <span class="font-['Poppins'] text-4xl font-bold text-indigo-700 leading-none tracking-tighter">
+            <%= @fragments.count %>
+          </span>
+          <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+            Fragments
+          </span>
+        </div>
+        
+        <div class="h-8 w-[1px] bg-slate-200"></div>
+        
+        <div class="text-xs text-slate-500 font-['Inter'] leading-tight">
+          Total items dropped<br>in the studio.
+        </div>
+      </div>
     </div>
     
     <%= link_to new_fragment_path, class: "fixed bottom-10 right-10 z-40 w-16 h-16 bg-indigo-700 text-white rounded-full shadow-xl shadow-indigo-700/30 flex items-center justify-center hover:scale-110 hover:bg-indigo-800 transition-all duration-300 active:scale-95 group" do %>
@@ -27,6 +40,15 @@
         <div class="bg-white p-2 rounded-[20px] shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-slate-100 group-hover:shadow-[0_20px_40px_rgb(99,102,241,0.2)] transition-shadow">
           
           <div class="w-full aspect-[4/5] overflow-hidden rounded-[12px] bg-slate-100 relative mb-3">
+            
+            <% if fragment.private_view? %>
+              <div class="absolute top-2 right-2 z-30 bg-black/60 text-white p-1.5 rounded-full backdrop-blur-sm border border-white/20 shadow-md">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-3 h-3">
+                  <path fill-rule="evenodd" d="M10 1a4.5 4.5 0 00-4.5 4.5V9H5a2 2 0 00-2 2v6a2 2 0 002 2h10a2 2 0 002-2v-6a2 2 0 00-2-2h-.5V5.5A4.5 4.5 0 0010 1zm3 8V5.5a3 3 0 10-6 0V9h6z" clip-rule="evenodd" />
+                </svg>
+              </div>
+            <% end %>
+
             <% if fragment.image.attached? %>
               <%= image_tag fragment.image, class: "w-full h-full object-cover" %>
             <% else %>
@@ -50,17 +72,14 @@
                <%= link_to user_profile_path(username: fragment.user.username), class: "bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded-full font-medium truncate max-w-[50%] hover:bg-indigo-100 transition-colors relative z-20" do %>
                  @<%= fragment.user.username %>
                <% end %>
-               <span>
-                 <%= fragment.created_at.strftime("%Y.%m.%d") %>
-               </span>
+               <span><%= fragment.created_at.strftime("%Y.%m.%d") %></span>
              </div>
           </div>
-
-        </div> <%= link_to "", fragment, class: "absolute inset-0 z-10" %>
-
+        </div>
+        
+        <%= link_to "", fragment, class: "absolute inset-0 z-10" %>
       </div>
     <% end %>
-    
   </div>
 
   <% if @fragments.empty? %>

@@ -2,13 +2,18 @@
   
   <div class="flex flex-col items-center text-center mb-16 pt-10">
     
-    <div class="w-24 h-24 rounded-full bg-gradient-to-br from-indigo-50 to-white border border-indigo-100 flex items-center justify-center text-4xl font-['Poppins'] font-bold text-indigo-600 mb-4 shadow-xl shadow-indigo-100/50">
+    <div class="w-24 h-24 rounded-full bg-gradient-to-br from-indigo-50 to-white border border-indigo-100 flex items-center justify-center text-4xl font-['Poppins'] font-bold text-indigo-600 mb-6 shadow-xl shadow-indigo-100/50">
       <%= @user.username.first.upcase %>
     </div>
     
-    <h1 class="font-['Poppins'] text-2xl font-bold text-slate-900 flex items-center gap-2">
+    <div class="mb-3">
+      <span class="bg-indigo-50 text-indigo-600 border border-indigo-100 text-[10px] px-3 py-1 rounded-full font-['Poppins'] font-bold tracking-widest">
+        CREATOR
+      </span>
+    </div>
+    
+    <h1 class="font-['Poppins'] text-3xl font-bold text-slate-900">
       @<%= @user.username %>
-      <span class="bg-indigo-100 text-indigo-600 text-[10px] px-2 py-0.5 rounded-full font-medium tracking-wide">CREATOR</span>
     </h1>
     
     <p class="mt-2 text-sm text-slate-500 font-['Inter']">
@@ -31,11 +36,9 @@
   <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6 md:gap-8">
     <% @fragments.each do |fragment| %>
       <div class="group relative transition-all duration-300 ease-out hover:-translate-y-2 hover:rotate-2">
-        
         <div class="bg-white p-2 rounded-[20px] shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-slate-100 group-hover:shadow-[0_20px_40px_rgb(99,102,241,0.2)] transition-shadow">
 
           <div class="w-full aspect-[4/5] overflow-hidden rounded-[12px] bg-slate-100 relative mb-3">
-            
             <% if fragment.private_view? %>
               <div class="absolute top-2 right-2 z-30 bg-black/60 text-white p-1.5 rounded-full backdrop-blur-sm border border-white/20 shadow-md">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-3 h-3">
@@ -70,7 +73,6 @@
              </div>
           </div>
         </div>
-        
         <%= link_to "", fragment, class: "absolute inset-0 z-10" %>
       </div>
     <% end %>
