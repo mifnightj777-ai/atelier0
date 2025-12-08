@@ -29,6 +29,17 @@
              </svg>
              <span class="text-xs font-['Poppins'] font-medium">Secret</span>
            </div>
+        
+        <% elsif @fragment.teammates_view? %>
+           <div class="absolute top-6 left-6 z-10">
+             <div class="bg-amber-400 text-white px-3 py-1.5 rounded-lg shadow-xl shadow-amber-200 border border-white/30 flex items-center gap-2">
+               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-3 h-3">
+                 <path d="M13 10a1 1 0 11-2 0 1 1 0 012 0z" />
+                 <path fill-rule="evenodd" d="M12.293 2.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 8H7a1 1 0 00-1 1v6a1 1 0 11-2 0V9a3 3 0 013-3h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+               </svg>
+               <span class="text-[10px] font-bold font-['Poppins'] tracking-widest">TEAM ONLY</span>
+             </div>
+           </div>
         <% end %>
       </div>
 
@@ -65,6 +76,7 @@
         <% if user_signed_in? && current_user == @fragment.user %>
           <div class="mt-auto pt-10 border-t border-slate-50 flex gap-4 w-full">
             <%= link_to "Edit Fragment", edit_fragment_path(@fragment), class: "flex-1 py-3 border border-slate-200 rounded-xl text-center text-sm font-['Poppins'] font-medium text-slate-600 hover:bg-slate-50 hover:border-slate-300 transition-colors" %>
+            
             <%= link_to "Delete", @fragment, data: { turbo_method: :delete, turbo_confirm: "Are you sure?" }, class: "flex-1 py-3 border border-red-100 rounded-xl text-center text-sm font-['Poppins'] font-medium text-red-500 hover:bg-red-50 transition-colors" %>
           </div>
         <% end %>

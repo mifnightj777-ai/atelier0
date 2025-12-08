@@ -3,7 +3,17 @@ class FragmentsController < ApplicationController
 
   # GET /fragments or /fragments.json
   def index
-    @fragments = Fragment.public_view.order(created_at: :desc)
+    @public_fragments = Fragment.public_view.with_attached_image.includes(:user).order(created_at: :desc)
+
+    if params[:filter] == 'teammates' && user_signed_in?
+       teammate_ids = current_user.following.ids
+       @fragments = Fragment.where(user_id: teammate_ids)
+                           .where(visibility: [:public_view, :teammates_view])
+                           .with_attached_image.includes(:user)
+                           .order(created_at: :desc)
+    else
+      @fragments = @public_fragments
+    end
   end
 
   # GET /fragments/1 or /fragments/1.json
@@ -65,6 +75,6 @@ class FragmentsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def fragment_params
-      params.require(:fragment).permit(:description, :image, :visibility)
+      params.require(:fragment).permit(:title, :description, :image, :visibility)
     end
 end
