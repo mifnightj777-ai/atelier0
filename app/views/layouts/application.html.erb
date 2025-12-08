@@ -23,11 +23,21 @@
         <span class="font-['Poppins'] font-bold text-xl tracking-tight text-slate-900">Atelier0.</span>
       <% end %>
 
-      <nav class="flex items-center gap-8 font-['Poppins'] text-sm font-medium">
+      <nav class="flex items-center gap-6 md:gap-8 font-['Poppins'] text-sm font-medium">
         <% if user_signed_in? %>
+          
+          <%= link_to notifications_path, class: "relative text-slate-400 hover:text-indigo-600 transition-colors p-1" do %>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
+              <path fill-rule="evenodd" d="M5.25 9a6.75 6.75 0 0113.5 0v.75c0 2.123.8 4.057 2.118 5.52a.75.75 0 01-.297 1.206c-1.544.57-3.16.99-4.831 1.243a3.75 3.75 0 11-7.48 0 24.585 24.585 0 01-4.831-1.244.75.75 0 01-.298-1.205A8.217 8.217 0 005.25 9.75V9zm4.502 8.9c.465 1.402 1.79 2.408 3.328 2.368 1.479-.04 2.766-1.096 3.167-2.525-2.09.284-4.257.284-6.495 0z" clip-rule="evenodd" />
+            </svg>
+            
+            <% if current_user.notifications.unread.exists? %>
+              <span class="absolute top-0 right-0 block w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white animate-pulse"></span>
+            <% end %>
+          <% end %>
           <%= link_to "My Studio", user_profile_path(current_user.username), class: "hover:text-indigo-700 transition-colors" %>
           
-          <%= link_to "Log out", destroy_user_session_path, data: { turbo_method: :delete }, class: "text-slate-400 hover:text-slate-600 transition-colors px-4 py-2 bg-slate-50 rounded-full hover:bg-slate-100" %>
+          <%= link_to "Log out", destroy_user_session_path, data: { turbo_method: :delete }, class: "text-slate-400 hover:text-slate-600 transition-colors px-4 py-2 bg-slate-50 rounded-full hover:bg-slate-100 hidden md:inline-block" %>
         <% else %>
           <%= link_to "Join", new_user_registration_path, class: "text-indigo-700 hover:text-indigo-900 transition-colors" %>
           <%= link_to "Log in", new_user_session_path, class: "text-slate-500 hover:text-slate-900 transition-colors" %>

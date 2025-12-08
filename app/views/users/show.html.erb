@@ -20,14 +20,21 @@
       Atelier0 Studio Member
     </p>
 
+    <% if user_signed_in? %>
+      <%= render 'follow_form', user: @user %>
+    <% end %>
     <div class="flex gap-10 mt-8 border-t border-slate-100 pt-6 px-10">
       <div class="text-center">
-        <span class="block font-['Poppins'] font-bold text-xl text-slate-900"><%= @fragments.count %></span>
+        <span class="block font-['Poppins'] font-bold text-xl text-slate-900"><%= @user.fragments.count %></span>
         <span class="text-[10px] text-slate-400 uppercase tracking-widest font-medium">Fragments</span>
       </div>
-      <div class="text-center opacity-40">
-        <span class="block font-['Poppins'] font-bold text-xl text-slate-900">0</span>
+      <div class="text-center">
+        <span class="block font-['Poppins'] font-bold text-xl text-slate-900"><%= @user.followers.count %></span>
         <span class="text-[10px] text-slate-400 uppercase tracking-widest font-medium">Followers</span>
+      </div>
+      <div class="text-center">
+        <span class="block font-['Poppins'] font-bold text-xl text-slate-900"><%= @user.following.count %></span>
+        <span class="text-[10px] text-slate-400 uppercase tracking-widest font-medium">Following</span>
       </div>
     </div>
 
