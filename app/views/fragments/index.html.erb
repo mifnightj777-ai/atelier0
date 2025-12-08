@@ -47,9 +47,9 @@
              <% end %>
              
              <div class="flex justify-between items-center text-[10px] font-['Inter'] text-slate-500">
-               <span class="bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded-full font-medium truncate max-w-[50%]">
-                 @<%= fragment.user.username || fragment.user.email.split('@')[0] %>
-               </span>
+               <%= link_to user_profile_path(username: fragment.user.username), class: "bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded-full font-medium truncate max-w-[50%] hover:bg-indigo-100 transition-colors relative z-20" do %>
+                 @<%= fragment.user.username %>
+               <% end %>
                <span>
                  <%= fragment.created_at.strftime("%Y.%m.%d") %>
                </span>
