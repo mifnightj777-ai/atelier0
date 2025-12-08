@@ -1,16 +1,16 @@
 <div class="w-full">
-  
+
   <div class="flex flex-col items-center text-center mb-16 pt-10">
-    
+
     <div class="w-24 h-24 rounded-full bg-indigo-50 border-2 border-indigo-100 flex items-center justify-center text-3xl font-['Poppins'] font-bold text-indigo-600 mb-4 shadow-lg shadow-indigo-100">
       <%= @user.username.first.upcase %>
     </div>
-    
+
     <h1 class="font-['Poppins'] text-2xl font-bold text-slate-900 flex items-center gap-1">
       @<%= @user.username %>
       <svg class="w-5 h-5 text-indigo-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>
     </h1>
-    
+
     <p class="mt-2 text-sm text-slate-500 font-['Inter']">
       Atelier0 Creator
     </p>
@@ -31,9 +31,18 @@
   <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6 md:gap-8">
     <% @fragments.each do |fragment| %>
       <div class="group relative transition-all duration-300 ease-out hover:-translate-y-2 hover:rotate-1">
+        
         <div class="bg-white p-2 rounded-[20px] shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-slate-100 group-hover:shadow-xl transition-shadow">
-          
+
           <div class="w-full aspect-[4/5] overflow-hidden rounded-[12px] bg-slate-100 relative mb-3">
+            
+            <% if fragment.private_view? %>
+              <div class="absolute top-2 right-2 z-30 bg-black/60 text-white p-1.5 rounded-full backdrop-blur-sm border border-white/20 shadow-md">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-3 h-3">
+                  <path fill-rule="evenodd" d="M10 1a4.5 4.5 0 00-4.5 4.5V9H5a2 2 0 00-2 2v6a2 2 0 002 2h10a2 2 0 002-2v-6a2 2 0 00-2-2h-.5V5.5A4.5 4.5 0 0010 1zm3 8V5.5a3 3 0 10-6 0V9h6z" clip-rule="evenodd" />
+                </svg>
+              </div>
+            <% end %>
             <% if fragment.image.attached? %>
               <%= image_tag fragment.image, class: "w-full h-full object-cover" %>
             <% else %>
@@ -44,16 +53,17 @@
           </div>
 
           <div class="px-1 pb-1">
-             <% if fragment.description.present? %>
+            <% if fragment.description.present? %>
               <h3 class="font-['Poppins'] font-bold text-slate-800 text-xs line-clamp-1 mb-1">
                 <%= fragment.description %>
               </h3>
-             <% else %>
+            <% else %>
               <h3 class="font-['Poppins'] font-bold text-slate-300 text-xs mb-1">Untitled</h3>
-             <% end %>
-             <p class="text-[9px] text-slate-400 text-right"><%= fragment.created_at.strftime("%Y.%m.%d") %></p>
+            <% end %>
+            <p class="text-[9px] text-slate-400 text-right"><%= fragment.created_at.strftime("%Y.%m.%d") %></p>
           </div>
         </div>
+        
         <%= link_to "", fragment, class: "absolute inset-0 z-10" %>
       </div>
     <% end %>

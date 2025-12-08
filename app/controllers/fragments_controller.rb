@@ -3,7 +3,7 @@ class FragmentsController < ApplicationController
 
   # GET /fragments or /fragments.json
   def index
-    @fragments = current_user.fragments
+    @fragments = Fragment.public_view.order(created_at: :desc)
   end
 
   # GET /fragments/1 or /fragments/1.json
@@ -65,6 +65,6 @@ class FragmentsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def fragment_params
-      params.require(:fragment).permit(:description, :image)
+      params.require(:fragment).permit(:description, :image, :visibility)
     end
 end
