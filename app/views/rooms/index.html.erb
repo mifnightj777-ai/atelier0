@@ -1,0 +1,32 @@
+<div class="max-w-2xl mx-auto py-12 px-6">
+  <div class="mb-8 border-b border-slate-200 pb-4">
+    <h1 class="font-['Poppins'] text-2xl font-bold text-slate-900">Active Dialogues</h1>
+  </div>
+
+  <div class="space-y-2">
+    <% @rooms.each do |room| %>
+      <% partner = (room.sender == current_user ? room.recipient : room.sender) %>
+      
+      <%= link_to room_path(room), class: "flex items-center gap-4 p-4 bg-white rounded-2xl border border-slate-100 hover:border-indigo-200 hover:shadow-md transition-all group" do %>
+        <div class="w-12 h-12 rounded-full bg-slate-100 text-slate-500 group-hover:bg-[#5D5FEF] group-hover:text-white flex items-center justify-center font-['Poppins'] font-bold text-lg transition-colors">
+          <%= partner.username.first.upcase %>
+        </div>
+        <div class="flex-1">
+          <div class="flex justify-between items-center">
+            <span class="font-['Poppins'] font-bold text-slate-900 text-sm">@<%= partner.username %></span>
+            <span class="text-[10px] text-slate-400 font-['Space_Grotesk']">
+              <%= time_ago_in_words(room.messages.last&.created_at || room.created_at) %> ago
+            </span>
+          </div>
+          <p class="text-xs text-slate-500 font-['Inter'] truncate mt-1">
+            <%= room.messages.last&.content || "No messages yet." %>
+          </p>
+        </div>
+      <% end %>
+    <% end %>
+
+    <% if @rooms.empty? %>
+      <div class="py-10 text-center text-slate-400 text-sm">No active chats yet.</div>
+    <% end %>
+  </div>
+</div>

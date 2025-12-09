@@ -1,0 +1,24 @@
+<% is_me = message.user == current_user %>
+
+<% bubble_class = is_me ? 'bg-slate-900 text-white rounded-[20px] rounded-tr-sm shadow-md shadow-slate-200' : 'bg-white text-slate-800 border border-slate-100 rounded-[20px] rounded-tl-sm shadow-[0_2px_8px_rgba(0,0,0,0.02)]' %>
+
+<div class="flex w-full <%= is_me ? 'justify-end' : 'justify-start' %> mb-2 group animate-fade-in-up">
+  
+  <div class="flex items-end gap-3 max-w-[80%] md:max-w-[60%] <%= is_me ? 'flex-row-reverse' : 'flex-row' %>">
+    
+    <% unless is_me %>
+      <div class="shrink-0 w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-[10px] font-['Poppins'] font-bold text-slate-500 mb-4">
+        <%= message.user.username.first.upcase %>
+      </div>
+    <% end %>
+
+    <div class="px-5 py-3 text-[15px] font-['Inter'] leading-7 tracking-wide <%= bubble_class %>">
+      <%= simple_format(message.content) %>
+    </div>
+
+    <span class="text-[10px] text-slate-300 font-['Space_Grotesk'] opacity-0 group-hover:opacity-100 transition-opacity duration-300 mb-3 px-1">
+      <%= message.created_at.strftime("%H:%M") %>
+    </span>
+
+  </div>
+</div>

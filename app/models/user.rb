@@ -15,6 +15,11 @@ class User < ApplicationRecord
   has_many :notifications, foreign_key: :recipient_id, dependent: :destroy
   has_many :sent_letters, class_name: "Letter", foreign_key: "sender_id", dependent: :destroy
   has_many :received_letters, class_name: "Letter", foreign_key: "recipient_id", dependent: :destroy
+  has_many :messages, dependent: :destroy
+  
+  def rooms
+    Room.where(sender: self).or(Room.where(recipient: self))
+  end
 
   def following?(other_user)
     following.include?(other_user)

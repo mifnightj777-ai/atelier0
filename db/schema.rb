@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_12_09_112138) do
+ActiveRecord::Schema[7.1].define(version: 2025_12_09_122755) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -70,6 +70,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_09_112138) do
     t.bigint "recipient_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "status", default: 0, null: false
     t.index ["fragment_id"], name: "index_letters_on_fragment_id"
     t.index ["recipient_id"], name: "index_letters_on_recipient_id"
     t.index ["sender_id"], name: "index_letters_on_sender_id"
@@ -93,6 +94,16 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_09_112138) do
     t.index ["idea_id"], name: "index_memos_on_idea_id"
   end
 
+  create_table "messages", force: :cascade do |t|
+    t.bigint "room_id", null: false
+    t.bigint "user_id", null: false
+    t.text "content"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["room_id"], name: "index_messages_on_room_id"
+    t.index ["user_id"], name: "index_messages_on_user_id"
+  end
+
   create_table "notifications", force: :cascade do |t|
     t.integer "recipient_id"
     t.integer "sender_id"
@@ -113,6 +124,16 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_09_112138) do
     t.index ["followed_id"], name: "index_relationships_on_followed_id"
     t.index ["follower_id", "followed_id"], name: "index_relationships_on_follower_id_and_followed_id", unique: true
     t.index ["follower_id"], name: "index_relationships_on_follower_id"
+  end
+
+  create_table "rooms", force: :cascade do |t|
+    t.bigint "sender_id", null: false
+    t.bigint "recipient_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["recipient_id"], name: "index_rooms_on_recipient_id"
+    t.index ["sender_id", "recipient_id"], name: "index_rooms_on_sender_id_and_recipient_id", unique: true
+    t.index ["sender_id"], name: "index_rooms_on_sender_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -139,4 +160,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_09_112138) do
   add_foreign_key "likes", "fragments"
   add_foreign_key "likes", "users"
   add_foreign_key "memos", "ideas"
+  add_foreign_key "messages", "rooms"
+  add_foreign_key "messages", "users"
+  add_foreign_key "rooms", "users", column: "recipient_id"
+  add_foreign_key "rooms", "users", column: "sender_id"
 end

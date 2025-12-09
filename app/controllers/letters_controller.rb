@@ -32,6 +32,35 @@ class LettersController < ApplicationController
     end
   end
 
+  def update
+    @letter = current_user.received_letters.find(params[:id])
+
+    if @letter.accepted!
+      existing_room = Room.between(@letter.sender, @letter.recipient).first
+      
+      if existing_room
+        redirect_to room_path(existing_room), notice: "Welcome back to the dialogue."
+      else
+        new_room = Room.create(sender: @letter.sender, recipient: @letter.recipient)
+        
+        if new_room.persisted?
+          Notification.create(
+            recipient: @letter.sender, # 手紙の送り主へ
+            sender: current_user,
+            action: "request_accepted",
+            notifiable: new_room # 通知のリンク先はルーム
+          )
+          redirect_to room_path(new_room), notice: "Dialogue opened."
+        else
+          redirect_to mailbox_path, alert: "Could not start dialogue."
+        end
+      end
+      
+    else
+      redirect_to mailbox_path, alert: "Something went wrong."
+    end
+  end
+
   private
 
   def letter_params
