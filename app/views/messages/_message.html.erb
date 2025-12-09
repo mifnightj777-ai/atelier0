@@ -2,7 +2,7 @@
 
 <% bubble_class = is_me ? 'bg-[#5D5FEF] text-white rounded-[20px] rounded-tr-sm shadow-md shadow-indigo-200' : 'bg-white text-slate-800 border border-slate-100 rounded-[20px] rounded-tl-sm shadow-[0_2px_8px_rgba(0,0,0,0.02)]' %>
 
-<div class="flex w-full <%= is_me ? 'justify-end' : 'justify-start' %> mb-2 group animate-fade-in-up">
+<div class="flex w-full <%= is_me ? 'justify-end origin-bottom-right' : 'justify-start origin-bottom-left' %> mb-1 group animate-pop-in">
   
   <div class="flex items-end gap-3 max-w-[80%] md:max-w-[60%] <%= is_me ? 'flex-row-reverse' : 'flex-row' %>">
     

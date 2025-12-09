@@ -46,8 +46,8 @@
         
         <%= f.text_field :content, placeholder: "Message...", class: "flex-1 bg-transparent border-none px-5 py-3 text-sm font-['Inter'] text-slate-800 placeholder-slate-300 focus:ring-0 focus:outline-none h-11" %>
         
-        <button type="submit" class="shrink-0 w-9 h-9 bg-[#5D5FEF] hover:bg-[#4b4dcf] text-white rounded-full flex items-center justify-center transition-all duration-200 active:scale-95 shadow-md shadow-indigo-200 mr-1">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 pl-0.5"><path d="M3.478 2.405a.75.75 0 00-.926.94l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.405z" /></svg>
+        <button type="submit" class="group shrink-0 w-10 h-10 bg-[#5D5FEF] text-white rounded-full flex items-center justify-center transition-all duration-200 ease-out hover:bg-[#4b4dcf] hover:scale-110 hover:shadow-lg hover:shadow-indigo-200 active:scale-75 mr-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 ml-0.5 transition-transform duration-300 group-active:translate-x-3 group-active:-translate-y-3 group-active:opacity-0"><path d="M3.478 2.405a.75.75 0 00-.926.94l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.405z" /></svg>
         </button>
 
       <% end %>
