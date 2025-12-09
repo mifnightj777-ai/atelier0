@@ -43,6 +43,12 @@
           </svg>
         <% end %>
 
+        <%= link_to ideas_path, class: "text-slate-400 hover:text-indigo-600 transition-colors p-1 mr-2 group", title: "Idea Vault" do %>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 group-hover:scale-110 transition-transform">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
+          </svg>
+        <% end %>
+
         <%= link_to "My Studio", user_profile_path(current_user.username), class: "hover:text-indigo-700 transition-colors" %>
       
         <%= link_to "Log out", destroy_user_session_path, data: { turbo_method: :delete }, class: "text-slate-400 hover:text-slate-600 transition-colors px-4 py-2 bg-slate-50 rounded-full hover:bg-slate-100 hidden md:inline-block" %>

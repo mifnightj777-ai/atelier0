@@ -3,8 +3,9 @@ class User < ApplicationRecord
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
-  has_many :fragments, dependent: :destroy
 
+  has_many :fragments, dependent: :destroy
+  has_many :ideas, dependent: :destroy
   has_many :active_relationships, -> { where(status: :accepted) }, class_name: "Relationship", foreign_key: "follower_id", dependent: :destroy
   has_many :passive_relationships, -> { where(status: :accepted) }, class_name: "Relationship", foreign_key: "followed_id", dependent: :destroy
   has_many :following, through: :active_relationships, source: :followed

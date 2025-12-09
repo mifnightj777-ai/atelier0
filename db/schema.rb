@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_12_08_125602) do
+ActiveRecord::Schema[7.1].define(version: 2025_12_09_101319) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -50,6 +50,16 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_08_125602) do
     t.integer "visibility"
     t.string "title"
     t.index ["user_id"], name: "index_fragments_on_user_id"
+  end
+
+  create_table "ideas", force: :cascade do |t|
+    t.string "title"
+    t.text "description"
+    t.integer "visibility", default: 1, null: false
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_ideas_on_user_id"
   end
 
   create_table "likes", force: :cascade do |t|
@@ -101,6 +111,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_08_125602) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "fragments", "users"
+  add_foreign_key "ideas", "users"
   add_foreign_key "likes", "fragments"
   add_foreign_key "likes", "users"
 end

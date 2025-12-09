@@ -5,13 +5,15 @@ Rails.application.routes.draw do
   get 'notifications/index'
   root "fragments#index"
   get 'users/show'
-  get 'focus', to: 'focus#index', as: :focus_studio
+  get 'focus', to: 'ideas#new', as: :focus_studio
+  
 
   devise_for :users
   resources :fragments do
     resource :likes, only: [:create, :destroy]
   end
 
+  resources :ideas, except: [:show]
   resources :relationships, only: [:create, :destroy, :update]
   resources :notifications, only: [:index]
 end
