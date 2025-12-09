@@ -11,8 +11,19 @@ class RoomsController < ApplicationController
       redirect_to root_path, alert: "Access denied."
       return
     end
-
+    @room.mark_as_read(current_user)
     @messages = @room.messages.includes(:user).order(created_at: :asc)
     @message = Message.new
+  end
+
+  def destroy
+    @room = Room.find(params[:id])
+    
+    if @room.sender == current_user || @room.recipient == current_user
+       @room.destroy
+      redirect_to rooms_path, notice: "Dialogue ended and chat room deleted."
+    else
+      redirect_to root_path, alert: "Access denied."
+    end
   end
 end

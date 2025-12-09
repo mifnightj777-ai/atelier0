@@ -1,32 +1,62 @@
 <div class="max-w-2xl mx-auto py-12 px-6">
-  <div class="mb-8 border-b border-slate-200 pb-4">
+  <div class="mb-8 border-b border-slate-200 pb-4 flex justify-between items-end">
     <h1 class="font-['Poppins'] text-2xl font-bold text-slate-900">Active Dialogues</h1>
+    <span class="text-xs text-slate-400 font-['Space_Grotesk'] tracking-widest"><%= @rooms.count %> ROOMS</span>
   </div>
 
-  <div class="space-y-2">
+  <div class="space-y-3">
     <% @rooms.each do |room| %>
       <% partner = (room.sender == current_user ? room.recipient : room.sender) %>
+      <% unread = room.has_unread_messages?(current_user) %>
       
-      <%= link_to room_path(room), class: "flex items-center gap-4 p-4 bg-white rounded-2xl border border-slate-100 hover:border-indigo-200 hover:shadow-md transition-all group" do %>
-        <div class="w-12 h-12 rounded-full bg-slate-100 text-slate-500 group-hover:bg-[#5D5FEF] group-hover:text-white flex items-center justify-center font-['Poppins'] font-bold text-lg transition-colors">
+      <%= link_to room_path(room), class: "relative flex items-center gap-4 p-4 rounded-2xl border transition-all duration-300 group #{unread ? 'bg-indigo-50/30 border-[#5D5FEF]/30 shadow-sm' : 'bg-white border-slate-100 hover:border-indigo-100 hover:shadow-md'}" do %>
+        
+        <% if unread %>
+          <div class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-12 bg-[#5D5FEF] rounded-r-full shadow-[0_0_10px_rgba(93,95,239,0.4)]"></div>
+        <% end %>
+
+        <div class="relative w-14 h-14 rounded-full bg-white border border-slate-100 text-slate-500 group-hover:text-[#5D5FEF] group-hover:border-indigo-100 flex items-center justify-center font-['Poppins'] font-bold text-lg transition-colors shadow-sm">
           <%= partner.username.first.upcase %>
+          
+          <% if unread %>
+            <span class="absolute -top-0.5 -right-0.5 w-4 h-4 bg-[#5D5FEF] border-[3px] border-white rounded-full shadow-sm"></span>
+          <% end %>
         </div>
-        <div class="flex-1">
-          <div class="flex justify-between items-center">
-            <span class="font-['Poppins'] font-bold text-slate-900 text-sm">@<%= partner.username %></span>
-            <span class="text-[10px] text-slate-400 font-['Space_Grotesk']">
-              <%= time_ago_in_words(room.messages.last&.created_at || room.created_at) %> ago
+
+        <div class="flex-1 min-w-0">
+          <div class="flex justify-between items-center mb-1">
+            <span class="font-['Poppins'] text-sm truncate <%= unread ? 'font-bold text-slate-900' : 'font-medium text-slate-700' %>">
+              @<%= partner.username %>
+            </span>
+            
+            <span class="text-[10px] font-['Space_Grotesk'] tracking-wide <%= unread ? 'text-[#5D5FEF] font-bold' : 'text-slate-400' %>">
+              <%= time_ago_in_words(room.updated_at) %> ago
             </span>
           </div>
-          <p class="text-xs text-slate-500 font-['Inter'] truncate mt-1">
-            <%= room.messages.last&.content || "No messages yet." %>
+          
+          <p class="text-xs font-['Inter'] truncate leading-relaxed <%= unread ? 'text-slate-800 font-bold' : 'text-slate-500' %>">
+            <% if room.messages.any? %>
+              <%= room.messages.last.user == current_user ? "You: " : "" %><%= room.messages.last.content %>
+            <% else %>
+              <span class="italic opacity-70">Room created. Start talking!</span>
+            <% end %>
           </p>
         </div>
+        
+        <div class="text-slate-300 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all duration-300">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
+        </div>
+
       <% end %>
     <% end %>
 
     <% if @rooms.empty? %>
-      <div class="py-10 text-center text-slate-400 text-sm">No active chats yet.</div>
+      <div class="py-20 text-center">
+        <div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-300">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z" /></svg>
+        </div>
+        <p class="text-slate-400 text-sm font-['Poppins']">No active dialogues.</p>
+      </div>
     <% end %>
   </div>
 </div>

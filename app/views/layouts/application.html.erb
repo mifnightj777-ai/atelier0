@@ -16,36 +16,32 @@
   </head>
 
   <body class="h-full text-slate-700 font-['Inter'] antialiased overflow-x-hidden">
-    
+
     <header class="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-slate-100 py-4 px-6 md:px-12 flex justify-between items-center transition-all">
-      
       <%= link_to root_path, class: "group flex items-center gap-2" do %>
         <span class="w-3 h-3 rounded-full bg-indigo-700 group-hover:scale-110 transition-transform"></span>
         <span class="font-['Poppins'] font-bold text-xl tracking-tight text-slate-900">Atelier0.</span>
       <% end %>
 
-      <nav class="flex items-center gap-5 md:gap-6 font-['Poppins'] text-sm font-medium">
+      <nav class="flex items-center gap-6 md:gap-8 font-['Poppins'] text-sm font-medium">
         <% if user_signed_in? %>
-          
-          <div class="flex items-center gap-2 border-r border-slate-200 pr-6 mr-1">
-            
+
+          <div class="flex items-center gap-1 mr-2">
             <%= link_to focus_studio_path, class: "text-slate-400 hover:text-indigo-600 transition-colors p-2 group relative", title: "Enter Focus Mode" do %>
-              <div class="absolute inset-0 bg-indigo-50 rounded-full scale-0 opacity-0 group-hover:scale-100 group-hover:opacity-100 transition-all duration-300"></div>
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 relative z-10 group-hover:-rotate-12 transition-transform duration-500">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 group-hover:-rotate-12 transition-transform duration-500">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
               </svg>
             <% end %>
 
             <%= link_to ideas_path, class: "text-slate-400 hover:text-indigo-600 transition-colors p-2 group relative", title: "Idea Vault" do %>
-              <div class="absolute inset-0 bg-indigo-50 rounded-full scale-0 opacity-0 group-hover:scale-100 group-hover:opacity-100 transition-all duration-300"></div>
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 relative z-10 group-hover:scale-110 transition-transform">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 group-hover:scale-110 transition-transform">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
               </svg>
             <% end %>
           </div>
-          
-          <div class="flex items-center gap-1 mr-2">
-            
+
+          <div class="h-6 w-px bg-slate-200 mx-1"></div>
+          <div class="flex items-center gap-1">
             <%= link_to mailbox_path, class: "relative text-slate-400 hover:text-indigo-600 transition-colors p-2", title: "Mailbox" do %>
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
                 <path d="M1.5 8.67v8.58a3 3 0 003 3h15a3 3 0 003-3V8.67l-8.928 5.493a3 3 0 01-3.144 0L1.5 8.67z" />
@@ -53,10 +49,13 @@
               </svg>
             <% end %>
 
-            <%= link_to rooms_path, class: "relative text-slate-400 hover:text-indigo-600 transition-colors p-1 mr-1", title: "Chats" do %>
+            <%= link_to rooms_path, class: "relative text-slate-400 hover:text-indigo-600 transition-colors p-2 mr-1", title: "Chats" do %>
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
                 <path fill-rule="evenodd" d="M4.804 21.644A6.707 6.707 0 006 21.75a6.721 6.721 0 003.583-1.029c.774.182 1.584.279 2.417.279 5.322 0 9.75-3.97 9.75-9 0-5.03-4.428-9-9.75-9s-9.75 3.97-9.75 9c0 2.409 1.025 4.587 2.674 6.192.232.226.277.428.254.543a3.73 3.73 0 01-.814 1.686.75.75 0 00.44 1.223zM8.25 10.875a1.125 1.125 0 100 2.25 1.125 1.125 0 000-2.25zM10.875 12a1.125 1.125 0 112.25 0 1.125 1.125 0 01-2.25 0zm4.875-1.125a1.125 1.125 0 100 2.25 1.125 1.125 0 000-2.25z" clip-rule="evenodd" />
               </svg>
+              <% if current_user.rooms.any? { |room| room.has_unread_messages?(current_user) } %>
+                <span class="absolute top-1.5 right-1.5 block w-2.5 h-2.5 bg-red-500 border-2 border-white rounded-full"></span>
+              <% end %>
             <% end %>
 
             <%= link_to notifications_path, class: "relative text-slate-400 hover:text-indigo-600 transition-colors p-2" do %>
@@ -64,15 +63,13 @@
                 <path fill-rule="evenodd" d="M5.25 9a6.75 6.75 0 0113.5 0v.75c0 2.123.8 4.057 2.118 5.52a.75.75 0 01-.297 1.206c-1.544.57-3.16.99-4.831 1.243a3.75 3.75 0 11-7.48 0 24.585 24.585 0 01-4.831-1.244.75.75 0 01-.298-1.205A8.217 8.217 0 005.25 9.75V9zm4.502 8.9c.465 1.402 1.79 2.408 3.328 2.368 1.479-.04 2.766-1.096 3.167-2.525-2.09.284-4.257.284-6.495 0z" clip-rule="evenodd" />
               </svg>
               <% if current_user.notifications.unread.exists? %>
-                <span class="absolute top-1 right-1.5 block w-2 h-2 bg-red-500 rounded-full border border-white animate-pulse"></span>
+                <span class="absolute top-1.5 right-2 block w-2 h-2 bg-red-500 rounded-full border border-white animate-pulse"></span>
               <% end %>
             <% end %>
           </div>
 
-          <%= link_to "My Studio", user_profile_path(current_user.username), class: "hover:text-indigo-700 transition-colors ml-2" %>
-        
+          <%= link_to "My Studio", user_profile_path(current_user.username), class: "hover:text-indigo-700 transition-colors" %>
           <%= link_to "Log out", destroy_user_session_path, data: { turbo_method: :delete }, class: "text-slate-400 hover:text-slate-600 transition-colors px-4 py-2 bg-slate-50 rounded-full hover:bg-slate-100 hidden md:inline-block" %>
-          
         <% else %>
           <%= link_to "Join", new_user_registration_path, class: "text-indigo-700 hover:text-indigo-900 transition-colors" %>
           <%= link_to "Log in", new_user_session_path, class: "text-slate-500 hover:text-slate-900 transition-colors" %>

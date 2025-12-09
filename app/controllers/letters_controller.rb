@@ -61,6 +61,21 @@ class LettersController < ApplicationController
     end
   end
 
+  def destroy
+    @letter = Letter.find(params[:id])
+    
+    if @letter.sender == current_user || @letter.recipient == current_user
+      @letter.destroy
+      if @letter.recipient == current_user
+        redirect_to mailbox_path, notice: "Letter discarded."
+      else
+        redirect_to fragment_path(@letter.fragment), notice: "Request canceled."
+      end
+    else
+      redirect_to root_path, alert: "Access denied."
+    end
+  end
+
   private
 
   def letter_params

@@ -1,6 +1,6 @@
 <% is_me = message.user == current_user %>
 
-<% bubble_class = is_me ? 'bg-slate-900 text-white rounded-[20px] rounded-tr-sm shadow-md shadow-slate-200' : 'bg-white text-slate-800 border border-slate-100 rounded-[20px] rounded-tl-sm shadow-[0_2px_8px_rgba(0,0,0,0.02)]' %>
+<% bubble_class = is_me ? 'bg-[#5D5FEF] text-white rounded-[20px] rounded-tr-sm shadow-md shadow-indigo-200' : 'bg-white text-slate-800 border border-slate-100 rounded-[20px] rounded-tl-sm shadow-[0_2px_8px_rgba(0,0,0,0.02)]' %>
 
 <div class="flex w-full <%= is_me ? 'justify-end' : 'justify-start' %> mb-2 group animate-fade-in-up">
   

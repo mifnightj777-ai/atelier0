@@ -3,6 +3,7 @@ class MessagesController < ApplicationController
 
   def create
     @room = Room.find(params[:room_id])
+    
     unless @room.sender == current_user || @room.recipient == current_user
       head :forbidden
       return
@@ -12,7 +13,9 @@ class MessagesController < ApplicationController
     @message.user = current_user
 
     if @message.save
-      redirect_to room_path(@room)
+      @room.touch 
+      
+      render turbo_stream: turbo_stream.append("message_list", partial: "messages/message", locals: { message: @message })
     else
       redirect_to room_path(@room), alert: "Message could not be sent."
     end

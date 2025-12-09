@@ -16,7 +16,7 @@ class User < ApplicationRecord
   has_many :sent_letters, class_name: "Letter", foreign_key: "sender_id", dependent: :destroy
   has_many :received_letters, class_name: "Letter", foreign_key: "recipient_id", dependent: :destroy
   has_many :messages, dependent: :destroy
-  
+
   def rooms
     Room.where(sender: self).or(Room.where(recipient: self))
   end
@@ -43,5 +43,11 @@ class User < ApplicationRecord
 
   def already_liked?(fragment)
     likes.exists?(fragment_id: fragment.id)
+  end
+  
+  def teammate_with?(other_user)
+    Relationship.where(follower: self, followed: other_user, status: :accepted)
+                .or(Relationship.where(follower: other_user, followed: self, status: :accepted))
+                .exists?
   end
 end

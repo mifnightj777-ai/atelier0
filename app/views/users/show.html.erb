@@ -20,9 +20,37 @@
       Atelier0 Studio Member
     </p>
 
-    <% if user_signed_in? %>
-      <%= render 'follow_form', user: @user %>
-    <% end %>
+    <div class="flex gap-3 mt-6">
+      <% if current_user != @user %>
+            
+        <% if current_user.teammate_with?(@user) %>
+          <button class="px-6 py-2 bg-indigo-50 text-indigo-600 rounded-full font-['Poppins'] font-bold text-xs border border-indigo-100 flex items-center gap-2">
+            <span>TEAMMATE ⚡️</span>
+          </button>
+              
+          <% rel = Relationship.find_by(follower: current_user, followed: @user) || Relationship.find_by(follower: @user, followed: current_user) %>
+          <%= button_to relationship_path(rel), method: :delete, class: "w-8 h-8 rounded-full border border-slate-200 text-slate-400 hover:text-red-500 hover:border-red-200 flex items-center justify-center transition-colors", title: "Leave Team" do %>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4"><path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" /></svg>
+          <% end %>
+
+        <% else %>
+          <% existing_request = Relationship.find_by(follower: current_user, followed: @user) %>
+              
+          <% if existing_request && existing_request.pending? %>
+            <button class="px-6 py-2 bg-slate-100 text-slate-500 rounded-full font-['Poppins'] font-bold text-xs cursor-default">
+              REQUEST SENT
+            </button>
+          <% else %>
+            <%= button_to relationships_path(followed_id: @user.id), class: "px-6 py-2 bg-slate-900 text-white rounded-full font-['Poppins'] font-bold text-xs hover:bg-indigo-600 transition-colors shadow-lg" do %>
+              TEAMMATE
+            <% end %>
+          <% end %>
+        <% end %>
+
+      <% else %>
+        <%= link_to "EDIT PROFILE", edit_user_registration_path, class: "px-6 py-2 border border-slate-200 text-slate-600 rounded-full font-['Poppins'] font-bold text-xs hover:border-slate-400 transition-colors" %>
+      <% end %>
+    </div>
 
     <div class="flex gap-10 mt-8 pt-6 px-10">
       
