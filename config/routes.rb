@@ -13,7 +13,11 @@ Rails.application.routes.draw do
     resource :likes, only: [:create, :destroy]
   end
 
-  resources :ideas, except: [:show]
+  resources :ideas, except: [:show] do
+    resources :memos, only: [:create, :destroy]
+  end
+  
   resources :relationships, only: [:create, :destroy, :update]
   resources :notifications, only: [:index]
+  resources :memos, only: [:create, :destroy]
 end
