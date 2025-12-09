@@ -16,13 +16,15 @@
   <div class="space-y-4">
     <% @notifications.each do |notification| %>
       
-      <div class="group relative bg-white rounded-xl p-4 flex gap-5 items-start transition-all hover:bg-slate-50 border border-transparent hover:border-slate-100 shadow-sm hover:shadow-md">
+      <% notification_link = notification.action == 'letter' ? mailbox_path : user_profile_path(notification.sender.username) %>
+      
+      <%= link_to notification_link, class: "group relative block bg-white rounded-xl p-4 flex gap-5 items-start transition-all hover:bg-slate-50 border border-transparent hover:border-slate-100 shadow-sm hover:shadow-md" do %>
         
         <% bar_color = case notification.action
            when 'follow_request' then 'bg-amber-400'
            when 'request_accepted' then 'bg-indigo-600'
            when 'like' then 'bg-pink-500'
-           when 'comment' then 'bg-cyan-500'
+           when 'letter' then 'bg-indigo-500' # 手紙は深い藍色
            else 'bg-slate-300'
            end %>
         <div class="absolute left-0 top-4 bottom-4 w-1 rounded-r-full <%= bar_color %>"></div>
@@ -30,21 +32,21 @@
         <div class="shrink-0 ml-2">
           <% if notification.action == "follow_request" %>
             <div class="w-12 h-12 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center border border-amber-100 shadow-sm">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-6 h-6">
-                <path d="M10 8a3 3 0 100-6 3 3 0 000 6zM3.465 14.492a5.002 5.002 0 019.07 0 .75.75 0 11-1.36.76 3.502 3.502 0 00-6.35 0 .75.75 0 01-1.36-.76z" />
-                <path d="M15.75 5.5a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM15 11.25a.75.75 0 100-1.5.75.75 0 000 1.5z" />
-              </svg>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-6 h-6"><path d="M10 8a3 3 0 100-6 3 3 0 000 6zM3.465 14.492a5.002 5.002 0 019.07 0 .75.75 0 11-1.36.76 3.502 3.502 0 00-6.35 0 .75.75 0 01-1.36-.76z" /><path d="M15.75 5.5a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM15 11.25a.75.75 0 100-1.5.75.75 0 000 1.5z" /></svg>
             </div>
           <% elsif notification.action == "request_accepted" %>
              <div class="w-12 h-12 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center border border-indigo-100 shadow-sm">
-               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-6 h-6">
-                 <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clip-rule="evenodd" />
-               </svg>
+               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-6 h-6"><path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clip-rule="evenodd" /></svg>
              </div>
           <% elsif notification.action == "like" %>
              <div class="w-12 h-12 rounded-full bg-pink-50 text-pink-500 flex items-center justify-center border border-pink-100 shadow-sm">
+               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path d="M11.645 20.91l-.007-.003-.022-.012a15.247 15.247 0 01-.383-.218 25.18 25.18 0 01-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0112 5.052 5.5 5.5 0 0116.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 01-4.244 3.17 15.247 15.247 0 01-.383.219l-.022.012-.007.004-.003.001a.752.752 0 01-.704 0l-.003-.001z" /></svg>
+             </div>
+          <% elsif notification.action == "letter" %>
+             <div class="w-12 h-12 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center border border-indigo-100 shadow-sm">
                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
-                 <path d="M11.645 20.91l-.007-.003-.022-.012a15.247 15.247 0 01-.383-.218 25.18 25.18 0 01-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0112 5.052 5.5 5.5 0 0116.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 01-4.244 3.17 15.247 15.247 0 01-.383.219l-.022.012-.007.004-.003.001a.752.752 0 01-.704 0l-.003-.001z" />
+                 <path d="M1.5 8.67v8.58a3 3 0 003 3h15a3 3 0 003-3V8.67l-8.928 5.493a3 3 0 01-3.144 0L1.5 8.67z" />
+                 <path d="M22.5 6.908V6.75a3 3 0 00-3-3h-15a3 3 0 00-3 3v.158l9.714 5.978a1.5 1.5 0 001.572 0L22.5 6.908z" />
                </svg>
              </div>
           <% end %>
@@ -59,7 +61,10 @@
                 <% elsif notification.action == "request_accepted" %>
                   TEAMMATE
                 <% elsif notification.action == "like" %>
-                  DEEP LIKE <% end %>
+                  DEEP LIKE
+                <% elsif notification.action == "letter" %>
+                  LETTER
+                <% end %>
               </span>
               <span class="font-['Poppins'] font-bold text-slate-900 text-sm">
                 @<%= notification.sender.username %>
@@ -77,31 +82,34 @@
             <% elsif notification.action == "request_accepted" %>
               accepted your request.
             <% elsif notification.action == "like" %>
-              Deeply liked your fragment. <% end %>
+              Deeply liked your fragment.
+            <% elsif notification.action == "letter" %>
+              Sent you a private letter.
+            <% end %>
           </p>
 
           <% if notification.action == "follow_request" %>
-            <% relationship = notification.notifiable %>
-            <% if relationship && relationship.pending? %>
-              <div class="flex gap-3 mt-2">
-                <%= button_to relationship_path(relationship), method: :patch, params: { status: :accepted }, class: "px-5 py-1.5 bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold font-['Poppins'] rounded-md transition-colors shadow-sm tracking-wide" do %>
-                  CONFIRM
-                <% end %>
-
-                <%= button_to relationship_path(relationship), method: :delete, class: "px-5 py-1.5 bg-white border border-slate-200 text-slate-500 hover:text-red-500 hover:border-red-200 text-xs font-bold font-['Poppins'] rounded-md transition-colors tracking-wide" do %>
-                  DELETE
-                <% end %>
-              </div>
-            <% elsif relationship.nil? %>
-               <span class="inline-block px-3 py-1 bg-slate-100 text-slate-400 text-[10px] font-bold rounded uppercase">Canceled</span>
-            <% else %>
-               <span class="inline-block px-3 py-1 bg-indigo-50 text-indigo-600 text-[10px] font-bold rounded uppercase">Connected</span>
-            <% end %>
+            <div class="relative z-10">
+              <% relationship = notification.notifiable %>
+              <% if relationship && relationship.pending? %>
+                <div class="flex gap-3 mt-2">
+                  <%= button_to relationship_path(relationship), method: :patch, params: { status: :accepted }, class: "px-5 py-1.5 bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold font-['Poppins'] rounded-md transition-colors shadow-sm tracking-wide" do %>
+                    CONFIRM
+                  <% end %>
+                  <%= button_to relationship_path(relationship), method: :delete, class: "px-5 py-1.5 bg-white border border-slate-200 text-slate-500 hover:text-red-500 hover:border-red-200 text-xs font-bold font-['Poppins'] rounded-md transition-colors tracking-wide" do %>
+                    DELETE
+                  <% end %>
+                </div>
+              <% elsif relationship.nil? %>
+                 <span class="inline-block px-3 py-1 bg-slate-100 text-slate-400 text-[10px] font-bold rounded uppercase">Canceled</span>
+              <% else %>
+                 <span class="inline-block px-3 py-1 bg-indigo-50 text-indigo-600 text-[10px] font-bold rounded uppercase">Connected</span>
+              <% end %>
+            </div>
           <% end %>
           
         </div>
-      </div>
-    <% end %>
+      <% end %> <% end %>
 
     <% if @notifications.empty? %>
       <div class="text-center py-24 opacity-40">
