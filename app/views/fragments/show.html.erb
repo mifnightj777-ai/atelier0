@@ -84,12 +84,6 @@
                </svg>
              </div>
           <% end %>
-
-          <% if @fragment.likes.count > 0 %>
-            <span class="text-xs font-['Space_Grotesk'] text-slate-400 tracking-widest">
-              <%= @fragment.likes.count %> LIKES
-            </span>
-          <% end %>
         </div>
 
         <% if user_signed_in? && current_user == @fragment.user %>

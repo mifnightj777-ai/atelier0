@@ -1,6 +1,6 @@
 <div class="w-full">
   
-  <div class="flex flex-col items-center text-center mb-16 pt-10">
+  <div class="flex flex-col items-center text-center mb-12 pt-10">
     
     <div class="w-24 h-24 rounded-full bg-gradient-to-br from-indigo-50 to-white border border-indigo-100 flex items-center justify-center text-4xl font-['Poppins'] font-bold text-indigo-600 mb-6 shadow-xl shadow-indigo-100/50">
       <%= @user.username.first.upcase %>
@@ -24,22 +24,81 @@
       <%= render 'follow_form', user: @user %>
     <% end %>
 
-    <div class="flex gap-10 mt-8 border-t border-slate-100 pt-6 px-10">
+    <div class="flex gap-10 mt-8 pt-6 px-10">
+      
       <div class="text-center">
         <span class="block font-['Poppins'] font-bold text-xl text-slate-900"><%= @user.fragments.count %></span>
         <span class="text-[10px] text-slate-400 uppercase tracking-widest font-medium">Fragments</span>
       </div>
+      
       <div class="text-center">
-        <span class="block font-['Poppins'] font-bold text-xl text-slate-900"><%= @user.followers.count %></span>
-        <span class="text-[10px] text-slate-400 uppercase tracking-widest font-medium">Followers</span>
-      </div>
-      <div class="text-center">
-        <span class="block font-['Poppins'] font-bold text-xl text-slate-900"><%= @user.following.count %></span>
-        <span class="text-[10px] text-slate-400 uppercase tracking-widest font-medium">Following</span>
+        <span class="block font-['Poppins'] font-bold text-xl text-slate-900">
+          <% if user_signed_in? && current_user == @user %>
+            <%= @user.followers.count %>
+          <% else %>
+            <span class="text-slate-300">-</span>
+          <% end %>
+        </span>
+        <span class="text-[10px] text-slate-400 uppercase tracking-widest font-medium">Teammates</span>
       </div>
     </div>
 
   </div>
+
+  <% if user_signed_in? && current_user == @user %>
+    <div class="flex justify-center mb-10" data-controller="profile-tabs">
+      <div class="relative flex items-center bg-white/60 backdrop-blur-md border border-white/60 p-1 rounded-full shadow-sm w-64">
+        
+        <% background_class = if params[:tab].nil?
+             "left-1 w-[calc(50%-4px)] bg-indigo-600 shadow-[0_4px_14px_0_rgba(79,70,229,0.39)]"
+           else
+             "left-[calc(50%+4px)] w-[calc(50%-8px)] bg-pink-500 shadow-[0_4px_14px_0_rgba(236,72,153,0.39)]"
+           end %>
+        <div data-profile-tabs-target="background" class="absolute top-1 bottom-1 rounded-full transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] <%= background_class %>"></div>
+
+        <%= link_to user_profile_path(@user.username), 
+            data: { 
+              action: "click->profile-tabs#switchToCreations", 
+              turbo_action: "advance",
+              turbo_frame: "profile_content",
+              profile_tabs_target: "creationsLink"
+            }, 
+            class: "relative z-20 flex-1 text-center py-2 rounded-full text-xs font-['Poppins'] font-bold tracking-widest transition-colors duration-500 #{params[:tab].nil? ? 'text-white' : 'text-slate-400 hover:text-slate-600'}" do %>
+          Creations
+        <% end %>
+
+        <%= link_to user_profile_path(@user.username, tab: 'saved'), 
+            data: { 
+              action: "click->profile-tabs#switchToSaved", 
+              turbo_action: "advance",
+              turbo_frame: "profile_content",
+              profile_tabs_target: "savedLink"
+            }, 
+            class: "relative z-20 flex-1 text-center py-2 rounded-full text-xs font-['Poppins'] font-bold tracking-widest transition-colors duration-500 #{params[:tab] == 'saved' ? 'text-white' : 'text-slate-400 hover:text-slate-600'}" do %>
+          Saved
+        <% end %>
+
+      </div>
+    </div>
+  <% end %>
+
+  <%= turbo_frame_tag "profile_content" do %>
+    
+    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6 md:gap-8">
+      <% @fragments.each do |fragment| %>
+        <div class="group relative transition-all duration-300 ease-out hover:-translate-y-2 hover:rotate-2">
+           <%= link_to "", fragment, class: "absolute inset-0 z-10", data: { turbo_frame: "_top" } %>
+        </div>
+      <% end %>
+    </div>
+
+    <% if @fragments.empty? %>
+      <div class="mt-20 flex flex-col items-center justify-center text-center opacity-60">
+        <p class="font-['Poppins'] text-slate-500 font-medium">No fragments here.</p>
+      </div>
+    <% end %>
+
+  <% end %>
 
   <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6 md:gap-8">
     <% @fragments.each do |fragment| %>
@@ -52,7 +111,6 @@
               <div class="absolute top-2 right-2 z-30 bg-black/80 text-white w-7 h-7 flex items-center justify-center rounded-full backdrop-blur-md shadow-lg border border-white/10">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-3 h-3"><path fill-rule="evenodd" d="M10 1a4.5 4.5 0 00-4.5 4.5V9H5a2 2 0 00-2 2v6a2 2 0 002 2h10a2 2 0 002-2v-6a2 2 0 00-2-2h-.5V5.5A4.5 4.5 0 0010 1zm3 8V5.5a3 3 0 10-6 0V9h6z" clip-rule="evenodd" /></svg>
               </div>
-            
             <% elsif fragment.teammates_view? %>
               <div class="absolute top-2 right-2 z-30 bg-amber-400 text-white w-7 h-7 flex items-center justify-center rounded-full shadow-[0_0_15px_rgba(251,191,36,0.6)] border-2 border-white">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
@@ -84,6 +142,14 @@
                <div class="mb-2"></div>
              <% end %>
              
+             <div class="flex items-center justify-end mb-2 h-6">
+               <div class="relative z-20 scale-75 origin-right">
+                 <% if user_signed_in? %>
+                   <%= render 'likes/like_button', fragment: fragment %>
+                 <% end %>
+               </div>
+             </div>
+             
              <div class="flex justify-between items-center text-[10px] font-['Inter'] text-slate-500">
                <span class="bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded-full font-medium truncate max-w-[50%]">
                  @<%= fragment.user.username %>
@@ -100,7 +166,7 @@
 
   <% if @fragments.empty? %>
     <div class="mt-20 flex flex-col items-center justify-center text-center opacity-60">
-      <p class="font-['Poppins'] text-slate-500 font-medium">No fragments yet.</p>
+      <p class="font-['Poppins'] text-slate-500 font-medium">No fragments here.</p>
     </div>
   <% end %>
 

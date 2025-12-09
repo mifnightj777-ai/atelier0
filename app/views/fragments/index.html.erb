@@ -95,10 +95,6 @@
              <% end %>
 
              <div class="flex items-center justify-end mb-2 h-6">
-               <% if fragment.likes.count > 0 %>
-                 <span class="text-[9px] font-['Space_Grotesk'] text-slate-300 mr-2"><%= fragment.likes.count %></span>
-               <% end %>
-               
                <div class="relative z-20 scale-75 origin-right">
                  <% if user_signed_in? %>
                    <%= render 'likes/like_button', fragment: fragment %>
