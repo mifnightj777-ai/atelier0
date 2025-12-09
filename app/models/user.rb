@@ -13,6 +13,8 @@ class User < ApplicationRecord
   has_many :sent_requests, -> { where(status: :pending) }, class_name: "Relationship", foreign_key: "follower_id"
   has_many :received_requests, -> { where(status: :pending) }, class_name: "Relationship", foreign_key: "followed_id"
   has_many :notifications, foreign_key: :recipient_id, dependent: :destroy
+  has_many :sent_letters, class_name: "Letter", foreign_key: "sender_id", dependent: :destroy
+  has_many :received_letters, class_name: "Letter", foreign_key: "recipient_id", dependent: :destroy
 
   def following?(other_user)
     following.include?(other_user)
