@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Focus | Atelier0</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    
+    <%= stylesheet_link_tag "tailwind", "application", "data-turbo-track": "reload" %>
+    
+    <%= javascript_importmap_tags %>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&family=Space+Grotesk:wght@300;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+  </head>
+
+  <body class="bg-[#FAFAFA] text-slate-800 antialiased min-h-screen flex flex-col">
+    
+    <main class="flex-1 flex flex-col relative">
+      <div class="absolute top-6 left-6 z-50">
+        <%= link_to root_path, class: "text-slate-300 hover:text-slate-600 transition-colors p-2", title: "Exit Focus Mode" do %>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        <% end %>
+      </div>
+
+      <%= yield %>
+    </main>
+
+  </body>
+</html>

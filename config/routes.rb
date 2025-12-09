@@ -1,7 +1,11 @@
 Rails.application.routes.draw do 
+  get "up" => "rails/health#show", as: :rails_health_check
+  get 'focus/index'
+  get '/@:username', to: 'users#show', as: :user_profile
   get 'notifications/index'
   root "fragments#index"
   get 'users/show'
+  get 'focus', to: 'focus#index', as: :focus_studio
 
   devise_for :users
   resources :fragments do
@@ -10,7 +14,4 @@ Rails.application.routes.draw do
 
   resources :relationships, only: [:create, :destroy, :update]
   resources :notifications, only: [:index]
-
-  get '/@:username', to: 'users#show', as: :user_profile
-  get "up" => "rails/health#show", as: :rails_health_check
 end
