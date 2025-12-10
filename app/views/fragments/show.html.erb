@@ -56,22 +56,23 @@
               <div class="w-px self-stretch bg-slate-100 mx-1"></div>
 
               <div class="flex-1 flex flex-col justify-center overflow-hidden py-1">
-                
                 <div class="flex items-center justify-between mb-1 px-1 shrink-0 relative z-20">
                    <div class="flex items-center gap-2">
                      <span data-palette-target="placeholder" class="text-[10px] font-['Space_Grotesk'] font-bold text-slate-300 uppercase tracking-[0.2em]">Colors</span>
-                     
                      <span data-palette-target="display" class="text-[10px] font-['Space_Grotesk'] font-bold text-slate-900 uppercase tracking-widest opacity-0 transition-all duration-200">#FFFFFF</span>
                    </div>
                    <span data-color-picker-target="status" class="hidden text-[9px] font-bold text-pink-500 animate-pulse tracking-widest bg-pink-50 px-2 py-0.5 rounded-full">PICKING ON</span>
                 </div>
 
-                <div id="color_palette" class="flex flex-wrap items-start gap-2 w-full px-1 content-start max-h-32 overflow-y-auto custom-scrollbar">
-                  <%= render partial: "fragment_colors/color", collection: @fragment.fragment_colors %>
-                </div>
+                <div class="w-full max-h-40 overflow-y-auto custom-scrollbar px-1 pt-12 -mt-8 pb-4 relative z-10">
+                  <div id="color_palette" class="flex flex-wrap items-start gap-2 w-full content-start">
+                    <%= render partial: "fragment_colors/color", collection: @fragment.fragment_colors %>
+                  </div>
                 </div>
               </div>
-            </div> 
+
+            </div>
+          </div>
         <% end %>
       </div>
 
@@ -92,17 +93,19 @@
           </div>
         </div>
         
-        <div class="w-full text-left mb-8" data-controller="read-more">
+        <div class="w-full text-left mb-8">
           <h1 class="text-2xl md:text-3xl font-['Poppins'] font-bold text-slate-900 mb-4 leading-tight">
             <%= @fragment.title.presence || "Untitled" %>
           </h1>
 
           <% if @fragment.description.present? %>
-            <p data-read-more-target="content" class="text-base md:text-lg text-slate-600 font-['Inter'] leading-relaxed whitespace-pre-wrap line-clamp-3"><%= @fragment.description %></p>
-            <button data-read-more-target="button" data-action="click->read-more#expand" class="hidden mt-2 text-xs font-['Poppins'] font-bold text-slate-400 hover:text-indigo-600 transition-colors flex items-center gap-1">
-              <span>Read more</span>
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-3 h-3"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" /></svg>
-            </button>
+            <div data-controller="read-more">
+              <p data-read-more-target="content" class="text-base md:text-lg text-slate-600 font-['Inter'] leading-relaxed whitespace-pre-wrap line-clamp-3"><%= @fragment.description %></p>
+              <button data-read-more-target="button" data-action="click->read-more#expand" class="hidden mt-2 text-xs font-['Poppins'] font-bold text-slate-400 hover:text-indigo-600 transition-colors flex items-center gap-1">
+                <span>Read more</span>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-3 h-3"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" /></svg>
+              </button>
+            </div>
           <% else %>
             <p class="text-slate-300 italic text-sm">No description provided.</p>
           <% end %>
