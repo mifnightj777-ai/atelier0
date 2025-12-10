@@ -1,0 +1,64 @@
+<div class="max-w-7xl mx-auto py-12 px-6">
+  
+  <div class="mb-16 text-center max-w-2xl mx-auto">
+    <div class="inline-flex items-center gap-2 px-3 py-1 bg-slate-50 rounded-full border border-slate-100 mb-4">
+      <% if @collection.view_private? %>
+        <span class="w-2 h-2 rounded-full bg-slate-400"></span>
+        <span class="text-[10px] font-bold uppercase tracking-widest text-slate-500">Private Collection</span>
+      <% else %>
+        <span class="w-2 h-2 rounded-full bg-[#5D5FEF]"></span>
+        <span class="text-[10px] font-bold uppercase tracking-widest text-indigo-600">Teammates Only</span>
+      <% end %>
+    </div>
+
+    <h1 class="font-['Poppins'] text-4xl md:text-5xl font-bold text-slate-900 mb-4 tracking-tight">
+      <%= @collection.title %>
+    </h1>
+    
+    <p class="text-slate-500 font-['Inter'] leading-relaxed whitespace-pre-wrap">
+      <%= @collection.description.presence || "No description provided." %>
+    </p>
+
+    <div class="mt-6 flex items-center justify-center gap-4 text-xs font-bold text-slate-400 font-['Space_Grotesk'] tracking-widest uppercase">
+      <span>Curated by @<%= @collection.user.username %></span>
+      <span>•</span>
+      <span><%= @fragments.count %> Items</span>
+    </div>
+
+    <% if @collection.user == current_user %>
+      <div class="mt-8 flex justify-center gap-4">
+        <%= link_to edit_collection_path(@collection), class: "w-10 h-10 rounded-full border border-slate-200 text-slate-400 hover:text-slate-600 hover:border-slate-300 flex items-center justify-center transition-all" do %>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" /></svg>
+        <% end %>
+        <%= button_to collection_path(@collection), method: :delete, data: { turbo_confirm: "Delete this collection?" }, class: "w-10 h-10 rounded-full border border-slate-200 text-slate-400 hover:text-red-500 hover:border-red-200 flex items-center justify-center transition-all" do %>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" /></svg>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6">
+    <% @fragments.each do |fragment| %>
+      <div class="break-inside-avoid relative group">
+        <%= link_to fragment_path(fragment) do %>
+          <%= image_tag fragment.image, class: "w-full rounded-2xl shadow-sm hover:shadow-xl hover:scale-[1.02] transition-all duration-500 ease-out" if fragment.image.attached? %>
+        <% end %>
+        
+        <% if @collection.user == current_user %>
+          <div class="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
+            <% item = @collection.collection_items.find_by(fragment: fragment) %>
+            <%= button_to collection_item_path(item), method: :delete, class: "w-8 h-8 bg-white/90 backdrop-blur rounded-full flex items-center justify-center text-slate-400 hover:text-red-500 hover:bg-white shadow-sm transition-colors", title: "Remove from collection" do %>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+
+  <% if @fragments.empty? %>
+    <div class="py-24 text-center border-t border-slate-100 mt-12">
+      <p class="text-slate-400 text-sm font-['Poppins']">This collection is empty.</p>
+    </div>
+  <% end %>
+</div>

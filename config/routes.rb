@@ -8,14 +8,20 @@ Rails.application.routes.draw do
   get 'users/show'
   get 'focus', to: 'ideas#new', as: :focus_studio
   get 'mailbox', to: 'letters#index', as: :mailbox
-  
-  
+
+
+
+  resources :collections
+  resources :collection_items, only: [:create, :destroy]
+
   resources :letters, only: [:update]
 
   devise_for :users
+  
   resources :fragments do
     resource :likes, only: [:create, :destroy]
     resources :letters, only: [:new, :create]
+    resources :colors, controller: 'fragment_colors', only: [:create, :destroy]
   end
 
   resources :rooms, only: [:index, :show, :create] do

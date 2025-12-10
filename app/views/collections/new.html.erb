@@ -1,0 +1,9 @@
+<div class="min-h-screen flex items-center justify-center bg-white p-6">
+  <div class="w-full max-w-lg">
+    <h1 class="font-['Poppins'] text-3xl font-bold text-slate-900 mb-8 text-center">New Collection.</h1>
+    <%= render 'form', collection: @collection %>
+    <div class="mt-8 text-center">
+      <%= link_to "Cancel", collections_path, class: "text-xs font-bold text-slate-400 hover:text-slate-600 underline decoration-2 underline-offset-4" %>
+    </div>
+  </div>
+</div>
