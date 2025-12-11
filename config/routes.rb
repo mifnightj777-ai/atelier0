@@ -22,9 +22,7 @@ Rails.application.routes.draw do
     resource :likes, only: [:create, :destroy]
     resources :letters, only: [:new, :create]
     resources :colors, controller: 'fragment_colors', only: [:create, :destroy]
-    member do
-      get :timeline
-    end
+    get :timeline, on: :member
   end
 
   resources :rooms, only: [:index, :show, :create] do

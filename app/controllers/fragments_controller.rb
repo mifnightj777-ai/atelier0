@@ -61,6 +61,12 @@ class FragmentsController < ApplicationController
     end
   end
 
+  def timeline
+    @fragment = Fragment.find(params[:id])
+    @root = @fragment.root || @fragment
+    @current_fragment_id = @fragment.id
+  end
+
   # DELETE /fragments/1 or /fragments/1.json
   def destroy
     @fragment.destroy!

@@ -1,0 +1,40 @@
+<div class="flex flex-col items-center">
+  
+  <div class="relative flex flex-col items-center group z-10">
+    
+    <%= link_to fragment_path(node), class: "relative block transition-transform hover:-translate-y-1" do %>
+      <div class="w-16 h-16 md:w-20 md:h-20 rounded-xl border-2 overflow-hidden bg-white shadow-sm flex items-center justify-center
+                  <%= node.id == @current_fragment_id ? 'border-indigo-500 ring-2 ring-indigo-200 shadow-indigo-200' : 'border-slate-100 hover:border-indigo-300' %>">
+        <% if node.image.attached? %>
+          <%= image_tag node.image, class: "w-full h-full object-cover" %>
+        <% else %>
+          <div class="text-xs text-slate-300 font-bold">No img</div>
+        <% end %>
+      </div>
+      
+      <div class="absolute top-full mt-2 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-20">
+        <%= node.title.presence || "Untitled" %>
+      </div>
+    <% end %>
+
+    <% if node.children.any? %>
+      <div class="h-6 w-px bg-slate-200"></div>
+    <% end %>
+
+  </div>
+
+  <% if node.children.any? %>
+    <div class="flex items-start gap-4 md:gap-8 relative">
+      <% if node.children.count > 1 %>
+        <div class="absolute top-0 left-0 w-full h-px -translate-y-6">
+          <div class="absolute top-0 left-[2rem] right-[2rem] h-px bg-slate-200 -mt-px"></div>
+        </div>
+      <% end %>
+
+      <% node.children.each do |child| %>
+        <%= render partial: "fragments/tree_node", locals: { node: child } %>
+      <% end %>
+    </div>
+  <% end %>
+
+</div>
