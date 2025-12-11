@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_12_10_050645) do
+ActiveRecord::Schema[7.1].define(version: 2025_12_11_013117) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -78,6 +78,10 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_10_050645) do
     t.bigint "user_id", null: false
     t.integer "visibility"
     t.string "title"
+    t.bigint "parent_id"
+    t.bigint "root_id"
+    t.index ["parent_id"], name: "index_fragments_on_parent_id"
+    t.index ["root_id"], name: "index_fragments_on_root_id"
     t.index ["user_id"], name: "index_fragments_on_user_id"
   end
 
@@ -187,6 +191,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_10_050645) do
   add_foreign_key "collection_items", "fragments"
   add_foreign_key "collections", "users"
   add_foreign_key "fragment_colors", "fragments"
+  add_foreign_key "fragments", "fragments", column: "parent_id"
+  add_foreign_key "fragments", "fragments", column: "root_id"
   add_foreign_key "fragments", "users"
   add_foreign_key "ideas", "users"
   add_foreign_key "letters", "fragments"

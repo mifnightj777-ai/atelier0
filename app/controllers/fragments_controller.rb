@@ -23,6 +23,10 @@ class FragmentsController < ApplicationController
   # GET /fragments/new
   def new
     @fragment = Fragment.new
+
+    if params[:parent_id]
+      @fragment.parent_id = params[:parent_id]
+    end
   end
 
   # GET /fragments/1/edit
@@ -75,6 +79,6 @@ class FragmentsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def fragment_params
-      params.require(:fragment).permit(:title, :description, :image, :visibility)
+      params.require(:fragment).permit(:title, :description, :image, :visibility, :parent_id)
     end
 end
