@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_12_11_013117) do
+ActiveRecord::Schema[7.1].define(version: 2025_12_11_085614) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -60,6 +60,19 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_11_013117) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_collections_on_user_id"
+  end
+
+  create_table "comparisons", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "fragment_a_id", null: false
+    t.bigint "fragment_b_id", null: false
+    t.text "note"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["fragment_a_id", "fragment_b_id"], name: "index_comparisons_on_fragment_a_id_and_fragment_b_id", unique: true
+    t.index ["fragment_a_id"], name: "index_comparisons_on_fragment_a_id"
+    t.index ["fragment_b_id"], name: "index_comparisons_on_fragment_b_id"
+    t.index ["user_id"], name: "index_comparisons_on_user_id"
   end
 
   create_table "fragment_colors", force: :cascade do |t|
@@ -190,6 +203,9 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_11_013117) do
   add_foreign_key "collection_items", "collections"
   add_foreign_key "collection_items", "fragments"
   add_foreign_key "collections", "users"
+  add_foreign_key "comparisons", "fragments", column: "fragment_a_id"
+  add_foreign_key "comparisons", "fragments", column: "fragment_b_id"
+  add_foreign_key "comparisons", "users"
   add_foreign_key "fragment_colors", "fragments"
   add_foreign_key "fragments", "fragments", column: "parent_id"
   add_foreign_key "fragments", "fragments", column: "root_id"

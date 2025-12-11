@@ -17,6 +17,13 @@ class Fragment < ApplicationRecord
   has_many :children, class_name: "Fragment", foreign_key: "parent_id", dependent: :nullify
   belongs_to :root, class_name: "Fragment", optional: true
 
+  # 比較スタジオ関連
+  has_many :comparisons_as_a, class_name: "Comparison", foreign_key: :fragment_a_id, dependent: :destroy
+  has_many :comparisons_as_b, class_name: "Comparison", foreign_key: :fragment_b_id, dependent: :destroy
+  def all_comparisons
+    Comparison.where("fragment_a_id = ? OR fragment_b_id = ?", id, id)
+  end
+
   # --- ▼ Callback 設定の整理 ▼ ---
   
   # 1. 保存前にルーツIDをセット
