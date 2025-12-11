@@ -30,15 +30,10 @@
           </div>
           
           <div class="absolute top-4 left-4">
-            <% if collection.view_private? %>
+            <% if collection.private_view? %>
               <span class="px-3 py-1 bg-slate-900/80 backdrop-blur-md text-white text-[10px] font-bold rounded-full uppercase tracking-widest border border-white/10 flex items-center gap-1">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-3 h-3"><path fill-rule="evenodd" d="M10 1a4.5 4.5 0 00-4.5 4.5V9H5a2 2 0 00-2 2v6a2 2 0 002 2h10a2 2 0 002-2v-6a2 2 0 00-2-2h-.5V5.5A4.5 4.5 0 0010 1zm3 8V5.5a3 3 0 10-6 0V9h6z" clip-rule="evenodd" /></svg>
                 Private
-              </span>
-            <% else %>
-              <span class="px-3 py-1 bg-white/80 backdrop-blur-md text-indigo-600 text-[10px] font-bold rounded-full uppercase tracking-widest border border-white/50 flex items-center gap-1">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-3 h-3"><path d="M10 9a3 3 0 100-6 3 3 0 000 6zM6 8a2 2 0 11-4 0 2 2 0 014 0zM1.49 15.326a.78.78 0 01-.358-.442 3 3 0 014.308-3.516 6.484 6.484 0 00-1.905 3.959c-.023.222-.014.442.025.654a4.97 4.97 0 01-2.07-.655zM16.44 15.98a4.97 4.97 0 002.07-.654.78.78 0 00.358-.442 3 3 0 00-4.308-3.516 6.484 6.484 0 011.905 3.959c.023.222.014.442-.025.654zM12.809 13.25a7.512 7.512 0 01-5.618 0 2.5 2.5 0 00-2.166.024c-.453.25-.75.727-.75 1.226 0 .58.212 1.125.59 1.55a.75.75 0 00.158.148 10.035 10.035 0 005.026 1.302c1.77 0 3.447-.463 4.922-1.28a.75.75 0 00.169-.15 2.25 2.25 0 00.58-1.568c0-.5-.296-.976-.75-1.226a2.5 2.5 0 00-2.161-.024z" /></svg>
-                Teammates
               </span>
             <% end %>
           </div>

@@ -1,4 +1,4 @@
-<%= form_with(model: collection, class: "space-y-8") do |f| %>
+<%= form_with(model: @collection, class: "space-y-8") do |f| %>
   
   <div class="space-y-4">
     <div>
@@ -16,7 +16,7 @@
       <div class="flex gap-6 items-center">
          
          <label class="cursor-pointer flex items-center gap-2 group">
-           <%= f.radio_button :visibility, :view_private, class: "peer sr-only" %>
+           <%= f.radio_button :visibility, :private_view, class: "peer sr-only" %>
            <div class="w-4 h-4 rounded-full border-2 border-slate-300 peer-checked:border-slate-900 peer-checked:bg-slate-900 transition-all flex items-center justify-center">
              <div class="w-1.5 h-1.5 rounded-full bg-white opacity-0 peer-checked:opacity-100"></div>
            </div>
@@ -24,7 +24,7 @@
          </label>
 
          <label class="cursor-pointer flex items-center gap-2 group">
-           <%= f.radio_button :visibility, :view_teammates, class: "peer sr-only" %>
+           <%= f.radio_button :visibility, :teammates_view, class: "peer sr-only" %>
            <div class="w-4 h-4 rounded-full border-2 border-slate-300 peer-checked:border-[#5D5FEF] peer-checked:bg-[#5D5FEF] transition-all flex items-center justify-center">
              <div class="w-1.5 h-1.5 rounded-full bg-white opacity-0 peer-checked:opacity-100"></div>
            </div>

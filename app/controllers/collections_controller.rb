@@ -55,6 +55,13 @@ class CollectionsController < ApplicationController
     end
   end
 
+  def fragments_grid
+    @collection = Collection.find(params[:id])
+    @fragments = @collection.fragments.order(created_at: :desc)
+    
+    render partial: "fragments/grid", locals: { fragments: @fragments, empty_message: "No fragments in this ZINE yet." }
+  end
+
   private
 
   def set_collection

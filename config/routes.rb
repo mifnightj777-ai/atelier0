@@ -11,7 +11,11 @@ Rails.application.routes.draw do
 
 
 
-  resources :collections
+  resources :collections do
+    member do
+      get :fragments_grid
+    end
+  end
   resources :collection_items, only: [:create, :destroy]
 
   resources :letters, only: [:update]
@@ -29,6 +33,9 @@ Rails.application.routes.draw do
     collection do
       get 'select(/:fragment_id)', to: 'comparisons#select', as: :select
       get 'studio', to: 'comparisons#show', as: :studio
+    end
+    member do
+      get :fragments_grid
     end
   end
 

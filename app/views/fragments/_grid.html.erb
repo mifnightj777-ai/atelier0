@@ -1,0 +1,31 @@
+<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6 md:gap-8 p-1">
+  <% fragments.each do |fragment| %>
+    <div class="group relative transition-all duration-300 ease-out hover:-translate-y-2 hover:rotate-1">
+      <div class="bg-white p-2 rounded-[20px] shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-slate-100 group-hover:shadow-[0_20px_40px_rgb(99,102,241,0.2)] transition-shadow">
+        
+        <div class="w-full aspect-[4/5] overflow-hidden rounded-[12px] bg-slate-100 relative mb-3">
+          <% if fragment.respond_to?(:private_view?) && fragment.private_view? %>
+             <div class="absolute top-2 right-2 z-30 bg-black/80 text-white w-6 h-6 flex items-center justify-center rounded-full backdrop-blur-md"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-3 h-3"><path fill-rule="evenodd" d="M10 1a4.5 4.5 0 00-4.5 4.5V9H5a2 2 0 00-2 2v6a2 2 0 002 2h10a2 2 0 002-2v-6a2 2 0 00-2-2h-.5V5.5A4.5 4.5 0 0010 1zm3 8V5.5a3 3 0 10-6 0V9h6z" clip-rule="evenodd" /></svg></div>
+          <% end %>
+
+          <% if fragment.image.attached? %>
+            <%= image_tag fragment.image, class: "w-full h-full object-cover" %>
+          <% else %>
+            <div class="w-full h-full flex flex-col items-center justify-center bg-indigo-50 text-indigo-300"><span class="font-['Poppins'] font-bold text-2xl">?</span></div>
+          <% end %>
+        </div>
+
+        <div class="px-1 pb-1">
+           <h3 class="font-['Poppins'] font-bold text-slate-800 text-xs line-clamp-1 mb-0.5"><%= fragment.title.presence || "Untitled" %></h3>
+        </div>
+      </div>
+      <%= link_to "", fragment, class: "absolute inset-0 z-10", data: { turbo_frame: "_top" } %>
+    </div>
+  <% end %>
+</div>
+
+<% if fragments.empty? %>
+  <div class="py-20 flex flex-col items-center justify-center text-center opacity-60">
+    <p class="font-['Poppins'] text-slate-500 font-medium text-sm"><%= local_assigns[:empty_message] || "No fragments here." %></p>
+  </div>
+<% end %>
