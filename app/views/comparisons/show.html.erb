@@ -1,93 +1,83 @@
-<div class="min-h-screen bg-slate-50 flex flex-col h-screen">
+<div class="min-h-screen bg-slate-50 flex flex-col h-screen relative overflow-hidden font-['Poppins']" data-controller="memo">
   
-  <div class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 shrink-0 z-20 shadow-sm relative">
-    
+  <div class="absolute inset-0 pointer-events-none" style="background-image: radial-gradient(#94a3b8 0.5px, transparent 0.5px); background-size: 20px 20px; opacity: 0.2;"></div>
+
+  <div class="h-16 bg-white/80 backdrop-blur border-b border-slate-200/60 flex items-center justify-between px-6 shrink-0 z-20 shadow-sm relative">
     <div class="flex items-center gap-4">
       <%= link_to :back, class: "w-8 h-8 flex items-center justify-center rounded-full hover:bg-slate-100 text-slate-400 hover:text-indigo-600 transition-colors" do %>
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" /></svg>
       <% end %>
       
-      <h1 class="font-['Poppins'] font-bold text-lg text-slate-800 flex items-center gap-2 select-none">
+      <h1 class="font-bold text-lg text-slate-800 flex items-center gap-2 select-none">
         <span class="w-2 h-2 rounded-full bg-indigo-500 animate-pulse"></span>
         Compare Studio
       </h1>
     </div>
     
     <div class="flex items-center gap-2">
-
       <% if @fragment_a && @fragment_b %>
         <%= link_to studio_comparisons_path(fragment_a_id: @fragment_b.id, fragment_b_id: @fragment_a.id), class: "w-9 h-9 flex items-center justify-center rounded-full text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 transition-all", title: "Swap Sides" do %>
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" /></svg>
         <% end %>
-        
         <div class="w-px h-4 bg-slate-200 mx-1"></div>
       <% end %>
 
-      <%= link_to comparisons_path, class: "group px-3 py-1.5 bg-slate-50 hover:bg-slate-100 border border-slate-200/50 text-slate-500 rounded-full text-xs font-bold transition-colors flex items-center gap-2" do %>
+      <%= link_to comparisons_path, class: "group px-3 py-1.5 bg-white hover:bg-slate-50 border border-slate-200 text-slate-500 rounded-full text-xs font-bold transition-colors flex items-center gap-2" do %>
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3.5 h-3.5 group-hover:text-indigo-600 transition-colors"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
         <span>History</span>
       <% end %>
-
     </div>
   </div>
 
-  <div class="flex-1 flex overflow-hidden">
+  <div class="flex-1 flex overflow-hidden p-4 md:p-8 gap-4 md:gap-8 z-10">
     
-    <div class="flex-1 border-r border-slate-200 bg-white relative group">
+    <div class="flex-1 bg-white rounded-2xl border border-slate-100 shadow-sm relative group overflow-hidden flex flex-col">
       <% if @fragment_a %>
-        <div class="absolute inset-0 flex flex-col">
-          <div class="flex-1 relative bg-slate-100 flex items-center justify-center overflow-hidden p-8">
-            <% if @fragment_a.image.attached? %>
-              <%= image_tag @fragment_a.image, class: "max-w-full max-h-full object-contain shadow-xl rounded-lg" %>
-            <% else %>
-              <span class="text-slate-300 font-bold">No Image</span>
-            <% end %>
-            <%= link_to select_comparisons_path(target: 'a', keep_id: @fragment_b&.id), class: "absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1.5 rounded-full text-xs font-bold shadow-sm hover:bg-indigo-50 hover:text-indigo-600 transition-colors border border-slate-200" do %>
-              CHANGE
-            <% end %>
-          </div>
-          <div class="h-20 border-t border-slate-100 p-4 bg-white z-10">
-            <h3 class="font-bold text-slate-800 truncate"><%= @fragment_a.title.presence || "Untitled" %></h3>
-            <p class="text-xs text-slate-400 font-['Space_Grotesk']"><%= @fragment_a.created_at.strftime("%Y.%m.%d") %></p>
-          </div>
+        <div class="flex-1 relative bg-slate-50 flex items-center justify-center overflow-hidden p-4">
+          <% if @fragment_a.image.attached? %>
+            <%= image_tag @fragment_a.image, class: "max-w-full max-h-full object-contain shadow-lg rounded-lg" %>
+          <% else %>
+            <span class="text-slate-300 font-bold">No Image</span>
+          <% end %>
+          <%= link_to select_comparisons_path(target: 'a', keep_id: @fragment_b&.id), class: "absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1.5 rounded-full text-[10px] font-bold shadow-sm hover:bg-indigo-50 hover:text-indigo-600 transition-colors border border-slate-200" do %>CHANGE<% end %>
+        </div>
+        <div class="h-16 border-t border-slate-100 p-4 bg-white z-10 flex items-center justify-between">
+          <h3 class="font-bold text-slate-800 text-sm truncate pr-2"><%= @fragment_a.title.presence || "Untitled" %></h3>
+          <span class="text-[10px] text-slate-400 font-['Space_Grotesk'] bg-slate-50 px-2 py-1 rounded-md"><%= @fragment_a.created_at.strftime("%m/%d") %></span>
         </div>
       <% else %>
-        <div class="absolute inset-0 flex items-center justify-center p-8">
-          <%= link_to select_comparisons_path(target: 'a', keep_id: @fragment_b&.id), class: "w-full h-full border-2 border-dashed border-slate-200 rounded-3xl flex flex-col items-center justify-center gap-4 text-slate-300 hover:border-indigo-300 hover:text-indigo-500 hover:bg-indigo-50/30 transition-all duration-300 group-hover:scale-[0.98]" do %>
-            <div class="w-16 h-16 rounded-full bg-slate-50 group-hover:bg-indigo-100 flex items-center justify-center transition-colors">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-8 h-8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
+        <div class="absolute inset-0 flex items-center justify-center p-4">
+          <%= link_to select_comparisons_path(target: 'a', keep_id: @fragment_b&.id), class: "w-full h-full border-2 border-dashed border-slate-200 rounded-xl flex flex-col items-center justify-center gap-4 text-slate-300 hover:border-indigo-300 hover:text-indigo-500 hover:bg-indigo-50/30 transition-all duration-300 group-hover:scale-[0.98]" do %>
+            <div class="w-12 h-12 rounded-full bg-slate-50 group-hover:bg-indigo-100 flex items-center justify-center transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
             </div>
-            <span class="font-['Poppins'] font-bold tracking-widest text-sm">SELECT A</span>
+            <span class="font-bold tracking-widest text-xs">SELECT A</span>
           <% end %>
         </div>
       <% end %>
     </div>
 
-    <div class="flex-1 bg-white relative group">
+    <div class="flex-1 bg-white rounded-2xl border border-slate-100 shadow-sm relative group overflow-hidden flex flex-col">
       <% if @fragment_b %>
-        <div class="absolute inset-0 flex flex-col">
-          <div class="flex-1 relative bg-slate-100 flex items-center justify-center overflow-hidden p-8">
-            <% if @fragment_b.image.attached? %>
-              <%= image_tag @fragment_b.image, class: "max-w-full max-h-full object-contain shadow-xl rounded-lg" %>
-            <% else %>
-              <span class="text-slate-300 font-bold">No Image</span>
-            <% end %>
-            <%= link_to select_comparisons_path(target: 'b', keep_id: @fragment_a&.id), class: "absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1.5 rounded-full text-xs font-bold shadow-sm hover:bg-indigo-50 hover:text-indigo-600 transition-colors border border-slate-200" do %>
-              CHANGE
-            <% end %>
-          </div>
-          <div class="h-20 border-t border-slate-100 p-4 bg-white z-10">
-            <h3 class="font-bold text-slate-800 truncate"><%= @fragment_b.title.presence || "Untitled" %></h3>
-            <p class="text-xs text-slate-400 font-['Space_Grotesk']"><%= @fragment_b.created_at.strftime("%Y.%m.%d") %></p>
-          </div>
+        <div class="flex-1 relative bg-slate-50 flex items-center justify-center overflow-hidden p-4">
+          <% if @fragment_b.image.attached? %>
+            <%= image_tag @fragment_b.image, class: "max-w-full max-h-full object-contain shadow-lg rounded-lg" %>
+          <% else %>
+            <span class="text-slate-300 font-bold">No Image</span>
+          <% end %>
+          <%= link_to select_comparisons_path(target: 'b', keep_id: @fragment_a&.id), class: "absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1.5 rounded-full text-[10px] font-bold shadow-sm hover:bg-indigo-50 hover:text-indigo-600 transition-colors border border-slate-200" do %>CHANGE<% end %>
+        </div>
+        <div class="h-16 border-t border-slate-100 p-4 bg-white z-10 flex items-center justify-between">
+          <h3 class="font-bold text-slate-800 text-sm truncate pr-2"><%= @fragment_b.title.presence || "Untitled" %></h3>
+          <span class="text-[10px] text-slate-400 font-['Space_Grotesk'] bg-slate-50 px-2 py-1 rounded-md"><%= @fragment_b.created_at.strftime("%m/%d") %></span>
         </div>
       <% else %>
-        <div class="absolute inset-0 flex items-center justify-center p-8">
-          <%= link_to select_comparisons_path(target: 'b', keep_id: @fragment_a&.id), class: "w-full h-full border-2 border-dashed border-slate-200 rounded-3xl flex flex-col items-center justify-center gap-4 text-slate-300 hover:border-indigo-300 hover:text-indigo-500 hover:bg-indigo-50/30 transition-all duration-300 group-hover:scale-[0.98]" do %>
-            <div class="w-16 h-16 rounded-full bg-slate-50 group-hover:bg-indigo-100 flex items-center justify-center transition-colors">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-8 h-8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
+        <div class="absolute inset-0 flex items-center justify-center p-4">
+          <%= link_to select_comparisons_path(target: 'b', keep_id: @fragment_a&.id), class: "w-full h-full border-2 border-dashed border-slate-200 rounded-xl flex flex-col items-center justify-center gap-4 text-slate-300 hover:border-indigo-300 hover:text-indigo-500 hover:bg-indigo-50/30 transition-all duration-300 group-hover:scale-[0.98]" do %>
+            <div class="w-12 h-12 rounded-full bg-slate-50 group-hover:bg-indigo-100 flex items-center justify-center transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
             </div>
-            <span class="font-['Poppins'] font-bold tracking-widest text-sm">SELECT B</span>
+            <span class="font-bold tracking-widest text-xs">SELECT B</span>
           <% end %>
         </div>
       <% end %>
@@ -96,30 +86,45 @@
   </div>
   
   <% if @fragment_a && @fragment_b %>
-    <div class="h-48 bg-white border-t border-slate-200 p-6 z-30 shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
-      <div class="max-w-3xl mx-auto h-full flex flex-col relative">
-        
-        <div class="flex items-center justify-between mb-2">
-          <label class="text-xs font-bold text-slate-400 tracking-widest uppercase">Comparison Memo</label>
-          <span id="save_status" class="text-[10px] font-bold text-indigo-500 transition-opacity duration-500 opacity-0">
-            SAVED ✓
-          </span>
-        </div>
-
-        <%= form_with model: @comparison, url: comparison_path(@comparison), method: :patch, 
-              local: false, 
-              data: { controller: "autosave", action: "input->autosave#submit" }, 
-              class: "flex-1 flex flex-col" do |f| %>
-          
-          <%= f.text_area :note, 
-              placeholder: "Write down what you notice... (Auto saved)", 
-              class: "flex-1 w-full bg-slate-50 border border-slate-200 rounded-xl p-4 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-300 resize-none custom-scrollbar" %>
-              
-          <%= f.submit "Save", class: "hidden" %>
-        <% end %>
-
+    
+    <button data-action="click->memo#toggle" class="absolute bottom-8 left-1/2 -translate-x-1/2 z-50 group">
+      
+      <div class="w-16 h-16 bg-slate-900 text-white rounded-full shadow-2xl hover:bg-indigo-600 hover:scale-110 hover:rotate-12 transition-all duration-300 flex items-center justify-center border-4 border-slate-50">
+        <svg data-memo-target="icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-7 h-7 transition-transform duration-300">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+        </svg>
       </div>
+      
+      <span class="absolute -top-10 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-[10px] font-bold px-3 py-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap shadow-lg">
+        Memo
+      </span>
+    </button>
+
+    <div data-memo-target="panel" class="absolute bottom-32 left-1/2 -translate-x-1/2 w-[90%] md:w-[500px] bg-white/95 backdrop-blur-xl border border-slate-200/50 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] z-40 p-6 transform translate-y-8 opacity-0 pointer-events-none transition-all duration-300 ease-out origin-bottom">
+      
+      <div class="flex items-center justify-between mb-4">
+        <label class="text-xs font-bold text-slate-400 tracking-widest uppercase flex items-center gap-2">
+          <span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span> Memo Pad
+        </label>
+        <span id="save_status" class="text-[10px] font-bold text-indigo-500 transition-opacity duration-500 opacity-0">SAVED ✓</span>
+      </div>
+
+      <%= form_with model: @comparison, url: comparison_path(@comparison), method: :patch, 
+            local: false, 
+            data: { controller: "autosave", action: "input->autosave#submit" }, 
+            class: "flex flex-col" do |f| %>
+        
+        <%= f.text_area :note, 
+            rows: 5,
+            placeholder: "Compare A and B. What's the difference?", 
+            class: "w-full bg-slate-50/50 border border-slate-200 rounded-xl p-4 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-300 resize-none custom-scrollbar transition-all font-['Inter'] leading-relaxed" %>
+        
+        <%= f.submit "Save", class: "hidden" %>
+      <% end %>
+      
+      <div class="absolute -bottom-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-white border-r border-b border-slate-200/50 transform rotate-45"></div>
     </div>
+
   <% end %>
 
 </div>

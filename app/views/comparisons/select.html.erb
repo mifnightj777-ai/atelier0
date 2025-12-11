@@ -15,15 +15,12 @@
     
     <% @candidates.each do |candidate| %>
       <% 
-         # ▼▼▼ 重要なロジック修正 ▼▼▼
-         # 「どっちの枠（A or B）を選んでいるか」でパラメータを変える
-         
+         current_kept_id = @other_id.presence || @base_fragment&.id
+
          next_params = if @target == 'a'
-           # Aを選んでいる時: 今回選ぶのがA、キープしてたのがB
-           { fragment_a_id: candidate.id, fragment_b_id: @other_id }
+           { fragment_a_id: candidate.id, fragment_b_id: current_kept_id }
          else
-           # Bを選んでいる時（デフォルト）: キープしてたのがA、今回選ぶのがB
-           { fragment_a_id: @other_id, fragment_b_id: candidate.id }
+           { fragment_a_id: current_kept_id, fragment_b_id: candidate.id }
          end
       %>
       

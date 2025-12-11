@@ -85,10 +85,26 @@
         <% end %>
       </div>
 
-      <%= link_to studio_comparisons_path, class: "text-slate-400 hover:text-indigo-600 transition-colors", title: "Compare Studio" do %>
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-         <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
-        </svg>
+      <%= link_to studio_comparisons_path, class: "group relative p-2 rounded-full hover:bg-slate-100 transition-colors", title: "Compare Studio" do %>
+            
+        <div class="relative w-5 h-5 flex items-center justify-center">
+              
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-slate-400 group-hover:text-indigo-600 transition-colors duration-300 origin-bottom group-hover:animate-[flask-sway_1.5s_ease-in-out_infinite]">
+            <path d="M8.5 2h7" />
+            <path d="M10 2v7.5l-4.5 9a1.5 1.5 0 0 0 1.2 2.5h10.6a1.5 1.5 0 0 0 1.2-2.5l-4.5-9V2" />
+            <path d="M7 16h10" class="opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          </svg>
+
+        </div>
+
+        <style>
+          /* コトコト揺れるアニメーション */
+          @keyframes flask-sway {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-10deg); }
+            75% { transform: rotate(10deg); }
+          }
+        </style>
       <% end %>
 
       <div class="h-6 w-px bg-slate-200 mx-2"></div>

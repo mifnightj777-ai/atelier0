@@ -34,11 +34,20 @@ class ComparisonsController < ApplicationController
     end
     
     if @fragment_a && @fragment_b
-      @comparison = Comparison.find_or_create_by(
-        user: current_user,
-        fragment_a: @fragment_a, 
-        fragment_b: @fragment_b
-      )
+      existing = Comparison.where(user: current_user, fragment_a: @fragment_a, fragment_b: @fragment_b)
+                           .or(Comparison.where(user: current_user, fragment_a: @fragment_b, fragment_b: @fragment_a))
+                           .first
+
+      if existing
+        @comparison = existing
+      else
+        small, large = [@fragment_a, @fragment_b].sort_by(&:id)
+        @comparison = Comparison.create(
+          user: current_user,
+          fragment_a: small,
+          fragment_b: large
+        )
+      end
     end
   end
 
