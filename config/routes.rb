@@ -25,7 +25,7 @@ Rails.application.routes.draw do
     get :timeline, on: :member
   end
 
-  resources :comparisons, only: [:update] do
+  resources :comparisons, only: [:index, :update, :destroy] do
     collection do
       get 'select(/:fragment_id)', to: 'comparisons#select', as: :select
       get 'studio', to: 'comparisons#show', as: :studio

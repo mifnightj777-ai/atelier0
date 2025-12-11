@@ -1,0 +1,86 @@
+<div class="max-w-6xl mx-auto md:py-10 px-4 min-h-screen">
+  
+  <div class="mb-12 flex items-center justify-between">
+    <div>
+      <p class="text-xs font-bold tracking-widest text-slate-400 uppercase mb-2">Compare Studio</p>
+      <h1 class="text-3xl font-['Poppins'] font-bold text-slate-800">Comparison History</h1>
+    </div>
+    
+    <%= link_to studio_comparisons_path, class: "group bg-slate-900 text-white rounded-full px-6 py-3 flex items-center gap-2 hover:bg-indigo-600 transition-all shadow-lg hover:shadow-indigo-200" do %>
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 group-hover:rotate-90 transition-transform">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+      </svg>
+      <span class="text-sm font-bold tracking-wide">New Comparison</span>
+    <% end %>
+  </div>
+
+  <% if @comparisons.any? %>
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      
+      <% @comparisons.each do |comp| %>
+        <div class="group bg-white rounded-2xl border border-slate-100 overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col h-full relative">
+          
+          <%= link_to studio_comparisons_path(fragment_a_id: comp.fragment_a_id, fragment_b_id: comp.fragment_b_id), class: "flex-1 flex flex-col" do %>
+            
+            <div class="h-48 flex border-b border-slate-50 relative">
+              <div class="flex-1 bg-slate-50 relative overflow-hidden">
+                <% if comp.fragment_a.image.attached? %>
+                  <%= image_tag comp.fragment_a.image, class: "w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity" %>
+                <% else %>
+                  <div class="w-full h-full flex items-center justify-center text-slate-200 font-bold text-xs">No Img</div>
+                <% end %>
+              </div>
+              <div class="flex-1 bg-slate-100 relative overflow-hidden border-l border-white">
+                <% if comp.fragment_b.image.attached? %>
+                  <%= image_tag comp.fragment_b.image, class: "w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity" %>
+                <% else %>
+                  <div class="w-full h-full flex items-center justify-center text-slate-200 font-bold text-xs">No Img</div>
+                <% end %>
+              </div>
+              <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white/90 backdrop-blur text-slate-800 text-[10px] font-black italic px-2 py-1 rounded shadow-sm border border-slate-100 z-10">
+                VS
+              </div>
+            </div>
+
+            <div class="p-5 flex-1 flex flex-col">
+              <div class="flex justify-between items-start mb-3">
+                <div class="text-xs font-bold text-slate-800 line-clamp-1 w-full pr-6">
+                  <%= comp.fragment_a.title.presence || "Untitled" %>
+                  <span class="text-slate-300 mx-1">/</span>
+                  <%= comp.fragment_b.title.presence || "Untitled" %>
+                </div>
+              </div>
+              <% if comp.note.present? %>
+                <p class="text-sm text-slate-500 line-clamp-2 mb-3 flex-1 font-['Inter']"><%= comp.note %></p>
+              <% else %>
+                <p class="text-xs text-slate-300 italic mb-3 flex-1">No memo recorded...</p>
+              <% end %>
+              <p class="text-[10px] text-slate-400 font-['Space_Grotesk'] text-right mt-auto pt-2 border-t border-slate-50">
+                Updated <%= time_ago_in_words(comp.updated_at) %> ago
+              </p>
+            </div>
+          <% end %>
+
+          <%= button_to comparison_path(comp), method: :delete, data: { turbo_confirm: "Delete this comparison log?" }, class: "absolute top-2 right-2 z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-200" do %>
+            <div class="p-2 bg-white/90 backdrop-blur rounded-full text-slate-400 hover:text-red-500 hover:bg-red-50 shadow-sm border border-slate-100 transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+              </svg>
+            </div>
+          <% end %>
+          </div>
+      <% end %>
+
+    </div>
+  <% else %>
+    <div class="text-center py-32 bg-slate-50 rounded-[40px] border border-dashed border-slate-200">
+      <div class="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm text-indigo-200">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-10 h-10"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>
+      </div>
+      <h3 class="text-lg font-bold text-slate-700 mb-2">No comparisons yet</h3>
+      <p class="text-slate-400 text-sm mb-6">Start comparing your fragments to track your evolution.</p>
+      <%= link_to "Start New Comparison", studio_comparisons_path, class: "px-6 py-3 bg-indigo-600 text-white rounded-full text-sm font-bold hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-200" %>
+    </div>
+  <% end %>
+
+</div>

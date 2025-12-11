@@ -1,6 +1,12 @@
 class ComparisonsController < ApplicationController
   before_action :authenticate_user!
 
+  def index
+    @comparisons = current_user.comparisons
+                               .includes(fragment_a: { image_attachment: :blob }, fragment_b: { image_attachment: :blob })
+                               .order(updated_at: :desc)
+  end
+
   def select
     @target = params[:target] || 'b' 
     @other_id = params[:keep_id]
@@ -47,6 +53,13 @@ class ComparisonsController < ApplicationController
         format.html { redirect_to studio_comparisons_path(fragment_a_id: @comparison.fragment_a_id, fragment_b_id: @comparison.fragment_b_id) }
       end
     end
+  end
+
+  def destroy
+    @comparison = current_user.comparisons.find(params[:id])
+    @comparison.destroy
+    
+    redirect_to comparisons_path, status: :see_other
   end
 
   private
