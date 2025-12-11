@@ -1,20 +1,88 @@
-<div class="max-w-6xl mx-auto md:py-10 min-h-screen">
+<div class="min-h-screen bg-slate-50 relative overflow-hidden font-['Poppins']">
   
-  <div class="mb-10 flex items-center justify-between">
-    <%= link_to fragment_path(@fragment), class: "inline-flex items-center gap-2 text-sm font-['Poppins'] text-slate-500 hover:text-indigo-600 transition-colors" do %>
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
-      </svg>
-      Back to Fragment
-    <% end %>
+  <div class="absolute inset-0 pointer-events-none" style="background-image: radial-gradient(#94a3b8 0.5px, transparent 0.5px); background-size: 20px 20px; opacity: 0.2;"></div>
 
-    <h1 class="font-['Poppins'] font-bold text-xl text-slate-800">Evolution Tree</h1>
+  <div class="relative z-10 pt-8 pb-4 px-4 text-center">
+    <div class="absolute top-8 left-4 md:left-8">
+        <%= link_to fragment_path(@fragment), class: "inline-flex items-center gap-2 text-sm font-bold text-slate-500 hover:text-indigo-600 transition-colors bg-white/90 backdrop-blur px-4 py-2 rounded-full shadow-sm border border-slate-200/50 hover:shadow-md" do %>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+        </svg>
+        <span>Back</span>
+      <% end %>
+    </div>
+
+    <h1 class="text-3xl md:text-4xl font-black text-slate-800 tracking-tight mb-2">
+      <span class="text-indigo-500">Evolution</span> Timeline
+    </h1>
+    <p class="text-slate-500 text-sm tracking-wide uppercase">The genealogy of creation</p>
   </div>
 
-  <div class="bg-slate-50/50 rounded-[30px] border border-slate-100 p-8 md:p-16 overflow-x-auto custom-scrollbar flex justify-center min-h-[60vh]">
-    <div class="flex flex-col items-center">
-      <%= render partial: "fragments/tree_node", locals: { node: @root } %>
+  <div class="relative z-10 overflow-x-auto custom-scrollbar pb-20 pt-10 text-center min-h-[70vh]">
+    <div class="inline-block min-w-full px-8">
+      <div class="tree">
+        <ul>
+          <%= render partial: "fragments/tree_node", locals: { node: @root } %>
+        </ul>
+      </div>
     </div>
   </div>
 
 </div>
+
+<style>
+/* ツリー構造の基本 */
+.tree ul {
+  padding-top: 20px; 
+  position: relative;
+  transition: all 0.5s;
+  display: flex;
+  justify-content: center;
+}
+
+.tree li {
+  float: left; text-align: center;
+  list-style-type: none;
+  position: relative;
+  padding: 20px 10px 0 10px; /* 横の間隔を少し広げた */
+  transition: all 0.5s;
+}
+
+/* 線のスタイル調整（より細く、薄く） */
+.tree li::before, .tree li::after {
+  content: '';
+  position: absolute; top: 0; right: 50%;
+  border-top: 1px solid #cbd5e1;
+  width: 50%; height: 20px;
+  z-index: 0;
+}
+.tree li::after {
+  right: auto; left: 50%;
+  border-left: 1px solid #cbd5e1;
+}
+
+.tree li:only-child::after, .tree li:only-child::before { display: none; }
+.tree li:only-child { padding-top: 0; }
+.tree li:first-child::before, .tree li:last-child::after { border: 0 none; }
+.tree li:last-child::before{ border-right: 1px solid #cbd5e1; border-radius: 0 8px 0 0; }
+.tree li:first-child::after{ border-radius: 8px 0 0 0; }
+
+.tree ul ul::before{
+  content: '';
+  position: absolute; top: 0; left: 50%;
+  border-left: 1px solid #cbd5e1;
+  width: 0; height: 20px;
+  z-index: 0;
+}
+
+/* カードのラッパー */
+.tree-card-wrapper {
+  position: relative;
+  z-index: 10;
+  display: inline-block;
+}
+/* ホバー時に最前面へ */
+.tree-card-wrapper:hover {
+  z-index: 100;
+}
+</style>
