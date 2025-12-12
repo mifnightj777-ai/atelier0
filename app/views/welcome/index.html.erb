@@ -3,10 +3,19 @@
   <div class="absolute top-[-10%] right-[-5%] w-[600px] h-[600px] bg-indigo-50 rounded-full blur-[100px] pointer-events-none opacity-60 animate-float-slow"></div>
   <div class="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] bg-slate-50 rounded-full blur-[80px] pointer-events-none animate-float-reverse-slow"></div>
 
-  <nav class="relative z-10 w-full px-8 py-6 flex justify-between items-center animate-fade-in">
-    <% if user_signed_in? %>
-      <%= link_to "Back to Studio", fragments_path, class: "text-xs font-bold text-slate-400 hover:text-indigo-600 transition-colors" %>
-    <% end %>
+  <nav class="relative z-50 w-full px-8 py-6 flex justify-between items-center animate-fade-in">
+    <div class="flex items-center gap-2">
+      <span class="w-3 h-3 rounded-full bg-indigo-600"></span>
+      <span class="font-['Poppins'] font-bold text-xl tracking-tight text-slate-900">Atelier0.</span>
+    </div>
+    
+    <div class="flex items-center gap-6">
+      <%= link_to "GUIDE", guide_path, class: "text-xs font-bold text-slate-400 hover:text-indigo-600 transition-colors uppercase tracking-widest cursor-pointer relative z-50" %>
+      
+      <% if user_signed_in? %>
+        <%= link_to "Back to Studio", fragments_path, class: "text-xs font-bold text-slate-900 hover:text-indigo-600 transition-colors relative z-50" %>
+      <% end %>
+    </div>
   </nav>
 
   <div class="flex-1 flex flex-col items-center justify-center px-6 relative z-10 text-center -mt-32 pb-20">
@@ -21,7 +30,7 @@
 
     <p class="text-slate-500 text-sm md:text-base leading-relaxed max-w-md mx-auto mb-12 font-medium animate-fade-in-up animation-delay-400">
       A quiet digital studio for your fragmented thoughts.<br>
-      思考の過程をアーカイブしよう。
+      未完成を受け入れ、思考の過程をアーカイブしよう。
     </p>
 
     <div class="flex flex-col sm:flex-row items-center gap-4 w-full max-w-md animate-fade-in-up animation-delay-600">

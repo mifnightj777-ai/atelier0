@@ -1,5 +1,6 @@
 Rails.application.routes.draw do 
   root "welcome#index"
+  get 'guide', to: 'welcome#guide', as: :guide
   get 'welcome/index'
   get 'prompts/index'
   get 'prompts/show'
@@ -11,6 +12,7 @@ Rails.application.routes.draw do
   get 'focus', to: 'ideas#new', as: :focus_studio
   get 'mailbox', to: 'letters#index', as: :mailbox
   get 'gallery', to: 'fragments#gallery', as: 'gallery'
+  
 
 
 
