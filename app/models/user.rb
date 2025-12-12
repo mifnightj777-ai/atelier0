@@ -18,6 +18,7 @@ class User < ApplicationRecord
   has_many :messages, dependent: :destroy
   has_many :collections, dependent: :destroy
   has_many :comparisons, dependent: :destroy
+  has_one_attached :avatar
 
   def rooms
     Room.where(sender: self).or(Room.where(recipient: self))

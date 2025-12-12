@@ -136,7 +136,21 @@
         <% end %>
       </div>
 
-      <%= link_to "My Studio", user_profile_path(current_user.username), class: "hover:text-indigo-700 transition-colors ml-4 font-bold" %>
+      <%= link_to user_profile_path(current_user.username), class: "group flex items-center gap-2 ml-4 pl-1 pr-3 py-1 rounded-full hover:bg-slate-50 transition-all" do %>
+        <div class="w-8 h-8 rounded-full overflow-hidden border border-slate-200 shadow-sm relative">
+          <% if current_user.avatar.attached? %>
+            <%= image_tag current_user.avatar, class: "w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" %>
+          <% else %>
+            <div class="w-full h-full flex items-center justify-center bg-indigo-50 text-indigo-400 text-xs font-bold">
+             <%= current_user.username.first.upcase %>
+            </div>
+          <% end %>
+        </div>
+        
+        <span class="text-xs font-bold text-slate-600 group-hover:text-indigo-700 transition-colors">My Studio</span>
+      <% end %>
+
+
       <%= link_to "Log out", destroy_user_session_path, data: { turbo_method: :delete }, class: "text-slate-400 hover:text-slate-600 transition-colors px-5 py-2 bg-slate-50 rounded-full hover:bg-slate-100 hidden md:inline-block ml-2 text-xs uppercase tracking-widest" %>
 
     <% else %>

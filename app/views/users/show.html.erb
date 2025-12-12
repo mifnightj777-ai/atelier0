@@ -1,8 +1,23 @@
 <div class="w-full max-w-7xl mx-auto px-4 pb-20">
   
   <div class="flex flex-col items-center text-center mb-12 pt-10">
-    <div class="w-24 h-24 rounded-full bg-gradient-to-br from-indigo-50 to-white border border-indigo-100 flex items-center justify-center text-4xl font-['Poppins'] font-bold text-indigo-600 mb-6 shadow-xl shadow-indigo-100/50">
-      <%= @user.username.first.upcase %>
+    
+    <div class="relative w-24 h-24 mb-6 group">
+      <div class="w-24 h-24 rounded-full overflow-hidden border border-indigo-100 shadow-xl shadow-indigo-100/50 bg-white">
+        <% if @user.avatar.attached? %>
+          <%= image_tag @user.avatar, class: "w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" %>
+        <% else %>
+          <div class="w-full h-full bg-gradient-to-br from-indigo-50 to-white flex items-center justify-center text-4xl font-['Poppins'] font-bold text-indigo-600">
+            <%= @user.username.first.upcase %>
+          </div>
+        <% end %>
+      </div>
+      
+      <% if current_user == @user %>
+        <%= link_to edit_user_registration_path, class: "absolute bottom-0 right-0 bg-white text-slate-400 p-1.5 rounded-full border border-slate-200 shadow-sm hover:text-indigo-600 hover:border-indigo-200 transition-colors" do %>
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" /></svg>
+        <% end %>
+      <% end %>
     </div>
     <div class="mb-3">
       <span class="bg-indigo-50 text-indigo-600 border border-indigo-100 text-[10px] px-3 py-1 rounded-full font-['Poppins'] font-bold tracking-widest">
