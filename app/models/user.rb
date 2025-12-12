@@ -41,6 +41,10 @@ class User < ApplicationRecord
     relation.destroy if relation
   end
 
+  def teammates_count
+    (following.ids + followers.ids).uniq.count
+  end
+
   has_many :likes, dependent: :destroy
   has_many :liked_fragments, through: :likes, source: :fragment
 

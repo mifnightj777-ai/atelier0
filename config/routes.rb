@@ -1,11 +1,12 @@
 Rails.application.routes.draw do 
+  root "welcome#index"
+  get 'welcome/index'
   get 'prompts/index'
   get 'prompts/show'
   get "up" => "rails/health#show", as: :rails_health_check
   get 'focus/index'
   get '/@:username', to: 'users#show', as: :user_profile
   get 'notifications/index'
-  root "fragments#index"
   get 'users/show'
   get 'focus', to: 'ideas#new', as: :focus_studio
   get 'mailbox', to: 'letters#index', as: :mailbox
@@ -14,7 +15,7 @@ Rails.application.routes.draw do
 
 
   resources :prompts, only: [:index, :show]
-  
+
   resources :collections do
     member do
       get :fragments_grid

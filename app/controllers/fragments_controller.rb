@@ -7,7 +7,8 @@ class FragmentsController < ApplicationController
     @daily_prompt = Prompt.find_by(date: Date.today)
 
     if params[:filter] == 'teammates' && user_signed_in?
-       teammate_ids = current_user.following.ids
+       teammate_ids = (current_user.following.ids + current_user.followers.ids).uniq
+       
        @fragments = Fragment.where(user_id: teammate_ids)
                            .where(visibility: [:public_view, :teammates_view])
                            .with_attached_image.includes(:user)

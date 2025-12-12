@@ -69,7 +69,7 @@
       </div>
       <div class="text-center">
         <span class="block font-['Poppins'] font-bold text-xl text-slate-900">
-          <% if user_signed_in? && current_user == @user %><%= @user.followers.count %><% else %><span class="text-slate-300">-</span><% end %>
+          <% if user_signed_in? && current_user == @user %><%= @user.teammates_count %><% else %><span class="text-slate-300">-</span><% end %>
         </span>
         <span class="text-[10px] text-slate-400 uppercase tracking-widest font-medium">Teammates</span>
       </div>
