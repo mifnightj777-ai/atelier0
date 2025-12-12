@@ -89,7 +89,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_11_160244) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
-    t.integer "visibility"
     t.string "title"
     t.bigint "parent_id"
     t.bigint "root_id"
