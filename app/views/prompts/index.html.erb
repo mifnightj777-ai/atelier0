@@ -1,0 +1,91 @@
+<div class="max-w-5xl mx-auto px-6 py-12">
+  
+  <div class="flex items-end justify-between mb-10">
+    <div>
+      <h1 class="text-4xl font-['Poppins'] font-bold text-slate-900">Prompt Archive</h1>
+      <p class="text-slate-400 mt-2 text-sm font-['Space_Grotesk']">Explore the history of themes.</p>
+    </div>
+    
+    <div class="flex items-center gap-3">
+      <%= link_to prompts_path, class: "px-4 py-2 rounded-full bg-indigo-50 text-indigo-600 text-xs font-bold uppercase tracking-widest hover:bg-indigo-100 transition-colors mr-2" do %>
+        Today
+      <% end %>
+
+      <div class="flex items-center bg-white border border-slate-200 rounded-full p-1 shadow-sm select-none">
+        <%= link_to prompts_path(start_date: @current_date.prev_month), class: "w-10 h-10 flex items-center justify-center rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-900 transition-colors" do %>
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+        <% end %>
+        
+        <span class="font-['Space_Grotesk'] font-bold text-slate-900 w-32 text-center text-sm">
+          <%= @current_date.strftime("%B %Y") %>
+        </span>
+
+        <%= link_to prompts_path(start_date: @current_date.next_month), class: "w-10 h-10 flex items-center justify-center rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-900 transition-colors" do %>
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <div class="w-full">
+    <div class="grid grid-cols-7 mb-4 border-b border-slate-100 pb-2">
+      <% %w[Mon Tue Wed Thu Fri Sat Sun].each do |day| %>
+        <div class="text-center text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+          <%= day %>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="grid grid-cols-7 gap-px bg-slate-200 border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+      <% 
+        # カレンダーの開始日と終了日を計算
+        start_date = @start_of_month.beginning_of_week(:monday)
+        end_date = @end_of_month.end_of_week(:monday)
+        
+        # 常に6週間分（42マス）表示するように調整
+        weeks_count = ((end_date - start_date + 1) / 7.0).ceil
+        if weeks_count < 6
+          end_date += (6 - weeks_count).weeks
+        end
+      %>
+      
+      <% (start_date..end_date).each do |date| %>
+        <% prompt = @prompts[date] %>
+        <% is_today = date == Date.today %>
+        <% is_current_month = date.month == @current_date.month %>
+        
+        <div class="h-32 bg-white p-2 relative group transition-colors hover:bg-indigo-50/10 flex flex-col <%= 'bg-slate-50/80' unless is_current_month %>">
+          
+          <div class="text-xs font-bold mb-1 flex justify-between items-start">
+            <span class="<%= is_today ? 'text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full' : (is_current_month ? 'text-slate-400' : 'text-slate-200') %>">
+              <%= date.day %>
+            </span>
+            <% if is_today %>
+              <span class="text-[8px] font-bold text-indigo-400 uppercase tracking-widest mt-0.5 mr-1">Today</span>
+            <% end %>
+          </div>
+
+          <div class="flex-1 w-full relative">
+            <% if prompt %>
+              <%= link_to prompt_path(prompt), class: "absolute inset-0 group-hover:-translate-y-1 transition-transform duration-300" do %>
+                <div class="h-full w-full bg-slate-900 text-white rounded-lg p-3 shadow-md group-hover:bg-indigo-600 group-hover:shadow-indigo-200/50 transition-all flex flex-col justify-center text-center">
+                  <div class="text-[8px] opacity-60 font-['Space_Grotesk'] uppercase tracking-widest mb-1">Theme</div>
+                  <div class="font-['Poppins'] font-bold text-sm leading-tight line-clamp-2">
+                    <%= prompt.content %>
+                  </div>
+                </div>
+              <% end %>
+            <% elsif is_current_month && date > Date.today %>
+               <% elsif is_current_month %>
+               <div class="h-full flex items-center justify-center">
+                 <div class="w-1 h-1 rounded-full bg-slate-200"></div>
+               </div>
+            <% end %>
+          </div>
+
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+</div>

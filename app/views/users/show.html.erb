@@ -16,8 +16,8 @@
       Atelier0 Studio Member
     </p>
 
-    <div class="flex gap-3 mt-6">
-      <% if current_user != @user %>
+    <div class="flex gap-3 mt-6 justify-center"> <% if current_user != @user %>
+        
         <% if current_user.teammate_with?(@user) %>
           <button class="px-6 py-2 bg-indigo-50 text-indigo-600 rounded-full font-['Poppins'] font-bold text-xs border border-indigo-100 flex items-center gap-2">
             <span>TEAMMATE ⚡️</span>
@@ -34,6 +34,14 @@
             <%= button_to relationships_path(followed_id: @user.id), class: "px-6 py-2 bg-slate-900 text-white rounded-full font-['Poppins'] font-bold text-xs hover:bg-indigo-600 transition-colors shadow-lg" do %>TEAMMATE<% end %>
           <% end %>
         <% end %>
+
+        <%= button_to rooms_path(user_id: @user.id), method: :post, class: "px-6 py-2 bg-white border border-slate-200 text-slate-600 rounded-full font-['Poppins'] font-bold text-xs hover:border-indigo-200 hover:text-indigo-600 hover:bg-indigo-50 transition-colors flex items-center gap-2" do %>
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+          </svg>
+          <span>MESSAGE</span>
+        <% end %>
+
       <% else %>
         <%= link_to "EDIT PROFILE", edit_user_registration_path, class: "px-6 py-2 border border-slate-200 text-slate-600 rounded-full font-['Poppins'] font-bold text-xs hover:border-slate-400 transition-colors" %>
       <% end %>

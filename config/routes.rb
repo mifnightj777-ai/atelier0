@@ -1,4 +1,6 @@
 Rails.application.routes.draw do 
+  get 'prompts/index'
+  get 'prompts/show'
   get "up" => "rails/health#show", as: :rails_health_check
   get 'focus/index'
   get '/@:username', to: 'users#show', as: :user_profile
@@ -11,6 +13,8 @@ Rails.application.routes.draw do
 
 
 
+  resources :prompts, only: [:index, :show]
+  
   resources :collections do
     member do
       get :fragments_grid

@@ -7,11 +7,25 @@
         <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-gradient-to-b from-indigo-500/20 to-transparent opacity-50 pointer-events-none"></div>
         <div class="absolute -top-20 -right-20 w-64 h-64 bg-indigo-500 rounded-full blur-[100px] opacity-20 pointer-events-none"></div>
 
-        <div class="relative z-10 flex justify-center mb-6">
-          <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 border border-white/10 backdrop-blur-md text-indigo-200 text-xs font-['Space_Grotesk'] font-bold uppercase tracking-widest shadow-lg">
-            <span class="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse"></span>
-            Daily Prompt • <%= @daily_prompt.date.strftime("%B %d") %>
+        <div class="relative z-10 flex justify-center mb-2">
+          <div class="inline-flex items-center gap-3 text-indigo-300 text-xs font-['Space_Grotesk'] font-bold uppercase tracking-[0.2em] drop-shadow-md">
+            <span class="relative flex h-2 w-2">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span>
+            </span>
+            <span>Daily Prompt / <%= @daily_prompt.date.strftime("%B %d") %></span>
           </div>
+        </div>
+
+        <div class="flex justify-center mt-6 mb-10">
+          <%= link_to prompts_path, class: "group flex items-center gap-3 pl-5 pr-4 py-2.5 bg-white/5 border border-white/10 rounded-full text-indigo-200 hover:text-white hover:bg-white/10 hover:border-white/20 transition-all duration-300 backdrop-blur-sm" do %>
+           <span class="text-xs font-['Space_Grotesk'] font-bold uppercase tracking-widest">Archive</span>
+           <span class="w-px h-3 bg-white/20"></span>
+           <span class="flex items-center gap-2">
+             <span class="text-xs font-bold">View Past Prompts</span>
+             <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 transition-transform group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
+          </span>
+          <% end %>
         </div>
 
         <h2 class="relative z-10 font-['Poppins'] font-bold text-5xl md:text-7xl text-white tracking-tight mb-8 drop-shadow-lg">
