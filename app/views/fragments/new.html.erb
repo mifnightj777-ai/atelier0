@@ -4,11 +4,7 @@
     <p class="text-slate-500 text-sm mt-1">今の思考を、カケラとして残しましょう。</p>
   </div>
 
-  <div class="bg-white rounded-[30px] shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden">
-    <%= render "form", fragment: @fragment %>
-  </div>
-
-  <div class="text-center mt-6">
-    <%= link_to "Back to Studio", fragments_path, class: "text-xs font-['Poppins'] text-slate-400 hover:text-slate-600 transition-colors" %>
+  <div class="min-h-screen bg-slate-50/50 py-2 px-4">
+  <%= render "form", fragment: @fragment %>
   </div>
 </div>

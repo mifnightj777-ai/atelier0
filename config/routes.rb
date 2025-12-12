@@ -1,6 +1,5 @@
 Rails.application.routes.draw do 
   get "up" => "rails/health#show", as: :rails_health_check
-
   get 'focus/index'
   get '/@:username', to: 'users#show', as: :user_profile
   get 'notifications/index'
@@ -8,6 +7,7 @@ Rails.application.routes.draw do
   get 'users/show'
   get 'focus', to: 'ideas#new', as: :focus_studio
   get 'mailbox', to: 'letters#index', as: :mailbox
+  get 'gallery', to: 'fragments#gallery', as: 'gallery'
 
 
 

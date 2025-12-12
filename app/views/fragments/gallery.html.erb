@@ -1,0 +1,18 @@
+<div class="max-w-7xl mx-auto px-6 py-12">
+  <div class="flex items-center justify-between mb-8 border-b border-slate-100 pb-4">
+    <h1 class="text-4xl font-['Poppins'] font-bold text-slate-900">Daily Prompt Gallery</h1>
+    
+    <%= link_to "Back to Studio", fragments_path, class: "text-sm font-bold text-slate-400 hover:text-slate-600 transition-colors" %>
+  </div>
+
+  <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+  <% if @fragments.any? %>
+    <%# ここで自動的に _fragment.html.erb を呼び出します %>
+    <%= render @fragments %>
+  <% else %>
+    <p class="col-span-full text-center text-slate-500 mt-10 p-12 bg-white rounded-xl">
+      まだ公開設定されたデイリープロンプト作品はありません。
+    </p>
+  <% end %>
+  </div>
+</div>

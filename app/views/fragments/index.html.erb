@@ -1,5 +1,40 @@
 <div class="w-full">
   
+  <% if @daily_prompt %>
+    <div class="mb-16">
+      <div class="relative bg-slate-900 rounded-[2rem] p-8 md:p-12 overflow-hidden shadow-2xl shadow-indigo-200/50 text-center">
+      
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-gradient-to-b from-indigo-500/20 to-transparent opacity-50 pointer-events-none"></div>
+        <div class="absolute -top-20 -right-20 w-64 h-64 bg-indigo-500 rounded-full blur-[100px] opacity-20 pointer-events-none"></div>
+
+        <div class="relative z-10 flex justify-center mb-6">
+          <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 border border-white/10 backdrop-blur-md text-indigo-200 text-xs font-['Space_Grotesk'] font-bold uppercase tracking-widest shadow-lg">
+            <span class="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse"></span>
+            Daily Prompt • <%= @daily_prompt.date.strftime("%B %d") %>
+          </div>
+        </div>
+
+        <h2 class="relative z-10 font-['Poppins'] font-bold text-5xl md:text-7xl text-white tracking-tight mb-8 drop-shadow-lg">
+          "<%= @daily_prompt.content %>"
+        </h2>
+
+        <div class="relative z-10 flex flex-col md:flex-row items-center justify-center gap-4">
+        
+          <%= link_to new_fragment_path(prompt_id: @daily_prompt.id), class: "group relative inline-flex items-center gap-3 px-8 py-4 bg-white text-slate-900 rounded-full font-['Poppins'] font-bold text-sm shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:shadow-[0_0_40px_rgba(255,255,255,0.5)] hover:scale-105 transition-all duration-300" do %>
+            <span>Create with this Prompt</span>
+            <span class="w-6 h-6 rounded-full bg-slate-100 group-hover:bg-slate-900 group-hover:text-white flex items-center justify-center transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4" /></svg>
+            </span>
+          <% end %>
+
+          <%= link_to "See Gallery→", gallery_path, class:"px-6 py-4 rounded-full text-indigo-200 text-xs font-bold uppercase tracking-widest hover:text-white hover:bg-white/5 transition-colors" %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
+  
+
   <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-16">
     <div>
       <h1 class="font-['Poppins'] text-4xl md:text-5xl font-bold text-slate-900 leading-none tracking-tight">

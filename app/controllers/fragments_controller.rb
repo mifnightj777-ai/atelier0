@@ -4,6 +4,7 @@ class FragmentsController < ApplicationController
   # GET /fragments or /fragments.json
   def index
     @public_fragments = Fragment.public_view.with_attached_image.includes(:user).order(created_at: :desc)
+    @daily_prompt = Prompt.find_by(date: Date.today)
 
     if params[:filter] == 'teammates' && user_signed_in?
        teammate_ids = current_user.following.ids
@@ -26,6 +27,10 @@ class FragmentsController < ApplicationController
 
     if params[:parent_id]
       @fragment.parent_id = params[:parent_id]
+    end
+
+    if params[:prompt_id]
+      @fragment.prompt_id = params[:prompt_id]
     end
   end
 
@@ -77,6 +82,15 @@ class FragmentsController < ApplicationController
     end
   end
 
+  def gallery
+    @fragments = Fragment.where.not(prompt_id: nil)
+                         .where(visibility: :public_view) 
+                         .order(created_at: :desc)
+    Rails.logger.info "GALLERY DEBUG: 取得された作品数: #{@fragments.count}"
+  end
+
+  
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_fragment
@@ -85,6 +99,6 @@ class FragmentsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def fragment_params
-      params.require(:fragment).permit(:title, :description, :image, :visibility, :parent_id)
+      params.require(:fragment).permit(:title, :description, :image, :visibility, :parent_id, :prompt_id)
     end
 end

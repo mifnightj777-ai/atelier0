@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_12_11_132749) do
+ActiveRecord::Schema[7.1].define(version: 2025_12_11_160244) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -93,7 +93,9 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_11_132749) do
     t.string "title"
     t.bigint "parent_id"
     t.bigint "root_id"
+    t.bigint "prompt_id"
     t.index ["parent_id"], name: "index_fragments_on_parent_id"
+    t.index ["prompt_id"], name: "index_fragments_on_prompt_id"
     t.index ["root_id"], name: "index_fragments_on_root_id"
     t.index ["user_id"], name: "index_fragments_on_user_id"
   end
@@ -161,6 +163,13 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_11_132749) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "prompts", force: :cascade do |t|
+    t.string "content"
+    t.date "date"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "relationships", force: :cascade do |t|
     t.integer "follower_id"
     t.integer "followed_id"
@@ -209,6 +218,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_11_132749) do
   add_foreign_key "fragment_colors", "fragments"
   add_foreign_key "fragments", "fragments", column: "parent_id"
   add_foreign_key "fragments", "fragments", column: "root_id"
+  add_foreign_key "fragments", "prompts"
   add_foreign_key "fragments", "users"
   add_foreign_key "ideas", "users"
   add_foreign_key "letters", "fragments"
