@@ -128,7 +128,7 @@
                 <div class="max-h-48 overflow-y-auto custom-scrollbar">
                   <% current_user.collections.each do |collection| %>
                     <% is_collected = collection.fragments.include?(@fragment) %>
-                    <%= button_to collection_items_path(collection_id: collection.id, fragment_id: @fragment.id), method: :post, disabled: is_collected, class: "w-full text-left px-3 py-2 rounded-lg text-xs font-['Poppins'] font-bold flex items-center justify-between #{is_collected ? 'text-indigo-600 bg-indigo-50 cursor-default' : 'text-slate-600 hover:bg-slate-50 hover:text-indigo-600'}" do %>
+                    <%= button_to collection_collection_items_path(collection, fragment_id: @fragment.id), method: :post, disabled: is_collected, class: "..." do %>
                       <span class="truncate"><%= collection.title %></span>
                       <% if is_collected %>
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-3 h-3"><path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clip-rule="evenodd" /></svg>

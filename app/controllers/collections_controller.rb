@@ -16,7 +16,15 @@ class CollectionsController < ApplicationController
     else
       @fragments = @collection.fragments.where.not(visibility: :private_view).order(created_at: :desc)
     end
+
+    existing_ids = @collection.fragment_ids
+    existing_ids = [0] if existing_ids.empty? 
+    @candidates = current_user.fragments.where.not(id: existing_ids).order(created_at: :desc)
+    
+    @collection_items = @collection.collection_items.includes(:fragment).order(created_at: :desc)
   end
+
+  
 
   def new
     @collection = Collection.new

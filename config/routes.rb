@@ -22,8 +22,10 @@ Rails.application.routes.draw do
     member do
       get :fragments_grid
     end
+
+    resources :collection_items, only: [:new, :create, :destroy]
   end
-  resources :collection_items, only: [:create, :destroy]
+
 
   resources :letters, only: [:update]
 

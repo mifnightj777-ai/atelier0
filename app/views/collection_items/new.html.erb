@@ -1,0 +1,66 @@
+<div class="max-w-6xl mx-auto px-4 py-12 font-['Poppins']">
+  <div class="flex flex-col md:flex-row items-start md:items-center justify-between mb-10 gap-4">
+    <div>
+      <h1 class="text-3xl font-bold text-slate-800">Add Fragments</h1>
+      <p class="text-slate-500 mt-1 flex items-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 21V9l4-4 4 4v12" /></svg>
+        To: <span class="font-semibold text-indigo-600"><%= @collection.title %></span>
+      </p>
+    </div>
+    <%= link_to collection_path(@collection), class: "group flex items-center gap-2 bg-white border border-slate-200 text-slate-600 px-5 py-2.5 rounded-full font-bold hover:bg-slate-50 hover:text-indigo-600 transition shadow-sm" do %>
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400 group-hover:text-indigo-500 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+      Done / Back to Collection
+    <% end %>
+  </div>
+
+  <% if @candidates.present? %>
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      <% @candidates.each do |fragment| %>
+        <div class="group relative bg-white border border-slate-200 rounded-2xl overflow-hidden hover:shadow-lg transition-all duration-300 flex flex-col h-full">
+          
+          <div class="relative aspect-[4/3] bg-slate-100 overflow-hidden">
+            <% if fragment.image.attached? %>
+              <%= image_tag fragment.image, class: "w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" %>
+            <% else %>
+              <div class="w-full h-full flex flex-col items-center justify-center text-slate-300">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                <span class="text-sm font-bold">Text Only</span>
+              </div>
+            <% end %>
+            <div class="absolute inset-0 bg-slate-900/0 group-hover:bg-slate-900/10 transition-colors"></div>
+          </div>
+
+          <div class="p-4 flex-grow flex flex-col justify-between">
+            <div>
+              <p class="text-sm text-slate-700 leading-relaxed line-clamp-3">
+                <%= fragment.description.presence || "No description" %>
+              </p>
+              <p class="text-xs text-slate-400 mt-3">
+                <%= time_ago_in_words(fragment.created_at) %> ago
+              </p>
+            </div>
+
+            <div class="mt-4">
+              <%= button_to collection_collection_items_path(@collection, fragment_id: fragment.id), method: :post, class: "w-full flex items-center justify-center gap-2 bg-indigo-50 text-indigo-600 border border-indigo-100 px-4 py-2 rounded-xl font-bold hover:bg-indigo-600 hover:text-white hover:border-transparent transition-all active:scale-95" do %>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
+                Add to Collection
+              <% end %>
+            </div>
+          </div>
+          
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="flex flex-col items-center justify-center py-20 bg-slate-50 border-2 border-dashed border-slate-200 rounded-3xl">
+      <div class="p-4 bg-white rounded-full shadow-sm mb-4">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-indigo-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" /></svg>
+      </div>
+      <h3 class="text-lg font-bold text-slate-700 mb-2">No fragments to add</h3>
+      <p class="text-slate-500 mb-6">追加できる新しいFragmentはありません。<br>スタジオに戻って新しい断片を作成しましょう。</p>
+      <%= link_to collection_path(@collection), class: "flex items-center gap-2 bg-white border border-slate-200 text-slate-600 px-6 py-3 rounded-full font-bold hover:bg-slate-50 hover:text-indigo-600 transition shadow-sm" do %>
+        Back to Collection
+      <% end %>
+    </div>
+  <% end %>
+</div>
