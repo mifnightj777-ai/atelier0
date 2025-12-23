@@ -4,97 +4,112 @@
     <div>
       <h1 class="font-['Poppins'] text-4xl font-bold text-slate-900 tracking-tight">Signals.</h1>
       <p class="text-slate-400 text-xs mt-2 font-['Space_Grotesk'] tracking-widest uppercase">
-        Activity Log / <%= @notifications.count %> Items
+        <%# &. と .to_i を使い、変数がnilでもエラーにならず "0 Items" と表示させます %>
+        Activity Log / <%= @notifications&.count.to_i %> Items
       </p>
     </div>
-    <button class="px-4 py-2 bg-white border border-slate-200 rounded-full text-[10px] font-bold text-slate-500 hover:text-indigo-600 hover:border-indigo-200 transition-colors shadow-sm">
-      MARK ALL READ
-    </button>
+    
+    <%# 通知がある時だけボタンを表示 %>
+    <% if @notifications.present? && @notifications.any? %>
+      <button class="px-4 py-2 bg-white border border-slate-200 rounded-full text-[10px] font-bold text-slate-500 hover:text-indigo-600 hover:border-indigo-200 transition-colors shadow-sm">
+        MARK ALL READ
+      </button>
+    <% end %>
   </div>
 
-  <div class="relative pl-8 border-l border-slate-100 space-y-8">
-    
-    <% @notifications.each do |notification| %>
-      <% link_target = notification.action == 'letter' ? mailbox_path : user_profile_path(notification.sender.username) %>
+  <%# 通知が存在するかチェック %>
+  <% if @notifications.present? && @notifications.any? %>
+    <div class="relative pl-8 border-l border-slate-100 space-y-8">
       
-      <div class="relative group animate-fade-in-up">
+      <% @notifications.each do |notification| %>
+        <%# 送信者が削除されている場合などのエラーを防ぐガード %>
+        <% next unless notification.sender %>
         
-        <div class="absolute -left-[37px] top-6 w-3 h-3 rounded-full bg-white border-2 border-slate-200 group-hover:border-indigo-500 group-hover:scale-125 transition-all z-10"></div>
+        <% link_target = notification.action == 'letter' ? mailbox_path : user_profile_path(notification.sender.username) %>
         
-        <div class="relative block bg-white p-5 rounded-2xl border border-slate-100 shadow-[0_2px_10px_rgb(0,0,0,0.03)] hover:shadow-[0_10px_30px_rgb(0,0,0,0.06)] hover:border-indigo-100 transition-all duration-300">
+        <div class="relative group animate-fade-in-up">
+          <div class="absolute -left-[37px] top-6 w-3 h-3 rounded-full bg-white border-2 border-slate-200 group-hover:border-indigo-500 group-hover:scale-125 transition-all z-10"></div>
           
-          <%= link_to "", link_target, class: "absolute inset-0 z-0" %>
+          <div class="relative block bg-white p-5 rounded-2xl border border-slate-100 shadow-[0_2px_10px_rgb(0,0,0,0.03)] hover:shadow-[0_10px_30px_rgb(0,0,0,0.06)] hover:border-indigo-100 transition-all duration-300">
+            
+            <%= link_to "", link_target, class: "absolute inset-0 z-0" %>
 
-          <div class="flex items-start gap-4 relative pointer-events-none"> <div class="shrink-0 w-12 h-12 rounded-2xl flex items-center justify-center text-xl shadow-inner z-10
-              <%= case notification.action
-                  when 'follow_request' then 'bg-amber-50 text-amber-500'
-                  when 'request_accepted' then 'bg-emerald-50 text-emerald-500'
-                  when 'like' then 'bg-pink-50 text-pink-500'
-                  when 'letter' then 'bg-indigo-50 text-indigo-600'
-                  else 'bg-slate-50 text-slate-400'
-                  end %>">
-              <% if notification.action == "follow_request" %>👋<% end %>
-              <% if notification.action == "request_accepted" %>🤝<% end %>
-              <% if notification.action == "like" %>❤️<% end %>
-              <% if notification.action == "letter" %>✉️<% end %>
-            </div>
-
-            <div class="flex-1 pt-1 z-10">
-              <div class="flex justify-between items-start mb-1">
-                <p class="text-sm font-['Poppins'] font-bold text-slate-800">
-                  @<%= notification.sender.username %>
-                </p>
-                <span class="text-[10px] text-slate-300 font-['Space_Grotesk'] whitespace-nowrap">
-                  <%= time_ago_in_words(notification.created_at) %> ago
-                </span>
+            <div class="flex items-start gap-4 relative pointer-events-none"> 
+              <div class="shrink-0 w-12 h-12 rounded-2xl flex items-center justify-center text-xl shadow-inner z-10
+                <%= case notification.action
+                    when 'follow_request' then 'bg-amber-50 text-amber-500'
+                    when 'request_accepted' then 'bg-emerald-50 text-emerald-500'
+                    when 'like' then 'bg-pink-50 text-pink-500'
+                    when 'letter' then 'bg-indigo-50 text-indigo-600'
+                    else 'bg-slate-50 text-slate-400'
+                    end %>">
+                <% if notification.action == "follow_request" %>👋<% end %>
+                <% if notification.action == "request_accepted" %>🤝<% end %>
+                <% if notification.action == "like" %>❤️<% end %>
+                <% if notification.action == "letter" %>✉️<% end %>
               </div>
-              
-              <p class="text-xs text-slate-500 font-['Inter'] leading-relaxed">
-                <% if notification.action == "follow_request" %>
-                  sent a request to join your studio teammates.
-                <% elsif notification.action == "request_accepted" %>
-                  accepted your request. You are now connected.
-                <% elsif notification.action == "like" %>
-                  deeply liked your fragment.
-                <% elsif notification.action == "letter" %>
-                  sent you a private letter. Check your mailbox.
-                <% end %>
-              </p>
 
-              <% if notification.action == "follow_request" %>
-                <div class="relative z-20 mt-3 pointer-events-auto">
-                  <% 
-                    relationship = notification.notifiable 
-                    relationship ||= Relationship.find_by(follower: notification.sender, followed: notification.recipient)
-                  %>
-                  
-                  <% if relationship && relationship.pending? %>
-                    <div class="flex gap-2">
-                      <%= button_to relationship_path(relationship), method: :patch, params: { status: :accepted }, class: "px-4 py-1.5 bg-[#5D5FEF] hover:bg-[#4b4dcf] text-white text-[10px] font-bold font-['Poppins'] rounded-full transition-colors shadow-sm tracking-wide cursor-pointer" do %>
-                        APPROVE
-                      <% end %>
-                      <%= button_to relationship_path(relationship), method: :delete, class: "px-4 py-1.5 bg-white border border-slate-200 text-slate-500 hover:text-red-500 hover:border-red-200 text-[10px] font-bold font-['Poppins'] rounded-full transition-colors tracking-wide cursor-pointer" do %>
-                        DECLINE
-                      <% end %>
-                    </div>
-                  <% elsif relationship.nil? %>
-                     <span class="inline-block px-3 py-1 bg-slate-100 text-slate-400 text-[10px] font-bold rounded-full uppercase">Canceled</span>
-                  <% elsif relationship.accepted? %>
-                     <span class="inline-block px-3 py-1 bg-indigo-50 text-indigo-600 text-[10px] font-bold rounded-full uppercase">Connected</span>
-                  <% end %>
+              <div class="flex-1 pt-1 z-10">
+                <div class="flex justify-between items-start mb-1">
+                  <p class="text-sm font-['Poppins'] font-bold text-slate-800">
+                    @<%= notification.sender.username %>
+                  </p>
+                  <span class="text-[10px] text-slate-300 font-['Space_Grotesk'] whitespace-nowrap">
+                    <%= time_ago_in_words(notification.created_at) %> ago
+                  </span>
                 </div>
-              <% end %>
+                
+                <p class="text-xs text-slate-500 font-['Inter'] leading-relaxed">
+                  <% if notification.action == "follow_request" %>
+                    sent a request to join your studio teammates.
+                  <% elsif notification.action == "request_accepted" %>
+                    accepted your request. You are now connected.
+                  <% elsif notification.action == "like" %>
+                    deeply liked your fragment.
+                  <% elsif notification.action == "letter" %>
+                    sent you a private letter. Check your mailbox.
+                  <% end %>
+                </p>
+
+                <% if notification.action == "follow_request" %>
+                  <div class="relative z-20 mt-3 pointer-events-auto">
+                    <% 
+                      relationship = notification.notifiable 
+                      relationship ||= Relationship.find_by(follower: notification.sender, followed: notification.recipient)
+                    %>
+                    
+                    <% if relationship && relationship.pending? %>
+                      <div class="flex gap-2">
+                        <%= button_to relationship_path(relationship), method: :patch, params: { status: :accepted }, class: "px-4 py-1.5 bg-[#5D5FEF] hover:bg-[#4b4dcf] text-white text-[10px] font-bold font-['Poppins'] rounded-full transition-colors shadow-sm tracking-wide cursor-pointer" do %>
+                          APPROVE
+                        <% end %>
+                        <%= button_to relationship_path(relationship), method: :delete, class: "px-4 py-1.5 bg-white border border-slate-200 text-slate-500 hover:text-red-500 hover:border-red-200 text-[10px] font-bold font-['Poppins'] rounded-full transition-colors tracking-wide cursor-pointer" do %>
+                          DECLINE
+                        <% end %>
+                      </div>
+                    <% elsif relationship.nil? %>
+                       <span class="inline-block px-3 py-1 bg-slate-100 text-slate-400 text-[10px] font-bold rounded-full uppercase">Canceled</span>
+                    <% elsif relationship.accepted? %>
+                       <span class="inline-block px-3 py-1 bg-indigo-50 text-indigo-600 text-[10px] font-bold rounded-full uppercase">Connected</span>
+                    <% end %>
+                  </div>
+                <% end %>
               </div>
+            </div>
           </div>
         </div>
-      </div>
-    <% end %>
+      <% end %>
+    </div>
 
-    <% if @notifications.empty? %>
-      <div class="py-20 text-center text-slate-300 text-sm font-['Poppins']">
-        No new signals.
+  <% else %>
+    <%# 通知がない場合のデザイン：Signalsの世界観に合わせたエンプティステート %>
+    <div class="flex flex-col items-center justify-center py-24 bg-slate-50/50 rounded-[2.5rem] border-2 border-dashed border-slate-100/80">
+      <div class="w-16 h-16 bg-white rounded-3xl shadow-sm flex items-center justify-center text-2xl mb-6">
+        📡
       </div>
-    <% end %>
+      <p class="text-slate-400 text-sm font-['Poppins'] font-medium">No new signals yet.</p>
+      <p class="text-slate-300 text-[10px] font-['Space_Grotesk'] mt-2 uppercase tracking-[0.2em]">All quiet in the studio</p>
+    </div>
+  <% end %>
 
-  </div>
 </div>
