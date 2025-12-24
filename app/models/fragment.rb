@@ -6,6 +6,7 @@ class Fragment < ApplicationRecord
   
   # enum
   enum visibility: { public_view: 0, private_view: 1, teammates_view: 2 }
+  scope :public_view, -> { where(visibility: :public_view) }
 
   # Relationships
   has_many :letters, dependent: :destroy

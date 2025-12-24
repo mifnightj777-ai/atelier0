@@ -1,73 +1,83 @@
 class CollectionsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_collection, only: [:show, :edit, :update, :destroy]
+  before_action :set_collection, only: [:show, :edit, :update, :destroy, :fragments_grid]
+  before_action :authorize_view_collection!, only: [:show, :fragments_grid]
+  before_action :authorize_owner!, only: [:edit, :update, :destroy]
 
   def index
     @collections = current_user.collections.order(created_at: :desc)
   end
 
   def show
-    unless can_view_collection?(@collection)
-      redirect_to root_path, alert: "This collection is private."
-      return
-    end
-    if @collection.user == current_user
-      @fragments = @collection.fragments.order(created_at: :desc)
+    is_owner = (current_user.id == @collection.user_id)
+    is_teammate = teammate_of?(@collection.user)
+
+    # Collectionに紐づくFragmentsのベースクエリ
+    base_fragments = @collection.fragments.with_attached_image
+
+    if is_owner
+      # 自分の場合：全て
+      @fragments = base_fragments.order(created_at: :desc)
+    elsif @collection.public_view?
+      if is_teammate
+        @fragments = base_fragments.where(visibility: [:public_view, :teammates_view]).order(created_at: :desc)
+      else
+        @fragments = base_fragments.where(visibility: :public_view).order(created_at: :desc)
+      end
+    elsif @collection.teammates_view?
+      @fragments = base_fragments.where(visibility: [:public_view, :teammates_view]).order(created_at: :desc)
     else
-      @fragments = @collection.fragments.where.not(visibility: :private_view).order(created_at: :desc)
+      @fragments = []
     end
-
-    existing_ids = @collection.fragment_ids
-    existing_ids = [0] if existing_ids.empty? 
-    @candidates = current_user.fragments.where.not(id: existing_ids).order(created_at: :desc)
-    
-    @collection_items = @collection.collection_items.includes(:fragment).order(created_at: :desc)
   end
-
-  
 
   def new
     @collection = Collection.new
   end
 
   def edit
-    redirect_to collections_path, alert: "Access denied." unless @collection.user == current_user
   end
 
   def create
     @collection = current_user.collections.build(collection_params)
-
     if @collection.save
       redirect_to @collection, notice: "Collection created."
     else
-      render :new, status: :unprocessable_entity
+      render :new, status: :unprocessable_content
     end
   end
 
   def update
-    return unless @collection.user == current_user
-
     if @collection.update(collection_params)
       redirect_to @collection, notice: "Collection updated."
     else
-      render :edit, status: :unprocessable_entity
+      render :edit, status: :unprocessable_content
     end
   end
 
   def destroy
-    if @collection.user == current_user
-      @collection.destroy
-      redirect_to collections_path, notice: "Collection deleted."
-    else
-      redirect_to collections_path, alert: "Access denied."
-    end
+    @collection.destroy
+    redirect_to collections_path, notice: "Collection deleted."
   end
 
   def fragments_grid
-    @collection = Collection.find(params[:id])
-    @fragments = @collection.fragments.order(created_at: :desc)
+    is_owner = (current_user.id == @collection.user_id)
+    is_teammate = teammate_of?(@collection.user)
+    base_fragments = @collection.fragments
+
+    if is_owner
+      @fragments = base_fragments.order(created_at: :desc)
+    elsif @collection.public_view?
+      if is_teammate
+        @fragments = base_fragments.where(visibility: [:public_view, :teammates_view]).order(created_at: :desc)
+      else
+        @fragments = base_fragments.where(visibility: :public_view).order(created_at: :desc)
+      end
+    elsif @collection.teammates_view?
+      @fragments = base_fragments.where(visibility: [:public_view, :teammates_view]).order(created_at: :desc)
+    end
     
-    render partial: "fragments/grid", locals: { fragments: @fragments, empty_message: "No fragments in this ZINE yet." }
+    render partial: "fragments/grid", locals: { fragments: @fragments, empty_message: "No fragments in this collection yet." }
   end
 
   private
@@ -76,14 +86,33 @@ class CollectionsController < ApplicationController
     @collection = Collection.find(params[:id])
   end
 
-  def collection_params
-    params.require(:collection).permit(:title, :description, :visibility)
+  def authorize_view_collection!
+    return if current_user.id == @collection.user_id
+
+    case @collection.visibility
+    when "public_view"
+      true
+    when "teammates_view"
+      unless teammate_of?(@collection.user)
+        redirect_to root_path, alert: "This collection is restricted to teammates."
+      end
+    when "private_view"
+      redirect_to root_path, alert: "This is a private collection."
+    end
   end
 
-  def can_view_collection?(collection)
-    return true if collection.user == current_user
-    return false if collection.view_private?
-    return true if collection.view_teammates? && current_user.teammate_with?(collection.user)
-    false
+  def authorize_owner!
+    unless @collection.user_id == current_user.id
+      redirect_to collections_path, alert: "Access denied."
+    end
+  end
+
+  def teammate_of?(owner)
+    return false unless user_signed_in?
+    current_user.following.exists?(owner.id) || current_user.followers.exists?(owner.id)
+  end
+
+  def collection_params
+    params.require(:collection).permit(:title, :description, :visibility)
   end
 end
