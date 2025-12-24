@@ -93,8 +93,8 @@
            display_collections = @user.collections.where(visibility: [:public_view, :teammates_view])
          else
            display_collections = @user.collections.where(visibility: :public_view)
-  end
-%>
+        end
+      %>
       <% display_collections = (current_user == @user ? @user.collections : @user.collections.public_view) %>
 
       <% display_collections.each do |collection| %>
