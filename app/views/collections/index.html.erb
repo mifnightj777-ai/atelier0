@@ -1,28 +1,38 @@
 <div class="w-full max-w-7xl mx-auto px-4 py-16">
   
-  <%# --- シンプルなタイトルのみのヘッダー --- %>
+  <%# --- ヘッダー --- %>
   <div class="flex items-center justify-between mb-12 px-4">
     <div>
-      <h1 class="font-['Poppins'] text-4xl font-bold text-slate-900 tracking-tight">Your ZINEs.</h1>
+      <h1 class="font-['Poppins'] text-4xl font-bold text-slate-900 tracking-tight">Your Collections.</h1>
       <p class="text-slate-400 text-xs mt-2 font-['Space_Grotesk'] tracking-widest uppercase">
         Management / <%= @collections.count %> Collections
       </p>
     </div>
     <%= link_to new_collection_path, class: "px-6 py-2 bg-slate-900 text-white rounded-full font-['Poppins'] font-bold text-xs hover:bg-indigo-600 transition-all shadow-lg" do %>
-      NEW ZINE
+     ＋ Add Collection
     <% end %>
   </div>
 
-  <%# --- コレクション一覧（グリッド形式） --- %>
+  <%# --- コレクション一覧 --- %>
   <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-8 gap-y-16 px-4">
     <% @collections.each do |collection| %>
-      <%# 自分が見る用なので、Privateも含めたFragmentsを取得 %>
       <% visible_previews = collection.fragments %>
 
-      <div class="flex flex-col items-center">
-        <%= link_to collection_path(collection), class: "group relative w-40 h-40 cursor-pointer" do %>
+      <div class="flex flex-col items-center relative group">
+
+        <%= button_to collection_path(collection), 
+                      method: :delete, 
+                      data: { turbo_confirm: "Delete this Collection?" }, 
+                      class: "absolute top-1 left-9 z-50 h-5 w-5 flex items-center justify-center bg-rose-50/90 backdrop-blur-sm text-rose-300 hover:bg-rose-100 hover:text-rose-500 rounded-full shadow-sm opacity-0 group-hover:opacity-100 group-hover:rotate-0 transition-all duration-300 ease-out cursor-pointer",
+                      title: "Remove" do %>
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        <% end %>
+
+        <%= link_to collection_path(collection), class: "relative w-40 h-40 cursor-pointer" do %>
           <div class="relative w-40 h-40">
-            <%# スタック奥 %>
+            <%# スタックデザイン（奥） %>
             <div class="absolute inset-0 bg-white border border-slate-100 shadow-sm rounded-xl transform rotate-6 translate-x-2 translate-y-2 group-hover:rotate-12 transition-all duration-300 z-0 overflow-hidden">
                <% if visible_previews.offset(2).first&.image&.attached? %>
                  <%= image_tag visible_previews.offset(2).first.image, class: "w-full h-full object-cover opacity-50" %>
@@ -31,7 +41,7 @@
                <% end %>
             </div>
 
-            <%# スタック中 %>
+            <%# スタックデザイン（中） %>
             <div class="absolute inset-0 bg-white border border-slate-100 shadow-sm rounded-xl transform -rotate-3 translate-x-1 group-hover:-rotate-6 transition-all duration-300 z-10 overflow-hidden">
                <% if visible_previews.offset(1).first&.image&.attached? %>
                  <%= image_tag visible_previews.offset(1).first.image, class: "w-full h-full object-cover opacity-70" %>
@@ -50,7 +60,6 @@
                  </div>
                <% end %>
                
-               <%# 非公開バッジ %>
                <% if collection.private_view? %>
                  <div class="absolute top-2 right-2 bg-black/50 text-white p-1 rounded-full backdrop-blur-md">
                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" /></svg>

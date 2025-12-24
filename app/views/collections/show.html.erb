@@ -15,11 +15,11 @@
         <% if @collection.private_view? %>
           <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/30 backdrop-blur border border-white/20 text-white text-[10px] font-bold uppercase tracking-widest">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
-            Private ZINE
+            Private Collection
           </span>
         <% elsif @collection.teammates_view? %>
           <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-900/30 backdrop-blur border border-emerald-500/30 text-emerald-100 text-[10px] font-bold uppercase tracking-widest">
-            Team ZINE
+            Teammates Collection
           </span>
         <% end %>
       </div>
@@ -53,7 +53,7 @@
   <% if user_signed_in? && current_user.id == @collection.user_id %>
     <div class="max-w-7xl mx-auto px-4 -mt-6 relative z-20 flex justify-end gap-3">
       <%= link_to edit_collection_path(@collection), class: "px-4 py-2 bg-white rounded-full text-xs font-bold text-slate-700 shadow-lg border border-slate-100 hover:text-indigo-600 transition-all flex items-center gap-2" do %>
-        Edit ZINE
+        Edit Collection
       <% end %>
       <%= link_to new_collection_collection_item_path(@collection), class: "px-4 py-2 bg-slate-900 rounded-full text-xs font-bold text-white shadow-lg hover:bg-indigo-600 transition-all flex items-center gap-2" do %>
         <span>＋</span> Add Fragments
@@ -80,7 +80,7 @@
 
               <%# ★ 削除ボタン復活：本人の時だけ表示 %>
               <% if user_signed_in? && current_user.id == @collection.user_id %>
-                <%= button_to collection_collection_item_path(@collection, item), method: :delete, data: { turbo_confirm: "Remove from ZINE?" }, class: "absolute top-2 right-2 z-30 p-2 bg-white/90 backdrop-blur-sm text-slate-400 hover:text-red-500 rounded-full opacity-0 group-hover:opacity-100 transition-all shadow-sm cursor-pointer" do %>
+                <%= button_to collection_collection_item_path(@collection, item), method: :delete, data: { turbo_confirm: "Remove from Collection?" }, class: "absolute top-2 right-2 z-30 p-2 bg-white/90 backdrop-blur-sm text-slate-400 hover:text-red-500 rounded-full opacity-0 group-hover:opacity-100 transition-all shadow-sm cursor-pointer" do %>
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" /></svg>
                 <% end %>
               <% end %>
@@ -114,7 +114,7 @@
     <% else %>
       <%# コレクションが空、または閲覧権限のある画像がない場合 %>
       <div class="text-center py-20 bg-white rounded-3xl border border-dashed border-slate-200">
-        <p class="font-bold text-slate-400 text-sm">No visible fragments in this ZINE.</p>
+        <p class="font-bold text-slate-400 text-sm">No visible fragments in this Collection.</p>
       </div>
     <% end %>
   </div>
