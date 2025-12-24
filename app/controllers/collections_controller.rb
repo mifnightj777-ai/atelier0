@@ -56,8 +56,13 @@ class CollectionsController < ApplicationController
   end
 
   def destroy
+    @collection = current_user.collections.find(params[:id])
     @collection.destroy
-    redirect_to collections_path, notice: "Collection deleted."
+
+    redirect_to collection_path,
+              notice: "Collection was successfully deleted.", 
+              status: :see_other
+              
   end
 
   def fragments_grid
