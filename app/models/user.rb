@@ -6,6 +6,7 @@ class User < ApplicationRecord
 
   has_many :fragments, dependent: :destroy
   has_many :ideas, dependent: :destroy
+
   has_many :active_relationships, -> { where(status: :accepted) }, class_name: "Relationship", foreign_key: "follower_id", dependent: :destroy
   has_many :passive_relationships, -> { where(status: :accepted) }, class_name: "Relationship", foreign_key: "followed_id", dependent: :destroy
   has_many :following, through: :active_relationships, source: :followed
@@ -13,12 +14,16 @@ class User < ApplicationRecord
   has_many :sent_requests, -> { where(status: :pending) }, class_name: "Relationship", foreign_key: "follower_id"
   has_many :received_requests, -> { where(status: :pending) }, class_name: "Relationship", foreign_key: "followed_id"
   has_many :notifications, foreign_key: :recipient_id, dependent: :destroy
+
   has_many :sent_letters, class_name: "Letter", foreign_key: "sender_id", dependent: :destroy
   has_many :received_letters, class_name: "Letter", foreign_key: "recipient_id", dependent: :destroy
+  has_many :notifications, foreign_key: :recipient_id, dependent: :destroy
   has_many :messages, dependent: :destroy
+
   has_many :collections, dependent: :destroy
   has_many :comparisons, dependent: :destroy
   has_one_attached :avatar
+
 
 
   def rooms

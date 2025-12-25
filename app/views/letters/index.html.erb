@@ -1,96 +1,114 @@
 <div class="max-w-3xl mx-auto py-12 px-6">
   
-  <div class="flex items-end justify-between mb-12">
+  <div class="flex items-end justify-between mb-8">
     <div>
       <h1 class="font-['Poppins'] text-4xl font-bold text-slate-900 tracking-tight">Mailbox.</h1>
       <p class="text-slate-400 text-xs mt-2 font-['Space_Grotesk'] tracking-widest uppercase">
-        Private Letters / <%= @letters.count %> Received
+        Private Letters
       </p>
+    </div>
+
+    <%# --- 改良版：タブセクション --- %>
+    <div class="relative flex bg-slate-100 p-1 rounded-full w-80 origin-right" data-controller="mailbox-tabs">
+  
+      <%# スライディング背景：初期位置はJSで制御するので、最初は width: 0 にしておくのがコツです %>
+      <div data-mailbox-tabs-target="background" 
+           class="absolute top-1 bottom-1 rounded-full bg-white shadow-sm transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] z-0">
+      </div>
+
+      <%# 各リンク：flex-1 を入れることで、3つのボタンが同じ幅を分け合います %>
+      <%= link_to mailbox_path, 
+          data: { turbo_frame: "mailbox_content", turbo_action: "advance", action: "click->mailbox-tabs#switch" },
+          class: "relative z-10 flex-1 text-center py-2 rounded-full text-[10px] font-bold font-['Poppins'] tracking-widest uppercase transition-colors duration-300 #{params[:tab].nil? ? 'text-slate-900' : 'text-slate-400'}" do %>
+        Inbox
+      <% end %>
+
+      <%= link_to mailbox_path(tab: 'accepted'), 
+          data: { turbo_frame: "mailbox_content", turbo_action: "advance", action: "click->mailbox-tabs#switch" },
+          class: "relative z-10 flex-1 text-center py-2 rounded-full text-[10px] font-bold font-['Poppins'] tracking-widest uppercase transition-colors duration-300 #{params[:tab] == 'accepted' ? 'text-slate-900' : 'text-slate-400'}" do %>
+        Accepted
+      <% end %>
+
+      <%= link_to mailbox_path(tab: 'archive'), 
+          data: { turbo_frame: "mailbox_content", turbo_action: "advance", action: "click->mailbox-tabs#switch" },
+          class: "relative z-10 flex-1 text-center py-2 rounded-full text-[10px] font-bold font-['Poppins'] tracking-widest uppercase transition-colors duration-300 #{params[:tab] == 'archive' ? 'text-slate-900' : 'text-slate-400'}" do %>
+        Archive
+      <% end %>
     </div>
   </div>
 
-  <div class="space-y-4">
-    <% @letters.each do |letter| %>
-      
-      <details class="group bg-white rounded-3xl border border-slate-100 shadow-[0_2px_15px_rgb(0,0,0,0.02)] open:shadow-[0_10px_40px_rgb(0,0,0,0.06)] open:border-indigo-100 transition-all duration-500 overflow-hidden">
-        
-        <summary class="list-none cursor-pointer p-6 flex items-center gap-5 hover:bg-slate-50/80 transition-colors relative">
+  <%# --- コンテンツエリア --- %>
+  <%= turbo_frame_tag "mailbox_content", class: "block animate-mailbox-entry" do %>
+    <div class="space-y-4">
+      <% @letters.each do |letter| %>
+        <details class="group bg-white rounded-[30px] border border-slate-100 shadow-[0_2px_15px_rgb(0,0,0,0.02)] open:shadow-[0_10px_40px_rgb(0,0,0,0.06)] open:border-indigo-100 transition-all duration-500 overflow-hidden">
           
-          <div class="absolute right-6 top-1/2 -translate-y-1/2 text-slate-300 group-open:rotate-180 transition-transform duration-500">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" /></svg>
-          </div>
-
-          <div class="shrink-0 w-14 h-14 rounded-2xl bg-indigo-50 text-indigo-600 border border-indigo-100 flex items-center justify-center font-['Poppins'] font-bold text-xl shadow-sm group-open:bg-indigo-600 group-open:text-white transition-colors duration-300">
-            <%= letter.sender.username.first.upcase %>
-          </div>
-
-          <div class="flex-1 pr-8">
-            <div class="flex justify-between items-start mb-0.5">
-              <span class="font-['Poppins'] font-bold text-slate-900 text-lg">
-                @<%= letter.sender.username %>
-              </span>
-              <span class="text-[10px] text-slate-300 font-['Space_Grotesk'] tracking-widest uppercase mt-1.5">
-                <%= time_ago_in_words(letter.created_at) %> ago
-              </span>
-            </div>
-            
-            <h3 class="text-sm font-medium text-slate-500 group-open:text-indigo-600 transition-colors truncate">
-              <%= letter.subject.presence || "No Subject" %>
-            </h3>
-          </div>
-        </summary>
-
-        <div class="px-6 pb-6 pt-0 animate-fade-in-down">
-          <div class="p-8 bg-slate-50/50 rounded-2xl border border-slate-100/50">
-            
-            <div class="mb-6 pb-4 border-b border-slate-200/50 flex items-center gap-2">
-              <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Regarding:</span>
-              <%= link_to truncate(letter.fragment.title, length: 30), fragment_path(letter.fragment), class: "text-xs font-bold text-indigo-600 hover:underline decoration-1 underline-offset-4" %>
+          <%# --- タップするヘッダー部分 --- %>
+          <summary class="list-none cursor-pointer p-6 flex items-center gap-5 hover:bg-slate-50/80 transition-colors relative">
+            <%# 開閉を示す矢印 %>
+            <div class="absolute right-8 top-1/2 -translate-y-1/2 text-slate-300 group-open:rotate-180 transition-transform duration-500">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" /></svg>
             </div>
 
-            <div class="prose prose-slate prose-sm max-w-none font-['Inter'] leading-relaxed whitespace-pre-wrap text-slate-700 mb-8">
-              <%= letter.body %>
+            <div class="shrink-0 w-14 h-14 rounded-2xl <%= letter.accepted? ? 'bg-indigo-600 text-white' : 'bg-indigo-50 text-indigo-600' %> flex items-center justify-center font-['Poppins'] font-bold text-xl transition-colors duration-300 group-open:bg-slate-900 group-open:text-white">
+              <%= letter.sender.username.first.upcase %>
             </div>
 
-            <div class="flex justify-end items-center gap-4 pt-4 border-t border-slate-200/50">
-              <div class="text-right mr-4">
-                <p class="text-[10px] text-slate-400 font-['Space_Grotesk'] uppercase tracking-widest">Sincerely,</p>
-                <p class="font-['Poppins'] font-bold text-slate-800 text-xs">@<%= letter.sender.username %></p>
+            <div class="flex-1 pr-10">
+              <div class="flex justify-between items-start mb-0.5">
+                <span class="font-['Poppins'] font-bold text-slate-900 text-lg">@<%= letter.sender.username %></span>
+                <span class="text-[10px] text-slate-300 font-['Space_Grotesk'] tracking-widest uppercase mt-1.5">
+                  <%= time_ago_in_words(letter.created_at) %> ago
+                </span>
+              </div>
+              <h3 class="text-sm font-medium text-slate-500 group-open:text-indigo-600 transition-colors truncate">
+                <%= letter.subject.presence || "No Subject" %>
+              </h3>
+            </div>
+          </summary>
+
+          <%# --- 開いた時の中身 --- %>
+          <div class="px-6 pb-8 pt-2 animate-fade-in-down">
+            <div class="p-8 bg-slate-50/50 rounded-[24px] border border-slate-100/50">
+              
+              <div class="mb-6 pb-4 border-b border-slate-200/50 flex items-center gap-2">
+                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Regarding:</span>
+                <%= link_to truncate(letter.fragment.title, length: 30), fragment_path(letter.fragment), class: "text-xs font-bold text-indigo-600 hover:underline decoration-1 underline-offset-4", data: { turbo_frame: "_top" } %>
               </div>
 
-              <% if letter.pending? %>
-                <%= button_to letter_path(letter), method: :patch, class: "bg-indigo-600 hover:bg-indigo-700 text-white font-['Poppins'] font-bold text-xs px-6 py-3 rounded-full shadow-lg shadow-indigo-200 transition-all flex items-center gap-2 hover:-translate-y-0.5" do %>
-                  <span>Accept & Chat</span>
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3 h-3"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
-                <% end %>
-                <%= button_to letter_path(letter), method: :delete, data: { turbo_confirm: "Reject this letter?" }, class: "..." do %>
-                  DECLINE (DELETE)
-                <% end %>
-              <% elsif letter.accepted? %>
-                <% room = Room.between(current_user, letter.sender).first %>
-                <% if room %>
-                  <%= link_to room_path(room), class: "group flex items-center gap-2 text-indigo-600 bg-indigo-50 px-5 py-2.5 rounded-full font-bold text-xs hover:bg-indigo-100 transition-colors" do %>
-                    <span>Open Chat</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3 h-3 group-hover:translate-x-1 transition-transform"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
+              <div class="prose prose-slate prose-sm max-w-none font-['Inter'] leading-relaxed whitespace-pre-wrap text-slate-700 mb-8">
+                <%= letter.body %>
+              </div>
+
+              <%# アクションボタン %>
+              <div class="flex justify-end items-center gap-3 pt-4 border-t border-slate-200/50">
+                <% if letter.pending? %>
+                  <%= button_to letter_path(letter, letter: { status: 'rejected' }), method: :patch, class: "px-5 py-2.5 rounded-full text-xs font-bold text-slate-400 hover:text-rose-500 hover:bg-rose-50 transition-all" do %>Archive<% end %>
+                  <%= button_to letter_path(letter, letter: { status: 'accepted' }), method: :patch, class: "bg-indigo-600 hover:bg-indigo-700 text-white font-['Poppins'] font-bold text-xs px-6 py-3 rounded-full shadow-lg transition-all flex items-center gap-2" do %>
+                    <span>Accept & Chat</span>
                   <% end %>
+                <% elsif letter.accepted? %>
+                  <% room = Room.between(current_user, letter.sender).first %>
+                  <% if room %>
+                    <%= link_to room_path(room), class: "group flex items-center gap-2 text-indigo-600 bg-indigo-50 px-6 py-3 rounded-full font-bold text-xs hover:bg-indigo-100 transition-all", data: { turbo_frame: "_top" } do %>
+                      <span>Open Dialogue</span>
+                    <% end %>
+                  <% end %>
+                <% elsif letter.rejected? %>
+                  <%= button_to letter_path(letter, letter: { status: 'pending' }), method: :patch, class: "px-5 py-2.5 rounded-full text-xs font-bold text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 transition-all" do %>Restore<% end %>
+                  <%= button_to letter_path(letter, letter: { status: 'accepted' }), method: :patch, class: "bg-slate-900 text-white font-['Poppins'] font-bold text-xs px-6 py-3 rounded-full shadow-lg transition-all" do %>Accept & Chat<% end %>
                 <% end %>
-              <% end %>
+              </div>
             </div>
-
           </div>
+        </details>
+      <% end %>
+
+      <% if @letters.empty? %>
+        <div class="py-24 text-center opacity-40">
+          <p class="font-['Poppins'] text-slate-400 font-bold">No letters in this folder.</p>
         </div>
-
-      </details>
-
-    <% end %>
-
-    <% if @letters.empty? %>
-      <div class="py-24 text-center">
-        <div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-300">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor" class="w-8 h-8"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" /></svg>
-        </div>
-        <p class="font-['Poppins'] text-slate-400 font-bold">No letters yet.</p>
-      </div>
-    <% end %>
-  </div>
+      <% end %>
+    </div>
+  <% end %>
 </div>

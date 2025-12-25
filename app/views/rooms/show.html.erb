@@ -1,55 +1,55 @@
 <div class="flex flex-col h-screen relative bg-white overflow-hidden font-['Inter']" data-controller="chat">
 
-  <div class="fixed top-6 left-1/2 -translate-x-1/2 z-50 pointer-events-none">
-    <div class="pointer-events-auto bg-white shadow-[0_4px_20px_rgba(0,0,0,0.06)] border border-slate-100 rounded-full py-1.5 pl-1.5 pr-5 flex items-center gap-1 transition-all hover:shadow-[0_8px_25px_rgba(0,0,0,0.08)]">
-      
-      <%= link_to rooms_path, class: "w-8 h-8 rounded-full bg-transparent hover:bg-slate-50 text-slate-400 hover:text-slate-600 flex items-center justify-center transition-colors" do %>
+  <%# --- 1. 統合ヘッダー (固定) --- %>
+  <%# 上下の余白を少しだけ詰め、よりコンパクトにしました %>
+  <div class="fixed top-0 left-0 right-0 z-50 px-6 pt-4 pb-3 bg-white/80 backdrop-blur-xl border-b border-slate-50 flex justify-center pointer-events-none">
+    <div class="pointer-events-auto flex items-center gap-4 bg-white/60 border border-white/80 px-2 py-2 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+      <%= link_to rooms_path, class: "w-9 h-9 rounded-full bg-white text-slate-400 hover:text-indigo-600 flex items-center justify-center transition-all hover:shadow-sm" do %>
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /></svg>
       <% end %>
-
-      <div class="w-px h-4 bg-slate-200 mx-1"></div>
-
+      <div class="w-px h-4 bg-slate-200/50 mx-0.5"></div>
       <% partner = (@room.sender == current_user ? @room.recipient : @room.sender) %>
-      <div class="flex items-center gap-2.5">
-        <div class="w-6 h-6 rounded-full bg-[#5D5FEF] text-white flex items-center justify-center font-['Poppins'] font-bold text-[10px]">
+      <div class="flex items-center gap-3 pr-5">
+        <div class="w-8 h-8 rounded-full bg-indigo-600 text-white flex items-center justify-center font-['Poppins'] font-bold text-[11px] shadow-lg">
           <%= partner.username.first.upcase %>
         </div>
-        <span class="font-['Poppins'] font-bold text-slate-900 text-xs leading-none pt-0.5">
-          @<%= partner.username %>
-        </span>
+        <div class="flex flex-col">
+          <span class="font-['Poppins'] font-bold text-slate-900 text-xs tracking-wide">@<%= partner.username %></span>
+          <span class="text-[8px] text-indigo-400 font-['Space_Grotesk'] font-bold tracking-widest uppercase leading-none mt-0.5">Dialogue</span>
+        </div>
       </div>
     </div>
   </div>
 
-  <div class="flex-1 overflow-y-auto pt-24 pb-48 px-4 z-10 custom-scrollbar" data-chat-target="messages">
-    <div class="max-w-xl mx-auto flex flex-col gap-1">
+  <%# --- 2. メッセージエリア (さらに位置をアップ) --- %>
+  <%# pt-20 にすることで、ヘッダーのすぐ真下からメッセージが表示されます %>
+  <div class="flex-1 overflow-y-auto pt-20 pb-48 px-4 z-10 custom-scrollbar" data-chat-target="messages">
+    <div class="max-w-xl mx-auto flex flex-col">
       
-      <div class="flex justify-center py-8 opacity-50">
-        <span class="text-[10px] text-slate-400 font-['Space_Grotesk']">
-          <%= @messages.first&.created_at&.strftime("%B %d, %Y at %H:%M") || "Conversation Started" %>
-        </span>
-      </div>
-
-      <div id="message_list" class="w-full flex flex-col gap-1">
+      <%# ログの開始地点（一番上）に余白がつかないよう mt-0 に設定 %>
+      <div id="message_list" class="w-full flex flex-col gap-1 mt-0">
         <%= render @messages %>
       </div>
 
+      <%# 過去ログへの境界線（下部へ移動） %>
+      <div class="flex flex-col items-center py-12 opacity-20">
+        <span class="text-[8px] text-slate-400 font-['Space_Grotesk'] tracking-[0.4em] uppercase">Beginning of Dialogue</span>
+        <div class="w-px h-12 bg-gradient-to-b from-slate-300 to-transparent mt-4"></div>
+      </div>
+
     </div>
   </div>
 
-  <div class="fixed bottom-24 left-0 right-0 px-4 flex justify-center z-40 pointer-events-none">
-    <div class="pointer-events-auto w-full max-w-xl bg-white rounded-full shadow-[0_12px_40px_rgba(0,0,0,0.08)] border border-slate-100 p-1.5 flex items-center gap-2 transition-all focus-within:shadow-[0_15px_50px_rgba(93,95,239,0.15)] focus-within:border-indigo-100">
-      
+  <%# --- 3. 入力エリア (固定) --- %>
+  <div class="fixed bottom-10 left-0 right-0 px-4 flex justify-center z-40 pointer-events-none">
+    <div class="pointer-events-auto w-full max-w-xl bg-white/90 backdrop-blur-xl rounded-[30px] shadow-[0_25px_50px_rgba(0,0,0,0.1)] border border-slate-100 p-2 flex items-center gap-2">
       <%= form_with(model: [@room, @message], 
           class: "flex-1 flex items-center gap-2 w-full", 
           data: { chat_target: "form", action: "turbo:submit-end->chat#resetForm" }) do |f| %>
-        
-        <%= f.text_field :content, placeholder: "Message...", class: "flex-1 bg-transparent border-none px-5 py-3 text-sm font-['Inter'] text-slate-800 placeholder-slate-300 focus:ring-0 focus:outline-none h-11" %>
-        
-        <button type="submit" class="group shrink-0 w-10 h-10 bg-[#5D5FEF] text-white rounded-full flex items-center justify-center transition-all duration-200 ease-out hover:bg-[#4b4dcf] hover:scale-110 hover:shadow-lg hover:shadow-indigo-200 active:scale-75 mr-1">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 ml-0.5 transition-transform duration-300 group-active:translate-x-3 group-active:-translate-y-3 group-active:opacity-0"><path d="M3.478 2.405a.75.75 0 00-.926.94l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.405z" /></svg>
+        <%= f.text_field :content, placeholder: "Type your message...", class: "flex-1 bg-transparent border-none px-5 py-3 text-sm font-['Inter'] text-slate-700 focus:ring-0 h-12" %>
+        <button type="submit" class="group shrink-0 w-11 h-11 bg-slate-900 text-white rounded-full flex items-center justify-center transition-all hover:bg-indigo-600 active:scale-90">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 ml-0.5"><path d="M3.478 2.405a.75.75 0 00-.926.94l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.405z" /></svg>
         </button>
-
       <% end %>
     </div>
   </div>

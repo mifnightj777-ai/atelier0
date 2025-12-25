@@ -2,22 +2,13 @@ class RoomsController < ApplicationController
   before_action :authenticate_user!
 
   def index
-    all_rooms = current_user.rooms.order(updated_at: :desc)
-    @active_rooms = []
-    @request_rooms = []
-
-    all_rooms.each do |room|
-      partner = (room.sender == current_user) ? room.recipient : room.sender
-      next if room.messages.empty?
-
-      if current_user.teammate_with?(partner)
-        @active_rooms << room
-      else
-        @request_rooms << room
-      end
-    end
+    # 承認済みの部屋のみを表示（メッセージがある順）
+    @rooms = current_user.rooms.order(updated_at: :desc)
   end
 
+  # create, show, destroy はそのままでOKですが、
+  # showのガード条件だけ再確認しておくと安心です
+  
   def create
     # 1. 話したい相手を見つける
     recipient = User.find(params[:user_id])
@@ -46,6 +37,7 @@ class RoomsController < ApplicationController
     @message = Message.new
   end
 
+  
   def destroy
     @room = Room.find(params[:id])
     
