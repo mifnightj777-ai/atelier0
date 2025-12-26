@@ -1,108 +1,217 @@
-<div class="min-h-screen bg-white flex flex-col relative overflow-hidden font-['Inter']">
+<style>
+  /* ヒーロー用：ゆっくり現れるアニメーション */
+  @keyframes slowFadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .fade-in { 
+    animation: slowFadeIn 1s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; 
+    opacity: 0;
+  }
+  .delay-1 { animation-delay: 0.2s; }
+  .delay-2 { animation-delay: 0.4s; }
+  .delay-3 { animation-delay: 0.6s; }
 
-  <div class="absolute top-[-10%] right-[-5%] w-[600px] h-[600px] bg-indigo-50 rounded-full blur-[100px] pointer-events-none opacity-60 animate-float-slow"></div>
-  <div class="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] bg-slate-50 rounded-full blur-[80px] pointer-events-none animate-float-reverse-slow"></div>
+  /* 縦長カードのホバーエフェクト */
+  .feature-card {
+    transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .feature-card:hover {
+    transform: translateY(-8px);
+    border-color: #6366f1;
+    box-shadow: 0 30px 60px -15px rgba(0,0,0,0.08);
+  }
 
-  <nav class="relative z-50 w-full px-8 py-6 flex justify-between items-center animate-fade-in">
-    <div class="flex items-center gap-2">
-      <span class="w-3 h-3 rounded-full bg-indigo-600"></span>
-      <span class="font-['Poppins'] font-bold text-xl tracking-tight text-slate-900">Atelier0.</span>
+  /* 動画のスタイリング */
+  .video-container {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    border-radius: 24px;
+    background: #f8fafc;
+  }
+  video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.9;
+  }
+
+  /* カードが隠れている時の状態 */
+  .reveal-card {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: all 0.8s cubic-bezier(0.2, 1, 0.3, 1);
+  }
+
+  /* 表示された時の状態 */
+  .reveal-card.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* 1番目から5番目まで、少しずつ遅れて表示させる設定 */
+  .reveal-card:nth-child(1) { transition-delay: 0.1s; }
+  .reveal-card:nth-child(2) { transition-delay: 0.2s; }
+  .reveal-card:nth-child(3) { transition-delay: 0.3s; }
+  .reveal-card:nth-child(4) { transition-delay: 0.4s; }
+  .reveal-card:nth-child(5) { transition-delay: 0.5s; }
+</style>
+
+<div class="w-full bg-white text-slate-900 font-['Inter'] selection:bg-indigo-50">
+
+  <%# --- 1. HERO: 静かな始まり (維持) --- %>
+  <section class="relative min-h-[95vh] flex flex-col items-center justify-center px-6">
+    <div class="absolute inset-0 flex justify-center items-center opacity-40 pointer-events-none overflow-hidden">
+      <div class="w-[800px] h-[800px] bg-indigo-50/50 rounded-full blur-3xl translate-y-1/4"></div>
     </div>
-    
-    <div class="flex items-center gap-6">
-      <%= link_to "GUIDE", guide_path, class: "text-xs font-bold text-slate-400 hover:text-indigo-600 transition-colors uppercase tracking-widest cursor-pointer relative z-50" %>
+
+    <div class="relative z-10 text-center max-w-3xl mx-auto">
+      <span class="inline-block text-[10px] font-['Space_Grotesk'] font-bold tracking-[0.4em] text-indigo-600 uppercase mb-6 fade-in">
+        The Digital Atelier for Process
+      </span>
+      <h1 class="text-5xl md:text-7xl font-['Poppins'] font-bold tracking-tight leading-[1.1] mb-8 fade-in delay-1">
+        This is your new <br>
+        Digital <span class="text-indigo-600">Atelier.</span>
+      </h1>
+      <p class="text-lg text-slate-500 leading-relaxed font-medium mb-12 max-w-xl mx-auto fade-in delay-2">
+        完成を急ぐ必要はありません。morphe0は、あなたの思考の揺らぎと、創作の過程そのものを美しく記録する場所です。
+      </p>
       
-      <% if user_signed_in? %>
-        <%= link_to "Back to Studio", fragments_path, class: "text-xs font-bold text-slate-900 hover:text-indigo-600 transition-colors relative z-50" %>
-      <% end %>
-    </div>
-  </nav>
-
-  <div class="flex-1 flex flex-col items-center justify-center px-6 relative z-10 text-center -mt-32 pb-20">
-    
-    <div class="mb-6 inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white border border-slate-100 shadow-xl shadow-indigo-100/50 mb-8 animate-fade-in-up">
-      <span class="font-['Poppins'] font-bold text-3xl text-indigo-600">A.</span>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4 fade-in delay-3">
+        <%= link_to new_user_registration_path, class: "px-10 py-4 bg-slate-900 text-white rounded-full font-['Poppins'] font-bold text-sm tracking-wider hover:bg-indigo-600 hover:shadow-lg transition-all duration-300" do %>
+          Start Your Studio
+        <% end %>
+      </div>
     </div>
 
-    <h1 class="font-['Poppins'] font-bold text-5xl md:text-7xl text-slate-900 tracking-tight leading-[1.1] mb-6 animate-fade-in-up animation-delay-200">
-      Focus on the <span class="text-indigo-600">Process</span>.
-    </h1>
-
-    <p class="text-slate-500 text-sm md:text-base leading-relaxed max-w-md mx-auto mb-12 font-medium animate-fade-in-up animation-delay-400">
-      A quiet digital studio for your fragmented thoughts.<br>
-      未完成を受け入れ、思考の過程をアーカイブしよう。
-    </p>
-
-    <div class="flex flex-col sm:flex-row items-center gap-4 w-full max-w-md animate-fade-in-up animation-delay-600">
+    <div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 fade-in delay-3">
+      <%# 文字も少しだけ動かすとおしゃれです %>
+      <span class="text-[13px] font-['Space_Grotesk'] font-bold tracking-[0.4em] text-slate-400 uppercase">
+        Scroll here
+      </span>
       
-      <%= link_to new_user_registration_path, class: "group relative w-full py-4 rounded-xl bg-indigo-600 text-white font-['Poppins'] font-bold text-sm tracking-widest overflow-hidden transition-all hover:shadow-lg hover:shadow-indigo-500/30 hover:-translate-y-0.5 text-center" do %>
-        <span class="relative z-10">GET STARTED</span>
-        <div class="absolute inset-0 bg-indigo-700 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out"></div>
-      <% end %>
-
-      <%= link_to new_user_session_path, class: "w-full py-4 rounded-xl border border-slate-200 text-slate-600 font-['Poppins'] font-bold text-sm tracking-widest hover:border-slate-400 hover:text-slate-900 transition-all bg-white hover:bg-slate-50 text-center" do %>
-        LOG IN
-      <% end %>
-      
+      <%# クリックすると #features セクションへスムーズに移動します %>
+      <a href="#features" class="group flex flex-col items-center">
+        <%# Tailwind標準の animate-bounce (弾む動き) を使用 %>
+        <div class="animate-bounce">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-slate-400 group-hover:text-indigo-600 transition-colors">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 13.5L12 21m0 0l-7.5-7.5M12 21V3" />
+          </svg>
+        </div>
+      </a>
     </div>
+  </section>
 
-    <p class="mt-8 text-[10px] text-slate-400 font-['Space_Grotesk'] tracking-widest uppercase animate-fade-in-up animation-delay-800">
-      Join the creative sanctuary
-    </p>
+  <%# --- 2. THE MODULES: 縦長カードの横並びセクション --- %>
+  <section id="features" class="w-full py-16 px-4 md:px-8 bg-[#FBFCFD]">
+    <div class="w-full max-w-[1600px] mx-auto">
+      
+      <div class="mb-12 px-4 flex justify-center items-end">
+        <div>
+          <h2 class="text-2xl font-['Poppins'] font-bold tracking-tight text-slate-900">Core Function</h2>
+          <p class="text-[10px] text-slate-400 font-bold uppercase tracking-[0.2em] mt-1">helps your record.</p>
+        </div>
+      </div>
 
-  </div>
+      <%# 5つのメイン機能を横に並べるグリッド %>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+        
+        <%# Card 1: Process Timeline %>
+        <div class="feature-card reveal-card bg-white rounded-[40px] border border-slate-100 p-8 flex flex-col aspect-[3/4.5]">
+          <div class="mb-6">
+            <span class="text-[9px] font-bold text-indigo-600 tracking-widest uppercase block mb-2">01 / Track</span>
+            <h3 class="text-xl font-['Poppins'] font-bold">Process Timeline</h3>
+          </div>
+          <div class="flex-1 video-container mb-6">
+            <video autoplay loop muted playsinline><source src="/videos/demo_timeline.mp4" type="video/mp4"></video>
+          </div>
+          <p class="text-[11px] text-slate-400 leading-relaxed">全ての思考の軌跡を一本の美しい時間軸としてアーカイブします。</p>
+        </div>
 
-  <div class="relative z-10 py-6 text-center animate-fade-in animation-delay-1000">
-    <p class="text-[10px] text-slate-300 font-['Inter']">
-      © 2025 Atelier0. All rights reserved.
-    </p>
-  </div>
+        <%# Card 2: Collections %>
+        <div class="feature-card reveal-card bg-white rounded-[40px] border border-slate-100 p-8 flex flex-col aspect-[3/4.5]">
+          <div class="mb-6">
+            <span class="text-[9px] font-bold text-indigo-600 tracking-widest uppercase block mb-2">02 / Organize</span>
+            <h3 class="text-xl font-['Poppins'] font-bold">Collections</h3>
+          </div>
+          <div class="flex-1 video-container mb-6">
+            <video autoplay loop muted playsinline><source src="/videos/demo_collections.mp4" type="video/mp4"></video>
+          </div>
+          <p class="text-[11px] text-slate-400 leading-relaxed">断片を束ね、Zineのように一つの物語としてコレクションを編みます。</p>
+        </div>
+
+        <%# Card 3: Version Up %>
+        <div class="feature-card reveal-card bg-slate-900 text-white rounded-[40px] p-8 flex flex-col aspect-[3/4.5]">
+          <div class="mb-6">
+            <span class="text-[9px] font-bold text-indigo-400 tracking-widest uppercase block mb-2">03 / Evolve</span>
+            <h3 class="text-xl font-['Poppins'] font-bold">Version Up</h3>
+          </div>
+          <div class="flex-1 video-container bg-slate-800 mb-6">
+            <video autoplay loop muted playsinline class="opacity-80"><source src="/videos/demo_version.mp4" type="video/mp4"></video>
+          </div>
+          <p class="text-[11px] text-slate-500 leading-relaxed">一つの断片から、修正ではなく「進化」を。無限の系譜を作成します。</p>
+        </div>
+
+        <%# Card 4: Dialogue (Letters & Chat) %>
+        <div class="feature-card reveal-card bg-white rounded-[40px] border border-slate-100 p-8 flex flex-col aspect-[3/4.5]">
+          <div class="mb-6">
+            <span class="text-[9px] font-bold text-indigo-600 tracking-widest uppercase block mb-2">04 / Dialogue</span>
+            <h3 class="text-xl font-['Poppins'] font-bold">Dialogue Letters</h3>
+          </div>
+          <div class="flex-1 video-container mb-6">
+            <video autoplay loop muted playsinline><source src="/videos/demo_dialogue.mp4" type="video/mp4"></video>
+          </div>
+          <p class="text-[11px] text-slate-400 leading-relaxed">一通の手紙から。承認された仲間とだけ深く繋がる、静かな対話空間。</p>
+        </div>
+
+        <%# Card 5: Compare Studio %>
+        <div class="feature-card reveal-card bg-white rounded-[40px] border border-slate-100 p-8 flex flex-col aspect-[3/4.5]">
+          <div class="mb-6">
+            <span class="text-[9px] font-bold text-indigo-600 tracking-widest uppercase block mb-2">05 / Analysis</span>
+            <h3 class="text-xl font-['Poppins'] font-bold">Compare Studio</h3>
+          </div>
+          <div class="flex-1 video-container mb-6">
+            <video autoplay loop muted playsinline><source src="/videos/demo_compare.mp4" type="video/mp4"></video>
+          </div>
+          <p class="text-[11px] text-slate-400 leading-relaxed">異なるバージョンを並列表示。色彩や筆致の微細な変化を詳細に分析。</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <%# --- 3. FINAL CTA --- %>
+    <section class="py-32 px-6 text-center border-t border-slate-50">
+      <div class="max-w-2xl mx-auto">
+        <h2 class="text-4xl font-['Poppins'] font-bold mb-8 text-slate-900 tracking-tight">Ready to open your studio?</h2>
+        <%= link_to "NEW REGISTRATION", new_user_registration_path, class: "px-14 py-5 bg-slate-900 text-white rounded-full font-['Poppins'] font-bold text-[11px] tracking-widest hover:bg-indigo-600 transition-all shadow-xl shadow-indigo-100" %>
+      </div>
+    </section>
+
+    <script>
+    document.addEventListener('turbo:load', () => {
+      const observerOptions = {
+        root: null,
+        rootMargin: '0px',
+        threshold: 0.1 // 10%見えたら実行
+      };
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+          // 一度表示されたら監視を止める場合は以下を有効に
+            // observer.unobserve(entry.target);
+          }
+        });
+      }, observerOptions);
+
+      // すべての reveal-card を監視対象にする
+      document.querySelectorAll('.reveal-card').forEach(card => {
+        observer.observe(card);
+      });
+    });
+  </script>
 
 </div>
-
-<style>
-  @keyframes float {
-    0%, 100% { transform: translate(0, 0); }
-    50% { transform: translate(-30px, 30px); }
-  }
-  @keyframes float-reverse {
-    0%, 100% { transform: translate(0, 0); }
-    50% { transform: translate(30px, -30px); }
-  }
-  .animate-float-slow {
-    animation: float 18s ease-in-out infinite;
-  }
-  .animate-float-reverse-slow {
-    animation: float-reverse 24s ease-in-out infinite;
-  }
-
-  @keyframes fade-in-up {
-    from {
-      opacity: 0;
-      transform: translateY(30px) scale(0.98);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-    }
-  }
-  .animate-fade-in-up {
-    opacity: 0;
-    animation: fade-in-up 1s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-  }
-
-  @keyframes fade-in {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
-  .animate-fade-in {
-    opacity: 0;
-    animation: fade-in 1s ease-out forwards;
-  }
-
-  .animation-delay-200 { animation-delay: 0.2s; }
-  .animation-delay-400 { animation-delay: 0.4s; }
-  .animation-delay-600 { animation-delay: 0.6s; }
-  .animation-delay-800 { animation-delay: 0.8s; }
-  .animation-delay-1000 { animation-delay: 1.0s; }
-</style>

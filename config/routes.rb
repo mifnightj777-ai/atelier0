@@ -1,4 +1,5 @@
 Rails.application.routes.draw do 
+  
   root "welcome#index"
   get 'guide', to: 'welcome#guide', as: :guide
   get 'welcome/index'

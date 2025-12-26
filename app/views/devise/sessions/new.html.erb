@@ -1,10 +1,21 @@
+<style>
+  @keyframes formReveal {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .animate-form {
+    animation: formReveal 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  }
+</style>
+
 <div class="min-h-[60vh] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-  <div class="max-w-md w-full space-y-8 bg-white p-10 rounded-[30px] shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-slate-100">
+  <%# --- カード部分に "animate-form" クラスのみを追記しました --- %>
+  <div class="animate-form max-w-md w-full space-y-8 bg-white p-10 rounded-[30px] shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-slate-100">
     
     <div class="text-center">
       <h2 class="font-['Poppins'] text-3xl font-bold text-slate-900">Welcome back.</h2>
       <p class="mt-2 text-sm text-slate-500 font-['Inter']">
-        アトリエの鍵を開けて、制作を再開しましょう。
+        アトリエの鍵を開けて、創造の世界に舞い戻ろう。
       </p>
     </div>
 
@@ -33,7 +44,7 @@
       <% end %>
 
       <div>
-        <%= f.submit "Log in", class: "group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-['Poppins'] font-bold rounded-full text-white bg-indigo-700 hover:bg-indigo-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 shadow-lg shadow-indigo-500/30 transition-all hover:scale-[1.02]" %>
+        <%= f.submit "Log in", class: "group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-['Poppins'] font-bold rounded-full text-white bg-indigo-700 hover:bg-indigo-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 shadow-lg shadow-indigo-500/30 transition-all hover:scale-[1.02] cursor-pointer" %>
       </div>
     <% end %>
 

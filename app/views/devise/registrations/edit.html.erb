@@ -1,3 +1,13 @@
+<style>
+  @keyframes formReveal {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .animate-form {
+    animation: formReveal 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  }
+</style>
+
 <div class="min-h-screen py-20 px-4 flex items-center justify-center relative overflow-hidden">
   
   <div class="fixed top-[-10%] left-[-10%] w-[500px] h-[500px] bg-indigo-400/20 rounded-full blur-[100px] pointer-events-none"></div>
