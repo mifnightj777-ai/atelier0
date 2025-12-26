@@ -3,57 +3,79 @@ import { Controller } from "@hotwired/stimulus"
 export default class extends Controller {
   static targets = ["button"]
 
-  connect() {
-    this.currentAudio = null // 現在再生中の音を記憶する場所
+  SOUND_SOURCES = {
+    rain:     "https://actions.google.com/sounds/v1/weather/rain_on_rooftop.ogg",
+    fire:     "https://actions.google.com/sounds/v1/ambiences/fire.ogg",
+    coffee:   "https://actions.google.com/sounds/v1/ambiences/coffee_shop.ogg",
+    airplane: "https://actions.google.com/sounds/v1/transportation/airplane_in_flight.ogg",
+    engine:   "https://actions.google.com/sounds/v1/transportation/car_engine_idling_accelerating.ogg"
   }
 
-  // 画面から離れるとき（ページ移動時）に音を止める
-  disconnect() {
-    this.stopAudio()
+  connect() {
+    this.audios = {}
+    this.currentAudio = null
+    this.currentButton = null
+    
+    const unlock = () => {
+      Object.values(this.SOUND_SOURCES).forEach(url => {
+        const a = new Audio(url); a.muted = true; a.play().then(() => a.pause());
+      });
+      window.removeEventListener('click', unlock);
+    };
+    window.addEventListener('click', unlock);
   }
 
   toggle(event) {
     const button = event.currentTarget
-    const soundUrl = button.dataset.soundUrl
-    const isActive = button.classList.contains("text-indigo-600")
+    const type = button.dataset.soundType
+    const url = this.SOUND_SOURCES[type]
 
-    // 1. まず全ての音と見た目をリセットする
-    this.stopAudio()
-    this.resetButtons()
-
-    // 2. もし「OFFの状態」のボタンを押したなら、ONにする
-    if (!isActive) {
-      // 見た目をONにする
-      button.classList.remove("text-slate-400", "bg-white", "border-slate-100")
-      button.classList.add("text-indigo-600", "bg-indigo-50", "border-indigo-200")
-
-      // 音を再生する
-      this.playAudio(soundUrl)
+    // 1. 同じボタンを再度押した場合は停止する
+    if (this.currentAudio && this.currentButton === button) {
+      this.stopCurrent();
+      return;
     }
+
+    // 2. Aを止めてBを鳴らす：現在鳴っている音をすべてリセット
+    this.stopAll();
+
+    // 3. 新しい音を再生
+    const audio = new Audio(url)
+    audio.loop = true
+    this.currentAudio = audio
+    this.currentButton = button
+
+    this.currentAudio.play()
+      .then(() => this.setActive(button))
+      .catch(() => {});
   }
 
-  playAudio(url) {
-    if (url) {
-      this.currentAudio = new Audio(url)
-      this.currentAudio.loop = true // ループ再生
-      this.currentAudio.volume = 0.5 // 音量50%
-      this.currentAudio.play().catch(error => {
-        console.log("Audio play failed:", error)
-      })
-    }
-  }
-
-  stopAudio() {
+  stopAll() {
     if (this.currentAudio) {
-      this.currentAudio.pause()
-      this.currentAudio = null
+      this.currentAudio.pause();
+      this.currentAudio = null;
+    }
+    this.buttonTargets.forEach(btn => this.setInactive(btn));
+  }
+
+  stopCurrent() {
+    if (this.currentAudio) {
+      this.currentAudio.pause();
+      this.currentAudio = null;
+    }
+    if (this.currentButton) {
+      this.setInactive(this.currentButton);
+      this.currentButton = null;
     }
   }
 
-  resetButtons() {
-    this.buttonTargets.forEach(btn => {
-      btn.classList.remove("text-indigo-600", "bg-indigo-50", "border-indigo-200")
-      btn.classList.add("text-slate-400", "bg-white", "border-slate-100")
-    })
+  setActive(button) {
+    button.classList.add("text-indigo-600", "bg-indigo-50", "shadow-inner")
+    button.classList.remove("text-slate-400")
+  }
+
+  setInactive(button) {
+    button.classList.remove("text-indigo-600", "bg-indigo-50", "shadow-inner")
+    button.classList.add("text-slate-400")
   }
 }

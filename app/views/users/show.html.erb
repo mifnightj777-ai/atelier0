@@ -99,7 +99,14 @@
       %>
 
       <% display_collections&.each do |collection| %>
-        <% visible_frags = collection.fragments.where.not(visibility: :private_view) %>
+        <% 
+          visible_frags = if current_user == @user
+            collection.fragments
+          else
+           collection.fragments.where.not(visibility: :private_view)
+          end
+        %>
+        
         <div class="flex-shrink-0 w-40 relative group">
           <% if current_user == @user %>
             <%= link_to collection_path(collection), 

@@ -5,28 +5,170 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-    
     <%= stylesheet_link_tag "tailwind", "application", "data-turbo-track": "reload" %>
-    
     <%= javascript_importmap_tags %>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&family=Space+Grotesk:wght@300;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&family=Noto+Sans+JP:wght@400;700&family=Shippori+Mincho:wght@400;700&family=Zen+Maru+Gothic:wght@400;700&display=swap" rel="stylesheet">
+    
+    <%# 【重要】Lucideアイコンライブラリの読み込み %>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+      * { font-family: 'Poppins', 'Noto Sans JP', sans-serif !important; }
+      #main-paper.f-sans  input, #main-paper.f-sans  textarea { font-family: 'Poppins', 'Noto Sans JP', sans-serif !important; }
+      #main-paper.f-serif input, #main-paper.f-serif textarea { font-family: 'Shippori Mincho', serif !important; }
+      #main-paper.f-round input, #main-paper.f-round textarea { font-family: 'Zen Maru Gothic', sans-serif !important; }
+
+      #main-paper input { font-weight: 800 !important; }
+      #main-paper textarea { line-height: 2.0 !important; }
+      #main-paper.ts-s input    { font-size: 2.25rem !important; }
+      #main-paper.ts-s textarea { font-size: 1rem !important; }
+      #main-paper.ts-m input    { font-size: 3.5rem !important; }
+      #main-paper.ts-m textarea { font-size: 1.25rem !important; }
+      #main-paper.ts-l input    { font-size: 4.5rem !important; }
+      #main-paper.ts-l textarea { font-size: 1.625rem !important; }
+
+      #main-paper.p-white { background-color: #ffffff !important; }
+      #main-paper.p-beige { background-color: #FFFEF9 !important; }
+      #main-paper.p-black { background-color: #121212 !important; border-color: #262626 !important; }
+      #main-paper.p-black input, #main-paper.p-black textarea { color: #E5E5E5 !important; }
+
+      #main-paper input, #main-paper textarea { transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1) !important; outline: none !important; }
+
+      .mode-soft .focus-ui-bar { opacity: 0.1 !important; transition: opacity 0.8s !important; }
+      .mode-soft .focus-ui-bar:hover { opacity: 1 !important; }
+      .mode-hard .focus-ui-bar { opacity: 0 !important; pointer-events: none !important; transition: opacity 0.8s !important; }
+      body.reveal-nav .focus-ui-bar { opacity: 1 !important; pointer-events: auto !important; }
+
+      .active-choice { color: #4F46E5 !important; font-weight: 800 !important; }
+      .active-color { border: 3px solid #4F46E5 !important; }
+      .memo-yellow { background-color: #FEF9C3 !important; }
+      .memo-blue   { background-color: #DBEAFE !important; }
+      .memo-pink   { background-color: #FCE7F3 !important; }
+    </style>
   </head>
 
-  <body class="bg-[#FAFAFA] text-slate-800 antialiased min-h-screen flex flex-col">
-    
-    <main class="flex-1 flex flex-col relative">
-      <div class="absolute top-6 left-6 z-50">
-        <%= link_to root_path, class: "text-slate-300 hover:text-slate-600 transition-colors p-2", title: "Exit Focus Mode" do %>
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-          </svg>
+  <body id="focus-body" class="bg-[#F8FAFC] antialiased min-h-screen" data-controller="focus-sound memo">
+    <main class="w-full min-h-screen flex flex-col items-center pt-24 pb-40 relative overflow-x-hidden">
+      
+      <div class="fixed top-6 left-6 z-[100] focus-ui-bar transition-all duration-700">
+        <%= link_to root_path, class: "flex items-center justify-center w-10 h-10 rounded-full bg-white border border-slate-200 text-slate-300 hover:text-indigo-500 shadow-sm" do %>
+          <i data-lucide="x" class="w-5 h-5" stroke-width="1.5"></i>
         <% end %>
       </div>
 
-      <%= yield %>
+      <div id="main-nav" class="focus-ui-bar fixed top-6 left-1/2 -translate-x-1/2 flex items-center gap-6 bg-white/95 backdrop-blur-md border border-slate-100 rounded-full px-7 py-3 shadow-2xl z-[150] whitespace-nowrap transition-all duration-700">
+        
+        <div class="flex items-center gap-1 border-r border-slate-100 pr-5">
+          <button type="button" data-action="click->focus-sound#toggle" data-focus-sound-target="button" data-sound-type="rain" class="w-10 h-10 flex items-center justify-center rounded-full text-slate-400 hover:text-indigo-500 transition-all">
+            <i data-lucide="cloud-rain" class="w-5 h-5" stroke-width="1.5"></i>
+          </button>
+          <button type="button" data-action="click->focus-sound#toggle" data-focus-sound-target="button" data-sound-type="fire" class="w-10 h-10 flex items-center justify-center rounded-full text-slate-400 hover:text-indigo-500 transition-all">
+            <i data-lucide="flame" class="w-5 h-5" stroke-width="1.5"></i>
+          </button>
+          <button type="button" data-action="click->focus-sound#toggle" data-focus-sound-target="button" data-sound-type="coffee" class="w-10 h-10 flex items-center justify-center rounded-full text-slate-400 hover:text-indigo-500 transition-all">
+            <i data-lucide="coffee" class="w-5 h-5" stroke-width="1.5"></i>
+          </button>
+          <button type="button" data-action="click->focus-sound#toggle" data-focus-sound-target="button" data-sound-type="airplane" class="w-10 h-10 flex items-center justify-center rounded-full text-slate-400 hover:text-indigo-500 transition-all">
+            <i data-lucide="plane" class="w-5 h-5" stroke-width="1.5"></i>
+          </button>
+          <button type="button" data-action="click->focus-sound#toggle" data-focus-sound-target="button" data-sound-type="engine" class="w-10 h-10 flex items-center justify-center rounded-full text-slate-400 hover:text-indigo-500 transition-all">
+            <i data-lucide="car" class="w-5 h-5" stroke-width="1.5"></i>
+          </button>
+          <div class="w-px h-6 bg-slate-100 mx-1"></div>
+          <button type="button" data-action="click->memo#toggle" data-memo-target="icon" class="w-10 h-10 flex items-center justify-center rounded-full text-slate-400 transition-all">
+            <i data-lucide="sticky-note" class="w-5 h-5" stroke-width="1.5"></i>
+          </button>
+        </div>
+
+        <div class="flex items-center gap-6 border-r border-slate-100 pr-6">
+          <div class="flex gap-2">
+            <button id="btn-p-white" onclick="setPaper('p-white', this)" class="w-4 h-4 rounded-full bg-white border border-slate-200"></button>
+            <button id="btn-p-beige" onclick="setPaper('p-beige', this)" class="w-4 h-4 rounded-full bg-[#FFFEF0] border border-slate-200"></button>
+            <button id="btn-p-black" onclick="setPaper('p-black', this)" class="w-4 h-4 rounded-full bg-[#121212] border border-slate-800"></button>
+          </div>
+          <div class="flex flex-col items-center gap-1 border-l border-slate-100 pl-6">
+            <span class="text-[7px] text-slate-300 font-bold uppercase tracking-widest">Font Style</span>
+            <div class="flex gap-4">
+              <button id="btn-f-sans" onclick="setFont('f-sans', this)" class="design-btn-font text-[11px] font-bold text-slate-300 uppercase hover:text-slate-900 transition-colors">Sans</button>
+              <button id="btn-f-serif" onclick="setFont('f-serif', this)" class="design-btn-font text-[11px] font-bold text-slate-300 uppercase hover:text-slate-900 transition-colors">Serif</button>
+              <button id="btn-f-round" onclick="setFont('f-round', this)" class="design-btn-font text-[11px] font-bold text-slate-300 uppercase hover:text-slate-900 transition-colors">Round</button>
+            </div>
+          </div>
+          <div class="flex flex-col items-center gap-1 border-l border-slate-100 pl-6">
+            <span class="text-[7px] text-slate-300 font-bold uppercase tracking-widest">Size</span>
+            <div class="flex gap-4">
+              <button id="btn-ts-s" onclick="setSize('ts-s', this)" class="design-btn-size text-[11px] font-bold text-slate-300 w-3 text-center hover:text-slate-900">S</button>
+              <button id="btn-ts-m" onclick="setSize('ts-m', this)" class="design-btn-size text-[11px] font-bold text-slate-300 w-3 text-center hover:text-slate-900">M</button>
+              <button id="btn-ts-l" onclick="setSize('ts-l', this)" class="design-btn-size text-[11px] font-bold text-slate-300 w-3 text-center hover:text-slate-900">L</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex flex-col items-center gap-1 border-r border-slate-100 pr-6">
+          <span class="text-[7px] text-slate-300 font-bold uppercase tracking-widest">View Mode</span>
+          <div class="flex gap-4">
+            <button id="btn-mode-none" onclick="setImmerse('none', this)" class="mode-btn text-[11px] font-bold text-slate-300 uppercase hover:text-slate-900">Normal</button>
+            <button id="btn-mode-soft" onclick="setImmerse('soft', this)" class="mode-btn text-[11px] font-bold text-slate-300 uppercase hover:text-slate-900">Soft</button>
+            <button id="btn-mode-hard" onclick="setImmerse('hard', this)" class="mode-btn text-[11px] font-bold text-slate-300 uppercase hover:text-slate-900">Deep</button>
+          </div>
+        </div>
+
+        <div class="flex items-center">
+          <%= form_with(model: @idea || Idea.new, data: { turbo: false }) do |form| %>
+            <div class="hidden"><%= form.hidden_field :title, id: "hidden-title" %><%= form.hidden_field :description, id: "hidden-description" %></div>
+            <%= form.button class: "bg-slate-900 text-white px-7 py-3 rounded-full font-bold text-[12px] tracking-[0.2em] uppercase shadow-md", onclick: "syncContent()" do %>SAVE<% end %>
+          <% end %>
+        </div>
+      </div>
+
+      <div id="main-paper" class="w-full max-w-[1100px] p-white border border-slate-200 shadow-[0_30px_100px_rgba(0,0,0,0.04)] rounded-[4px] p-24 md:p-36 min-h-[1000px] flex flex-col relative transition-all duration-500 animate-fade-in-up ts-m f-sans">
+        <div class="space-y-16 flex-1 flex flex-col pt-4">
+          <input type="text" id="paper-title" value="<%= @idea&.title %>" placeholder="Untitled Idea" class="w-full bg-transparent border-none p-0 focus:ring-0">
+          <textarea id="paper-description" placeholder="Start writing..." class="w-full h-full bg-transparent border-none p-0 focus:ring-0 resize-none min-h-[700px]"><%= @idea&.description %></textarea>
+        </div>
+      </div>
+
+      <%# メモパネル：独立動作を死守 %>
+      <div id="memo-panel-ui" data-memo-target="panel" class="fixed top-32 right-12 w-80 bg-white border border-slate-200 rounded-3xl shadow-2xl z-[200] translate-y-8 opacity-0 pointer-events-none transition-all duration-300 p-7">
+        <div class="flex justify-between items-center mb-6 border-b pb-4">
+          <h2 class="font-bold text-slate-800 tracking-widest text-[10px] uppercase">Fragments</h2>
+          <div class="flex gap-2"><button onclick="setMemoColor('memo-yellow')" class="w-4 h-4 rounded-full bg-[#FEF9C3] border border-slate-200"></button><button onclick="setMemoColor('memo-blue')" class="w-4 h-4 rounded-full bg-[#DBEAFE] border border-slate-200"></button><button onclick="setMemoColor('memo-pink')" class="w-4 h-4 rounded-full bg-[#FCE7F3] border border-slate-200"></button></div>
+        </div>
+        <% if @idea&.persisted? %>
+          <%= form_with(model: [ @idea, Memo.new ], data: { turbo_stream: true }, class: "mb-6") do |f| %>
+            <div class="flex flex-col gap-4">
+              <div id="memo-input-container" class="memo-yellow rounded-2xl p-5 shadow-inner transition-colors">
+                <%= f.hidden_field :color, id: "memo-color-field", value: "memo-yellow" %>
+                <%= f.text_area :content, placeholder: "Add a fragment...", class: "w-full bg-transparent border-none p-0 text-sm focus:ring-0 resize-none h-28 text-slate-700 leading-relaxed" %>
+              </div>
+              <%= f.submit "ADD", class: "bg-indigo-600 text-white font-bold text-[10px] tracking-widest py-3 rounded-xl shadow-md" %>
+            </div>
+          <% end %>
+          <div id="memos_list" class="max-h-96 overflow-y-auto space-y-4 pr-1 scrollbar-hide"><%= render partial: "memos/memo", collection: @idea.memos.order(created_at: :desc) %></div>
+        <% end %>
+      </div>
     </main>
 
+    <script>
+      function syncContent() { document.getElementById('hidden-title').value = document.getElementById('paper-title').value; document.getElementById('hidden-description').value = document.getElementById('paper-description').value; }
+      function setImmerse(mode, btn) { const body = document.getElementById('focus-body'); body.classList.remove('mode-soft', 'mode-hard'); if(mode !== 'none') body.classList.add('mode-' + mode); document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active-choice')); if(btn) btn.classList.add('active-choice'); localStorage.setItem('atelier0_immerse', mode); }
+      function setMemoColor(cls) { const container = document.getElementById('memo-input-container'); const field = document.getElementById('memo-color-field'); if (container) container.className = 'rounded-2xl p-5 shadow-inner transition-colors ' + cls; if (field) field.value = cls; localStorage.setItem('atelier0_memo_color', cls); }
+      function setPaper(cls, btn) { const p = document.getElementById('main-paper'); p.classList.remove('p-white', 'p-beige', 'p-black'); p.classList.add(cls); localStorage.setItem('atelier0_paper', cls); updateVisuals(); }
+      function setFont(cls, btn) { const p = document.getElementById('main-paper'); p.classList.remove('f-sans', 'f-serif', 'f-round'); p.classList.add(cls); localStorage.setItem('atelier0_font', cls); updateVisuals(); }
+      function setSize(cls, btn) { const p = document.getElementById('main-paper'); p.classList.remove('ts-s', 'ts-m', 'ts-l'); p.classList.add(cls); localStorage.setItem('atelier0_size', cls); updateVisuals(); }
+      
+      function updateVisuals() {
+        const paper = localStorage.getItem('atelier0_paper') || 'p-white'; const font = localStorage.getItem('atelier0_font') || 'f-sans'; const size = localStorage.getItem('atelier0_size') || 'ts-m'; const memoColor = localStorage.getItem('atelier0_memo_color') || 'memo-yellow'; const immerse = localStorage.getItem('atelier0_immerse') || 'none';
+        document.querySelectorAll('[id^="btn-p-"]').forEach(b => b.classList.remove('active-color')); document.getElementById('btn-' + paper)?.classList.add('active-color');
+        document.querySelectorAll('.design-btn-font, .design-btn-size').forEach(b => b.classList.remove('active-choice')); document.getElementById('btn-' + font)?.classList.add('active-choice'); document.getElementById('btn-' + size)?.classList.add('active-choice');
+        const p = document.getElementById('main-paper'); if (p) { p.classList.remove('p-white', 'p-beige', 'p-black', 'f-sans', 'f-serif', 'f-round', 'ts-s', 'ts-m', 'ts-l'); p.classList.add(paper, font, size); }
+        setMemoColor(memoColor); const immerseBtn = document.getElementById('btn-mode-' + immerse); if(immerseBtn) setImmerse(immerse, immerseBtn);
+        <%# Lucideアイコンを再描画する命令を追加 %>
+        if (window.lucide) { lucide.createIcons(); }
+      }
+
+      document.addEventListener('mousemove', (e) => { const body = document.getElementById('focus-body'); if (e.clientY < 60) body.classList.add('reveal-nav'); else if (!e.target.closest('.focus-ui-bar')) body.classList.remove('reveal-nav'); });
+      document.addEventListener('turbo:load', updateVisuals); window.onload = updateVisuals;
+    </script>
   </body>
 </html>
