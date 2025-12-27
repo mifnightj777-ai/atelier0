@@ -100,6 +100,6 @@ class FragmentsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def fragment_params
-      params.require(:fragment).permit(:title, :description, :image, :visibility, :parent_id, :prompt_id)
+      params.require(:fragment).permit(:title, :description, :image, :audio, :visibility, :parent_id, :prompt_id)
     end
 end

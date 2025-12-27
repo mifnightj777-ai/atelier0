@@ -1,6 +1,9 @@
 class Fragment < ApplicationRecord
-  has_one_attached :image
   belongs_to :user
+
+  has_one_attached :image
+  has_one_attached :audio
+
   belongs_to :prompt, optional: true
   has_many :likes, dependent: :destroy
   
@@ -33,7 +36,8 @@ class Fragment < ApplicationRecord
 
   # 2. 画像の色抽出 (これが自動抽出の本丸です)
   #    create(新規) または update(更新) の後、画像があるなら実行します
-  after_commit :extract_auto_colors, on: [:create, :update], if: -> { image.attached? }
+  after_commit :extract_auto_colors, on: [:create, :update], 
+               if: -> { image.attached? && !audio.attached? }
 
   # --- ▲ Callback 設定ここまで ▲ ---
 
