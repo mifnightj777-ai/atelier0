@@ -142,6 +142,10 @@
   <%= yield %>
 </main>
 
+<div id="global-audio-container" data-turbo-permanent>
+  <audio id="morphe-global-player" loop preload="none"></audio>
+</div>
+
 <%# --- 追加: ローディング制御用のJavaScript --- %>
 <script>
   document.addEventListener("turbo:before-visit", () => {

@@ -12,61 +12,75 @@ export default class extends Controller {
   }
 
   connect() {
-    this.audios = {}
-    this.currentAudio = null
     this.currentButton = null
     
-    const unlock = () => {
-      Object.values(this.SOUND_SOURCES).forEach(url => {
-        const a = new Audio(url); a.muted = true; a.play().then(() => a.pause());
-      });
-      window.removeEventListener('click', unlock);
-    };
-    window.addEventListener('click', unlock);
+    // 現在、裏側で音が流れているかチェックし、流れていれば該当ボタンを青くする
+    const globalAudio = this.globalAudioElement
+    if (globalAudio && !globalAudio.paused && globalAudio.src) {
+      // どの音が流れているかURLから逆引きする
+      const playingType = Object.keys(this.SOUND_SOURCES).find(key => 
+        globalAudio.src === this.SOUND_SOURCES[key]
+      )
+      
+      if (playingType) {
+        // 該当するボタンを探してアクティブにする
+        const activeBtn = this.buttonTargets.find(btn => btn.dataset.soundType === playingType)
+        if (activeBtn) {
+          this.currentButton = activeBtn
+          this.setActive(activeBtn)
+        }
+      }
+    }
+  }
+
+  // 裏側に仕込んだオーディオ要素を取得する便利メソッド
+  get globalAudioElement() {
+    return document.getElementById("morphe-global-player")
   }
 
   toggle(event) {
     const button = event.currentTarget
     const type = button.dataset.soundType
     const url = this.SOUND_SOURCES[type]
+    
+    const globalAudio = this.globalAudioElement
+    if (!globalAudio) return
 
     // 1. 同じボタンを再度押した場合は停止する
-    if (this.currentAudio && this.currentButton === button) {
-      this.stopCurrent();
+    // (URLが一致し、かつ再生中の場合)
+    if (!globalAudio.paused && globalAudio.src === url) {
+      this.stopCurrent(globalAudio);
       return;
     }
 
-    // 2. Aを止めてBを鳴らす：現在鳴っている音をすべてリセット
-    this.stopAll();
+    // 2. Aを止めてBを鳴らす：見た目のリセット
+    this.resetAllButtons();
 
-    // 3. 新しい音を再生
-    const audio = new Audio(url)
-    audio.loop = true
-    this.currentAudio = audio
-    this.currentButton = button
-
-    this.currentAudio.play()
-      .then(() => this.setActive(button))
-      .catch(() => {});
+    // 3. 裏側のプレイヤーに新しい曲をセットして再生
+    globalAudio.src = url
+    globalAudio.volume = 0.5 // 音量はお好みで
+    globalAudio.play()
+      .then(() => {
+        this.currentButton = button
+        this.setActive(button)
+      })
+      .catch((e) => {
+        console.error("Playback failed:", e)
+      });
   }
 
-  stopAll() {
-    if (this.currentAudio) {
-      this.currentAudio.pause();
-      this.currentAudio = null;
-    }
-    this.buttonTargets.forEach(btn => this.setInactive(btn));
-  }
-
-  stopCurrent() {
-    if (this.currentAudio) {
-      this.currentAudio.pause();
-      this.currentAudio = null;
-    }
+  stopCurrent(audio) {
+    audio.pause();
+    // srcを空にしないと、再開時にバグることがあるのでリセットしても良いが
+    // ここではpauseのみにしておく（再開が早い）
     if (this.currentButton) {
       this.setInactive(this.currentButton);
       this.currentButton = null;
     }
+  }
+
+  resetAllButtons() {
+    this.buttonTargets.forEach(btn => this.setInactive(btn));
   }
 
   setActive(button) {
