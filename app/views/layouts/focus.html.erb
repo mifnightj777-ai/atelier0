@@ -224,142 +224,155 @@
     </div>
   </main>
 
-<script>
-        // ▼▼▼ 保存開始：Indigoになってロード表示 ▼▼▼
-        function startSaving() {
-          // 1. 中身の同期
-          const title = document.getElementById('paper-title');
-          const desc = document.getElementById('paper-description');
-          const hTitle = document.getElementById('hidden-title');
-          const hDesc = document.getElementById('hidden-description');
+  <script>
+      // ▼▼▼ 1. 保存ボタンの制御 ▼▼▼
+      function startSaving() {
+        const title = document.getElementById('paper-title');
+        const desc = document.getElementById('paper-description');
+        const hTitle = document.getElementById('hidden-title');
+        const hDesc = document.getElementById('hidden-description');
 
-          if (title && hTitle) hTitle.value = title.value;
-          if (desc && hDesc) hDesc.value = desc.value;
+        if (title && hTitle) hTitle.value = title.value;
+        if (desc && hDesc) hDesc.value = desc.value;
 
-          // 2. ボタンをIndigoのロード表示に変える
-          const btn = document.getElementById('save-btn');
-          if (btn) {
-            // 回転するSVGアイコン
-            btn.innerHTML = '<svg class="animate-spin h-4 w-4 text-white mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>';
-            
-            // 色を変更（黒 → Indigo）
-            btn.classList.remove('bg-slate-900', 'hover:bg-slate-700', 'hover:shadow-lg');
-            btn.classList.add('bg-indigo-600', 'cursor-wait', 'opacity-90');
-            
-            // 操作不能にする
-            btn.style.pointerEvents = 'none';
-          }
-          // この後、Railsのコントローラーが `redirect_to ideas_path` などをしていれば、
-          // 自動的にIdea Vaultへ画面遷移します。
+        const btn = document.getElementById('save-btn');
+        if (btn) {
+          btn.innerHTML = '<svg class="animate-spin h-4 w-4 text-white mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>';
+          btn.classList.remove('bg-slate-900', 'hover:bg-slate-700', 'hover:shadow-lg');
+          btn.classList.add('bg-indigo-600', 'cursor-wait', 'opacity-90');
+          btn.style.pointerEvents = 'none';
+        }
+      }
+
+  // ▼▼▼ 2. 付箋の色変更（これは絶対に必要！） ▼▼▼
+      function setMemoColor(cls) {
+        const container = document.getElementById('memo-input-container');
+        const field = document.getElementById('memo-color-field');
+
+    // コンテナがある場合のみクラスを変更（エラー防止）
+        if (container) {
+      // 既存の色クラスを削除して新しい色を追加
+          container.classList.remove('memo-yellow', 'memo-blue', 'memo-pink');
+          container.classList.add(cls);
         }
 
-        // --- (表示切り替え機能などはそのまま) ---
+    // フォームの隠しフィールドに色情報をセット
+        if (field) {
+          field.value = cls;
+        }
+        localStorage.setItem('atelier0_memo_color', cls);
+      }
 
-        function setImmerse(mode, btn) {
-          const body = document.getElementById('focus-body');
-          body.classList.remove('mode-soft', 'mode-hard');
-          
-          if (mode !== 'none') {
-            body.classList.add('mode-' + mode);
-          }
-          
-          document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active-choice'));
-          if (btn) btn.classList.add('active-choice');
-          
-          localStorage.setItem('atelier0_immerse', mode);
+  // ▼▼▼ 3. デザイン・没入モード設定 ▼▼▼
+      function setImmerse(mode, btn) {
+        const body = document.getElementById('focus-body');
+        if (!body) return;
+
+        body.classList.remove('mode-soft', 'mode-hard');
+        if (mode !== 'none') {
+          body.classList.add('mode-' + mode);
         }
 
-        function setMemoColor(cls) {
-          const container = document.getElementById('memo-input-container');
-          const field = document.getElementById('memo-color-field');
-          
-          if (container) {
-            container.className = 'rounded-2xl p-5 shadow-inner transition-colors ' + cls;
-          }
-          if (field) {
-            field.value = cls;
-          }
-          localStorage.setItem('atelier0_memo_color', cls);
+        document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active-choice'));
+        if (btn) btn.classList.add('active-choice');
+        localStorage.setItem('atelier0_immerse', mode);
+      }
+
+      function setPaper(cls, btn) {
+        const p = document.getElementById('main-paper');
+        if (!p) return;
+        p.classList.remove('p-white', 'p-beige', 'p-black');
+        p.classList.add(cls);
+        localStorage.setItem('atelier0_paper', cls);
+        updateVisuals();
+      }
+
+      function setFont(cls, btn) {
+        const p = document.getElementById('main-paper');
+        if (!p) return;
+        p.classList.remove('f-sans', 'f-serif', 'f-round');
+        p.classList.add(cls);
+        localStorage.setItem('atelier0_font', cls);
+        updateVisuals();
+      }
+
+      function setSize(cls, btn) {
+        const p = document.getElementById('main-paper');
+        if (!p) return;
+        p.classList.remove('ts-s', 'ts-m', 'ts-l');
+        p.classList.add(cls);
+        localStorage.setItem('atelier0_size', cls);
+        updateVisuals();
+      }
+
+  // ▼▼▼ 4. 画面読み込み時の復元処理 ▼▼▼
+      function updateVisuals() {
+        const paper = localStorage.getItem('atelier0_paper') || 'p-white';
+        const font = localStorage.getItem('atelier0_font') || 'f-sans';
+        const size = localStorage.getItem('atelier0_size') || 'ts-m';
+        const memoColor = localStorage.getItem('atelier0_memo_color') || 'memo-yellow';
+        const immerse = localStorage.getItem('atelier0_immerse') || 'none';
+
+        document.querySelectorAll('[id^="btn-p-"]').forEach(b => b.classList.remove('active-color'));
+        const paperBtn = document.getElementById('btn-' + paper);
+        if (paperBtn) paperBtn.classList.add('active-color');
+
+        document.querySelectorAll('.design-btn-font, .design-btn-size').forEach(b => b.classList.remove('active-choice'));
+        const fontBtn = document.getElementById('btn-' + font);
+        if (fontBtn) fontBtn.classList.add('active-choice');
+
+        const sizeBtn = document.getElementById('btn-' + size);
+        if (sizeBtn) sizeBtn.classList.add('active-choice');
+
+        const p = document.getElementById('main-paper');
+        if (p) {
+          p.classList.remove('p-white', 'p-beige', 'p-black', 'f-sans', 'f-serif', 'f-round', 'ts-s', 'ts-m', 'ts-l');
+          p.classList.add(paper, font, size);
         }
 
-        function setPaper(cls, btn) {
-          const p = document.getElementById('main-paper');
-          p.classList.remove('p-white', 'p-beige', 'p-black');
-          p.classList.add(cls);
-          localStorage.setItem('atelier0_paper', cls);
-          updateVisuals();
+    // メモの色を復元
+        setMemoColor(memoColor);
+
+        const immerseBtn = document.getElementById('btn-mode-' + immerse);
+        if (immerseBtn) setImmerse(immerse, immerseBtn);
+
+        if (window.lucide) {
+          lucide.createIcons();
         }
+      }
 
-        function setFont(cls, btn) {
-          const p = document.getElementById('main-paper');
-          p.classList.remove('f-sans', 'f-serif', 'f-round');
-          p.classList.add(cls);
-          localStorage.setItem('atelier0_font', cls);
-          updateVisuals();
-        }
+  // キーボードショートカット（Command + S）
+      document.addEventListener('keydown', (e) => {
+        if ((e.metaKey || e.ctrlKey) && e.key === 's') {
+          e.preventDefault();
+          const saveBtn = document.getElementById('save-btn');
 
-        function setSize(cls, btn) {
-          const p = document.getElementById('main-paper');
-          p.classList.remove('ts-s', 'ts-m', 'ts-l');
-          p.classList.add(cls);
-          localStorage.setItem('atelier0_size', cls);
-          updateVisuals();
-        }
-        
-        function updateVisuals() {
-          const paper = localStorage.getItem('atelier0_paper') || 'p-white';
-          const font = localStorage.getItem('atelier0_font') || 'f-sans';
-          const size = localStorage.getItem('atelier0_size') || 'ts-m';
-          const memoColor = localStorage.getItem('atelier0_memo_color') || 'memo-yellow';
-          const immerse = localStorage.getItem('atelier0_immerse') || 'none';
-
-          document.querySelectorAll('[id^="btn-p-"]').forEach(b => b.classList.remove('active-color'));
-          document.getElementById('btn-' + paper)?.classList.add('active-color');
-
-          document.querySelectorAll('.design-btn-font, .design-btn-size').forEach(b => b.classList.remove('active-choice'));
-          document.getElementById('btn-' + font)?.classList.add('active-choice');
-          document.getElementById('btn-' + size)?.classList.add('active-choice');
-
-          const p = document.getElementById('main-paper');
-          if (p) {
-            p.classList.remove('p-white', 'p-beige', 'p-black', 'f-sans', 'f-serif', 'f-round', 'ts-s', 'ts-m', 'ts-l');
-            p.classList.add(paper, font, size);
-          }
-
-          setMemoColor(memoColor);
-          
-          const immerseBtn = document.getElementById('btn-mode-' + immerse);
-          if (immerseBtn) setImmerse(immerse, immerseBtn);
-
-          if (window.lucide) {
-            lucide.createIcons();
+          if (saveBtn && !saveBtn.disabled) {
+            startSaving();
+            saveBtn.click();
           }
         }
+      });
 
-        // キーボードショートカット（Command + S）
-        document.addEventListener('keydown', (e) => {
-          if ((e.metaKey || e.ctrlKey) && e.key === 's') {
-            e.preventDefault();
-            const saveBtn = document.getElementById('save-btn');
-            
-            if (saveBtn && !saveBtn.disabled) {
-              startSaving();
-              saveBtn.click();
-            }
-          }
-        });
+  // UIバーの表示制御
+      document.addEventListener('mousemove', (e) => {
+        const body = document.getElementById('focus-body');
+        if (!body) return;
 
-        document.addEventListener('mousemove', (e) => {
-          const body = document.getElementById('focus-body');
-          if (e.clientY < 60) {
-            body.classList.add('reveal-nav');
-          } else if (!e.target.closest('.focus-ui-bar')) {
-            body.classList.remove('reveal-nav');
-          }
-        });
+        if (e.clientY < 60) {
+           body.classList.add('reveal-nav');
+        } else if (!e.target.closest('.focus-ui-bar')) {
+           body.classList.remove('reveal-nav');
+        }
+      });
 
-        document.addEventListener('turbo:load', updateVisuals);
-        window.onload = updateVisuals;
-      </script>
+      document.addEventListener('turbo:load', updateVisuals);
+  // 初回読み込み対策
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', updateVisuals);
+      } else {
+        updateVisuals();
+      }
+    </script>
   </body>
 </html>
