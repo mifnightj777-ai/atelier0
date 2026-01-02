@@ -134,15 +134,14 @@
         </div>
       </div>
 
-    <%# ▼▼▼ メモパネル 青枠削除版 ▼▼▼ %>
-    <div id="memo-panel-ui" 
-         data-controller="handwriting" 
-         data-memo-target="panel" 
-         class="fixed top-32 right-12 w-[700px] h-[500px] bg-white border border-slate-200 rounded-3xl shadow-2xl z-[200] translate-y-8 opacity-0 pointer-events-none transition-all duration-300 flex overflow-hidden">
-      
+      <div id="memo-panel-ui" 
+        data-controller="handwriting" 
+        data-memo-target="panel" 
+        class="fixed top-32 right-12 w-[700px] h-[500px] bg-white border border-slate-200 rounded-3xl shadow-2xl z-[200] translate-y-8 opacity-0 pointer-events-none transition-all duration-300 flex overflow-hidden">
+  
       <%# 【左側】入力エリア %>
       <div class="w-[320px] h-full p-7 flex flex-col border-r border-slate-100 relative bg-white z-10">
-        
+    
         <%# ヘッダー %>
         <div class="flex justify-between items-center mb-6 pb-4 border-b border-slate-100">
           <h2 class="font-bold text-slate-800 tracking-widest text-[10px] uppercase">Fragments</h2>
@@ -153,15 +152,16 @@
           </div>
         </div>
 
-        <%# 入力フォーム %>
+        <%# ▼▼▼ ここで分岐 ▼▼▼ %>
         <% if @idea&.persisted? %>
+      
+          <%# ① 保存済みの場合：いつもの入力フォームを表示 %>
           <%= form_with(model: [ @idea, Memo.new ], data: { turbo_stream: true, handwriting_target: "form" }, class: "flex-1 flex flex-col") do |f| %>
-            
+        
             <div class="flex flex-col gap-4 flex-1">
               <div id="memo-input-container" class="memo-yellow rounded-2xl p-4 shadow-inner transition-colors relative flex-1 flex flex-col">
                 <%= f.hidden_field :color, id: "memo-color-field", value: "memo-yellow" %>
-                
-                <%# ★修正: focus:ring-0 focus:outline-none を追加し、青枠を完全消去 %>
+            
                 <%= f.text_area :content, placeholder: "Type something...", class: "w-full bg-transparent border-none focus:ring-0 focus:outline-none p-0 text-sm resize-none flex-1 text-slate-700 leading-relaxed placeholder:text-slate-400/70 mb-2" %>
 
                 <div class="flex items-center justify-between border-t border-black/5 pt-3 mt-auto">
@@ -177,22 +177,44 @@
               </div>
 
               <%= f.button class: "bg-indigo-600 text-white font-bold text-[10px] tracking-widest py-3 rounded-xl shadow-md hover:bg-indigo-700 hover:shadow-lg transition-all active:scale-95 flex items-center justify-center gap-2 mb-2" do %>
-                <span>ADD FRAGMENT</span>
+                <span>CLICK and ADD</span>
               <% end %>
             </div>
           <% end %>
+
+        <% else %>
+
+          <%# ② 未保存（新規作成中）の場合：ロック画面を表示 %>
+          <div class="flex-1 flex flex-col items-center justify-center border-2 border-dashed border-slate-200 rounded-2xl bg-slate-50/50 text-slate-400 p-6 text-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 mb-3 opacity-50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+            <p class="font-bold text-xs text-slate-500 mb-1">Locked</p>
+            <p class="text-[10px] leading-relaxed">
+              First, enter the title and other details, <br>then save it.
+            </p>
+          </div>
+
         <% end %>
       </div>
 
       <%# 【右側】リストエリア %>
       <div class="flex-1 h-full bg-slate-50/50 p-6 relative">
         <div id="memos_list" class="h-full overflow-y-auto pr-2 scrollbar-hide space-y-4 pb-12">
-          <%= render partial: "memos/memo", collection: @idea.memos.order(created_at: :desc) %>
+          <% if @idea&.persisted? %>
+            <%= render partial: "memos/memo", collection: @idea.memos.order(created_at: :desc) %>
+          <% else %>
+            <%# 未保存時はリストも空っぽだよ、という表示（任意） %>
+            <div class="h-full flex items-center justify-center text-slate-300 text-xs">
+              No memos yet.
+            </div>
+          <% end %>
         </div>
         <div class="absolute bottom-0 left-0 w-full h-12 bg-gradient-to-t from-white to-transparent pointer-events-none"></div>
       </div>
 
-      <%# モーダル（変更なし） %>
+      <%# モーダル（そのまま） %>
       <div data-handwriting-target="modal" class="hidden fixed inset-0 z-[9999] bg-white/95 backdrop-blur-sm flex flex-col items-center justify-center animate-fade-in">
         <div class="absolute top-6 left-1/2 -translate-x-1/2 flex items-center gap-2 bg-white border border-slate-200 shadow-lg px-6 py-3 rounded-full z-50">
           <div class="flex items-center gap-2">
@@ -203,7 +225,7 @@
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 21-4.3-4.3c-1-1-1-2.5 0-3.4l9.6-9.6c1-1 2.5-1 3.4 0l5.6 5.6c1 1 1 2.5 0 3.4L13 21"/><path d="M22 21H7"/><path d="m5 11 9 9"/></svg>
             </button>
           </div>
-          <div class="w-px h-6 bg-slate-200 mx-2"></div>
+           <div class="w-px h-6 bg-slate-200 mx-2"></div>
           <div class="flex items-center gap-2">
             <button type="button" data-handwriting-target="sizeBtn" data-size="2" class="w-8 h-8 rounded-full text-[10px] font-bold text-slate-400 hover:bg-slate-100 transition-colors">S</button>
             <button type="button" data-handwriting-target="sizeBtn" data-size="6" class="w-8 h-8 rounded-full text-[10px] font-bold text-slate-400 hover:bg-slate-100 transition-colors">M</button>
@@ -220,7 +242,6 @@
         </div>
         <canvas data-handwriting-target="canvas" class="w-full h-full cursor-crosshair touch-none"></canvas>
       </div>
-
     </div>
   </main>
 
