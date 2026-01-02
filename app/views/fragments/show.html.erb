@@ -15,7 +15,8 @@
         <div class="bg-slate-50 border-b md:border-b-0 md:border-r border-slate-100 flex flex-col relative z-10">
           <div class="relative flex-1 flex items-start justify-center p-10 pt-16 min-h-[450px]">
             <% if @fragment.image.attached? %>
-              <%= image_tag @fragment.image, class: "w-auto h-auto max-w-full max-h-[55vh] object-contain shadow-2xl rounded-lg" %>
+              <%# ★修正: url_forを追加 %>
+              <%= image_tag url_for(@fragment.image), class: "w-auto h-auto max-w-full max-h-[55vh] object-contain shadow-2xl rounded-lg" %>
             <% else %>
               <div class="text-slate-200 mt-10"><i data-lucide="music" class="w-20 h-20 stroke-[1]"></i></div>
             <% end %>
@@ -125,7 +126,12 @@
       <div class="grid md:grid-cols-2 gap-0 min-h-[500px]">
         <div class="bg-slate-50/50 border-b md:border-b-0 md:border-r border-slate-100 flex flex-col relative z-10" data-controller="color-picker palette" data-color-picker-url-value="<%= fragment_colors_path(@fragment) %>" data-action="mouseleave->palette#reset">
           <div class="relative flex items-center justify-center p-10 flex-1 min-h-[400px]">
-            <% if @fragment.image.attached? %><%= image_tag @fragment.image, class: "w-auto h-auto max-w-full max-h-[60vh] object-contain shadow-2xl rounded-lg transform transition-transform duration-500", data: { color_picker_target: "image" }, crossorigin: "anonymous" %><% else %><div class="flex flex-col items-center justify-center text-slate-300"><span class="font-['Poppins'] font-bold text-4xl mb-2">?</span><span class="text-sm">No Image</span></div><% end %>
+            <% if @fragment.image.attached? %>
+              <%# ★修正: url_forを追加 %>
+              <%= image_tag url_for(@fragment.image), class: "w-auto h-auto max-w-full max-h-[60vh] object-contain shadow-2xl rounded-lg transform transition-transform duration-500", data: { color_picker_target: "image" }, crossorigin: "anonymous" %>
+            <% else %>
+              <div class="flex flex-col items-center justify-center text-slate-300"><span class="font-['Poppins'] font-bold text-4xl mb-2">?</span><span class="text-sm">No Image</span></div>
+            <% end %>
             <div class="absolute top-6 left-6 flex gap-2 pointer-events-none"><% if @fragment.private_view? %><span class="bg-slate-900/90 backdrop-blur text-white px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest border border-white/10 shadow-lg">Private</span><% elsif @fragment.teammates_view? %><span class="bg-white/80 backdrop-blur text-indigo-600 px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest border border-white/50 shadow-lg">Teammates</span><% end %></div>
           </div>
           <% if @fragment.user == current_user %>

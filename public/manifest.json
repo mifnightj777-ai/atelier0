@@ -22,14 +22,14 @@
       "name": "New Fragment",
       "short_name": "New",
       "description": "Create a new idea",
-      "url": "/ideas/new",
+      "url": "/fragments/new",
       "icons": [{ "src": "/icon.png", "sizes": "192x192" }]
     },
     {
       "name": "My Studio",
       "short_name": "Studio",
       "description": "Go to timeline",
-      "url": "/ideas",
+      "url": "/?action=studio",
       "icons": [{ "src": "/icon.png", "sizes": "192x192" }]
     }
   ]
