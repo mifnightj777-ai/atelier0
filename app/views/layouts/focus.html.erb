@@ -48,12 +48,10 @@
   </head>
 
   <body id="focus-body" class="bg-[#F8FAFC] antialiased min-h-screen" data-controller="focus-sound memo">
-    
-    <%# ▼▼▼ 修正: bodyタグの中に移動しました ▼▼▼ %>
+
     <div id="global-audio-container" data-turbo-permanent>
       <audio id="morphe-global-player" loop preload="none"></audio>
     </div>
-    <%# ▲▲▲ %>
 
     <main class="w-full min-h-screen flex flex-col items-center pt-24 pb-40 relative overflow-x-hidden">
       
@@ -136,26 +134,95 @@
         </div>
       </div>
 
-      <%# メモパネル：独立動作を死守 %>
-      <div id="memo-panel-ui" data-memo-target="panel" class="fixed top-32 right-12 w-80 bg-white border border-slate-200 rounded-3xl shadow-2xl z-[200] translate-y-8 opacity-0 pointer-events-none transition-all duration-300 p-7">
-        <div class="flex justify-between items-center mb-6 border-b pb-4">
+    <%# ▼▼▼ メモパネル 青枠削除版 ▼▼▼ %>
+    <div id="memo-panel-ui" 
+         data-controller="handwriting" 
+         data-memo-target="panel" 
+         class="fixed top-32 right-12 w-[700px] h-[500px] bg-white border border-slate-200 rounded-3xl shadow-2xl z-[200] translate-y-8 opacity-0 pointer-events-none transition-all duration-300 flex overflow-hidden">
+      
+      <%# 【左側】入力エリア %>
+      <div class="w-[320px] h-full p-7 flex flex-col border-r border-slate-100 relative bg-white z-10">
+        
+        <%# ヘッダー %>
+        <div class="flex justify-between items-center mb-6 pb-4 border-b border-slate-100">
           <h2 class="font-bold text-slate-800 tracking-widest text-[10px] uppercase">Fragments</h2>
-          <div class="flex gap-2"><button onclick="setMemoColor('memo-yellow')" class="w-4 h-4 rounded-full bg-[#FEF9C3] border border-slate-200"></button><button onclick="setMemoColor('memo-blue')" class="w-4 h-4 rounded-full bg-[#DBEAFE] border border-slate-200"></button><button onclick="setMemoColor('memo-pink')" class="w-4 h-4 rounded-full bg-[#FCE7F3] border border-slate-200"></button></div>
+          <div class="flex gap-2">
+            <button onclick="setMemoColor('memo-yellow')" type="button" class="w-4 h-4 rounded-full bg-[#FEF9C3] border border-slate-200 hover:scale-110 transition-transform"></button>
+            <button onclick="setMemoColor('memo-blue')" type="button" class="w-4 h-4 rounded-full bg-[#DBEAFE] border border-slate-200 hover:scale-110 transition-transform"></button>
+            <button onclick="setMemoColor('memo-pink')" type="button" class="w-4 h-4 rounded-full bg-[#FCE7F3] border border-slate-200 hover:scale-110 transition-transform"></button>
+          </div>
         </div>
+
+        <%# 入力フォーム %>
         <% if @idea&.persisted? %>
-          <%= form_with(model: [ @idea, Memo.new ], data: { turbo_stream: true }, class: "mb-6") do |f| %>
-            <div class="flex flex-col gap-4">
-              <div id="memo-input-container" class="memo-yellow rounded-2xl p-5 shadow-inner transition-colors">
+          <%= form_with(model: [ @idea, Memo.new ], data: { turbo_stream: true, handwriting_target: "form" }, class: "flex-1 flex flex-col") do |f| %>
+            
+            <div class="flex flex-col gap-4 flex-1">
+              <div id="memo-input-container" class="memo-yellow rounded-2xl p-4 shadow-inner transition-colors relative flex-1 flex flex-col">
                 <%= f.hidden_field :color, id: "memo-color-field", value: "memo-yellow" %>
-                <%= f.text_area :content, placeholder: "Add a fragment...", class: "w-full bg-transparent border-none p-0 text-sm focus:ring-0 resize-none h-28 text-slate-700 leading-relaxed" %>
+                
+                <%# ★修正: focus:ring-0 focus:outline-none を追加し、青枠を完全消去 %>
+                <%= f.text_area :content, placeholder: "Type something...", class: "w-full bg-transparent border-none focus:ring-0 focus:outline-none p-0 text-sm resize-none flex-1 text-slate-700 leading-relaxed placeholder:text-slate-400/70 mb-2" %>
+
+                <div class="flex items-center justify-between border-t border-black/5 pt-3 mt-auto">
+                  <div class="flex items-center gap-2">
+                    <button type="button" data-action="click->handwriting#startNew" class="text-xs flex items-center gap-1.5 text-slate-500 hover:text-indigo-600 transition-colors bg-white/50 px-3 py-1.5 rounded-lg border border-transparent hover:border-indigo-100 hover:bg-white">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
+                      <span>Draw</span>
+                    </button>
+                    <img data-handwriting-target="preview" class="hidden h-8 w-8 object-cover border border-white shadow-sm rounded bg-white ml-2" />
+                  </div>
+                </div>
+                <%= f.hidden_field :handwriting_data, data: { handwriting_target: "input" } %>
               </div>
-              <%= f.submit "ADD", class: "bg-indigo-600 text-white font-bold text-[10px] tracking-widest py-3 rounded-xl shadow-md" %>
+
+              <%= f.button class: "bg-indigo-600 text-white font-bold text-[10px] tracking-widest py-3 rounded-xl shadow-md hover:bg-indigo-700 hover:shadow-lg transition-all active:scale-95 flex items-center justify-center gap-2 mb-2" do %>
+                <span>ADD FRAGMENT</span>
+              <% end %>
             </div>
           <% end %>
-          <div id="memos_list" class="max-h-96 overflow-y-auto space-y-4 pr-1 scrollbar-hide"><%= render partial: "memos/memo", collection: @idea.memos.order(created_at: :desc) %></div>
         <% end %>
       </div>
-    </main>
+
+      <%# 【右側】リストエリア %>
+      <div class="flex-1 h-full bg-slate-50/50 p-6 relative">
+        <div id="memos_list" class="h-full overflow-y-auto pr-2 scrollbar-hide space-y-4 pb-12">
+          <%= render partial: "memos/memo", collection: @idea.memos.order(created_at: :desc) %>
+        </div>
+        <div class="absolute bottom-0 left-0 w-full h-12 bg-gradient-to-t from-white to-transparent pointer-events-none"></div>
+      </div>
+
+      <%# モーダル（変更なし） %>
+      <div data-handwriting-target="modal" class="hidden fixed inset-0 z-[9999] bg-white/95 backdrop-blur-sm flex flex-col items-center justify-center animate-fade-in">
+        <div class="absolute top-6 left-1/2 -translate-x-1/2 flex items-center gap-2 bg-white border border-slate-200 shadow-lg px-6 py-3 rounded-full z-50">
+          <div class="flex items-center gap-2">
+            <button type="button" data-handwriting-target="penBtn" class="p-2 rounded-full text-slate-400 hover:bg-slate-100 transition-colors" title="Pen">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
+            </button>
+            <button type="button" data-handwriting-target="eraserBtn" class="p-2 rounded-full text-slate-400 hover:text-slate-700 transition-colors" title="Eraser">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 21-4.3-4.3c-1-1-1-2.5 0-3.4l9.6-9.6c1-1 2.5-1 3.4 0l5.6 5.6c1 1 1 2.5 0 3.4L13 21"/><path d="M22 21H7"/><path d="m5 11 9 9"/></svg>
+            </button>
+          </div>
+          <div class="w-px h-6 bg-slate-200 mx-2"></div>
+          <div class="flex items-center gap-2">
+            <button type="button" data-handwriting-target="sizeBtn" data-size="2" class="w-8 h-8 rounded-full text-[10px] font-bold text-slate-400 hover:bg-slate-100 transition-colors">S</button>
+            <button type="button" data-handwriting-target="sizeBtn" data-size="6" class="w-8 h-8 rounded-full text-[10px] font-bold text-slate-400 hover:bg-slate-100 transition-colors">M</button>
+            <button type="button" data-handwriting-target="sizeBtn" data-size="12" class="w-8 h-8 rounded-full text-[10px] font-bold text-slate-400 hover:bg-slate-100 transition-colors">L</button>
+          </div>
+          <div class="w-px h-6 bg-slate-200 mx-2"></div>
+          <button type="button" data-handwriting-target="clearBtn" class="p-2 text-slate-400 hover:text-red-500 transition-colors" title="Clear All">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+          </button>
+          <button type="button" data-handwriting-target="saveBtn" class="ml-3 flex items-center gap-2 bg-indigo-600 text-white px-6 py-2 rounded-full text-xs font-bold tracking-widest hover:bg-indigo-700 transition-all shadow-md">DONE</button>
+          <button type="button" data-handwriting-target="closeBtn" class="p-2 text-slate-400 hover:text-slate-700 transition-colors ml-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+          </button>
+        </div>
+        <canvas data-handwriting-target="canvas" class="w-full h-full cursor-crosshair touch-none"></canvas>
+      </div>
+
+    </div>
+  </main>
 
 <script>
         // ▼▼▼ 保存開始：Indigoになってロード表示 ▼▼▼

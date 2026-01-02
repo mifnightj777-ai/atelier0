@@ -54,7 +54,7 @@ Rails.application.routes.draw do
   end
 
   resources :ideas, except: [:show] do
-    resources :memos, only: [:create, :destroy]
+    resources :memos, only: [:create, :destroy, :edit, :update]
   end
 
   resources :relationships, only: [:create, :destroy, :update]
