@@ -24,6 +24,21 @@ class User < ApplicationRecord
   has_many :comparisons, dependent: :destroy
   has_one_attached :avatar
 
+  validates :username, presence: true, uniqueness: true, length: { maximum: 20 }
+
+  validate :password_complexity
+
+  validate :password_complexity
+
+  def password_complexity
+    return if password.blank?
+
+    # 変更点: 最後の部分を [a-z\d] から . に変えました
+    # 意味: 「英字があり」「数字があり」「全体で8文字以上なら、記号もOK」
+    unless password.match?(/\A(?=.*?[a-z])(?=.*?\d).{8,100}\z/i)
+      errors.add :password, 'は8文字以上で、英字と数字をそれぞれ1文字以上含めてください'
+    end
+  end
 
 
   def rooms

@@ -1,6 +1,11 @@
 Rails.application.routes.draw do 
+  get 'pages/terms'
+  get 'pages/privacy'
   
   root "welcome#index"
+  get 'terms', to: 'pages#terms'
+  get 'privacy', to: 'pages#privacy'
+  
   get 'guide', to: 'welcome#guide', as: :guide
   get 'welcome/index'
   get 'prompts/index'
@@ -13,6 +18,7 @@ Rails.application.routes.draw do
   get 'focus', to: 'ideas#new', as: :focus_studio
   get 'mailbox', to: 'letters#index', as: :mailbox
   get 'gallery', to: 'fragments#gallery', as: 'gallery'
+  
   
 
 
@@ -56,6 +62,7 @@ Rails.application.routes.draw do
   resources :ideas, except: [:show] do
     resources :memos, only: [:create, :destroy, :edit, :update]
   end
+  
 
   resources :relationships, only: [:create, :destroy, :update]
   resources :notifications, only: [:index]
