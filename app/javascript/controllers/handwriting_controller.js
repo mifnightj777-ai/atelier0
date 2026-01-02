@@ -1,6 +1,6 @@
 import { Controller } from "@hotwired/stimulus"
 
-// ▼▼▼ ここに SignaturePad の機能を直接埋め込みます（読み込みエラー回避のため） ▼▼▼
+// ▼▼▼ SignaturePad クラス ▼▼▼
 class SignaturePad {
   constructor(canvas, options = {}) {
     this.canvas = canvas;
@@ -128,14 +128,16 @@ class SignaturePad {
     };
   }
 }
-// ▲▲▲ SignaturePad ここまで ▲▲▲
 
-
-// ▼▼▼ 以下、コントローラー本体 ▼▼▼
+// ▼▼▼ コントローラー本体 ▼▼▼
 export default class extends Controller {
   static targets = ["canvas", "input", "preview", "modal", "saveBtn", "clearBtn", "closeBtn", "penBtn", "eraserBtn", "sizeBtn", "form"]
 
   connect() {
+    // ★重要: 安全装置を追加！
+    // フォーム（input）が無い画面（アイデア新規作成画面など）では、何もしないで終了します。
+    if (!this.hasInputTarget) return;
+
     this.modalEl = this.modalTarget
     this.canvasEl = this.canvasTarget
     this.inputEl = this.inputTarget
@@ -155,7 +157,6 @@ export default class extends Controller {
     
     this.defaultAction = this.formEl.action
 
-    // ここで直接定義したクラスを使います
     this.pad = new SignaturePad(this.canvasEl, {
       backgroundColor: 'rgba(255, 255, 255, 0)',
       penColor: 'rgb(51, 65, 85)',
