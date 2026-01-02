@@ -13,7 +13,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="morphe0">
-    
+
   <%= csrf_meta_tags %>
   <%= csp_meta_tag %>
   <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
@@ -73,7 +73,7 @@
     <div class="absolute w-2 h-2 bg-indigo-600 rounded-full animate-pulse"></div>
   </div>
   <p class="mt-8 font-['Poppins'] font-bold text-[10px] tracking-[0.4em] text-slate-400 uppercase animate-pulse">
-    Reloading now
+    Loading now
   </p>
 </div>
 
@@ -179,6 +179,7 @@
     <div class="flex justify-center space-x-6 mb-4">
       <%= link_to "利用規約", terms_path, class: "hover:text-slate-800 transition" %>
       <%= link_to "プライバシーポリシー", privacy_path, class: "hover:text-slate-800 transition" %>
+      <%= link_to "お問い合わせ", "https://forms.gle/rVG8s7Z78QhAo5j67", target: "_blank", class: "hover:text-slate-800 transition" %>
     </div>
     <p>&copy; 2026 morphe0. All rights reserved.</p>
   </div>
