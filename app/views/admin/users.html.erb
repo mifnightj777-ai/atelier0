@@ -1,6 +1,17 @@
 <div class="min-h-screen bg-slate-50 py-12 px-4 sm:px-6 lg:px-8 font-sans">
-  <div class="max-w-5xl mx-auto"> <%# 幅を少し広げました %>
+  <div class="max-w-6xl mx-auto"> <%# 幅をさらに広げました %>
     
+    <% if flash[:notice] %>
+      <div class="mb-6 bg-green-50 border-l-4 border-green-500 p-4 text-green-700 rounded-r shadow-sm">
+        <%= flash[:notice] %>
+      </div>
+    <% end %>
+    <% if flash[:alert] %>
+      <div class="mb-6 bg-red-50 border-l-4 border-red-500 p-4 text-red-700 rounded-r shadow-sm">
+        <%= flash[:alert] %>
+      </div>
+    <% end %>
+
     <div class="flex items-center justify-between mb-8">
       <h1 class="text-2xl font-bold text-slate-900">Registered Users</h1>
       <%= link_to admin_dashboard_path, class: "text-sm text-indigo-600 hover:text-indigo-800 font-medium flex items-center gap-1" do %>
@@ -12,36 +23,45 @@
       <table class="min-w-full divide-y divide-slate-200">
         <thead class="bg-slate-50">
           <tr>
-            <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider w-20">
-              ID
-            </th>
-            <%# ▼ 追加：ユーザーネームの列 %>
-            <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">
-              Username
-            </th>
-            <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">
-              Email Address
-            </th>
-            <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">
-              Registered At
-            </th>
+            <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider w-20">ID</th>
+            <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Username</th>
+            <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Email Address</th>
+            <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Joined</th>
+            <%# ▼ 追加：操作ボタン用の列 %>
+            <th scope="col" class="px-6 py-4 text-right text-xs font-bold text-slate-500 uppercase tracking-wider">Actions</th>
           </tr>
         </thead>
         <tbody class="bg-white divide-y divide-slate-100">
           <% @users.each do |user| %>
-            <tr class="hover:bg-slate-50 transition-colors">
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-400">
-                #<%= user.id %>
-              </td>
-              <%# ▼ 追加：@usernameを表示 %>
+            <tr class="hover:bg-slate-50 transition-colors group">
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-400">#<%= user.id %></td>
               <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-slate-800">
                 @<%= user.username %>
+                <% if user == current_user %>
+                  <span class="ml-2 inline-flex items-center rounded-full bg-indigo-50 px-2 py-0.5 text-xs font-medium text-indigo-700 ring-1 ring-inset ring-indigo-600/20">You</span>
+                <% end %>
               </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">
-                <%= user.email %>
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-400">
-                <%= user.created_at.strftime("%Y/%m/%d") %>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600"><%= user.email %></td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-400"><%= user.created_at.strftime("%Y/%m/%d") %></td>
+              
+              <%# ▼ 追加：削除ボタン（自分以外に表示） %>
+              <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                <% if user != current_user %>
+                  <%= link_to admin_destroy_user_path(user), 
+                      data: { turbo_method: :delete, turbo_confirm: "本当にこのユーザー(@#{user.username})を削除しますか？\nこの操作は取り消せません。" }, 
+                      class: "text-slate-300 hover:text-red-600 transition-colors flex items-center justify-end gap-1" do %>
+                    <span class="hidden group-hover:inline text-xs">Delete</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+                      <path fill-rule="evenodd" d="M16.5 4.478v.227a48.816 48.816 0 013.878.512.75.75 0 11-.49 1.478l-.56 5.211h-12.65l-.56-5.211a.75.75 0 11-.49-1.478.75.75 0 0115.376 0zM4.756 19.936A1.5 1.5 0 016.245 21h11.51a1.5 1.5 0 011.489-1.064l.413-5.212H4.342l.414 5.212z" clip-rule="evenodd" />
+                    </svg>
+                  <% end %>
+                <% else %>
+                  <span class="text-slate-200 cursor-not-allowed">
+                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+                      <path fill-rule="evenodd" d="M12 1.5a5.25 5.25 0 00-5.25 5.25v3a3 3 0 00-3 3v6.75a3 3 0 003 3h10.5a3 3 0 003-3v-6.75a3 3 0 00-3-3v-3c0-2.9-2.35-5.25-5.25-5.25zm3.75 8.25v-3a3.75 3.75 0 10-7.5 0v3h7.5z" clip-rule="evenodd" />
+                    </svg>
+                  </span>
+                <% end %>
               </td>
             </tr>
           <% end %>
@@ -49,11 +69,8 @@
       </table>
       
       <% if @users.empty? %>
-        <div class="p-8 text-center text-slate-400 text-sm">
-          まだユーザーはいません
-        </div>
+        <div class="p-8 text-center text-slate-400 text-sm">ユーザーはいません</div>
       <% end %>
     </div>
-
   </div>
 </div>

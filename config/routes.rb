@@ -1,6 +1,7 @@
 Rails.application.routes.draw do 
   get 'admin/dashboard', to: 'admin#dashboard', as: 'admin_dashboard'
   get 'admin/users', to: 'admin#users', as: 'admin_users'
+  delete 'admin/users/:id', to: 'admin#destroy_user', as: 'admin_destroy_user'
   
   get 'pages/terms'
   get 'pages/privacy'

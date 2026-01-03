@@ -22,6 +22,8 @@ class Fragment < ApplicationRecord
   has_many :children, class_name: "Fragment", foreign_key: "parent_id", dependent: :nullify
   belongs_to :root, class_name: "Fragment", optional: true
 
+  has_many :descendants, class_name: "Fragment", foreign_key: "root_id", dependent: :nullify
+
   # 比較スタジオ関連
   has_many :comparisons_as_a, class_name: "Comparison", foreign_key: :fragment_a_id, dependent: :destroy
   has_many :comparisons_as_b, class_name: "Comparison", foreign_key: :fragment_b_id, dependent: :destroy
