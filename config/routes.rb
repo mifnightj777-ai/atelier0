@@ -1,4 +1,7 @@
 Rails.application.routes.draw do 
+  get 'admin/dashboard', to: 'admin#dashboard', as: 'admin_dashboard'
+  get 'admin/users', to: 'admin#users', as: 'admin_users'
+  
   get 'pages/terms'
   get 'pages/privacy'
   
