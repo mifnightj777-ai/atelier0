@@ -52,8 +52,8 @@ class Fragment < ApplicationRecord
         # MiniMagickで開く
         img = MiniMagick::Image.open(tempfile.path)
 
-        # 処理を軽くするため、極小サイズ(7x1)にリサイズして色を混ぜる
-        img.resize "7x1!"
+        # 処理を軽くするため、極小サイズ(3x1)にリサイズして色を混ぜる
+        img.resize "3x1!"
         
         pixels = img.get_pixels
         return if pixels.empty?
