@@ -1,0 +1,107 @@
+<%# --- app/views/pages/_terms_content.html.erb --- %>
+<div class="font-['Noto_Sans_JP'] text-slate-700 leading-relaxed">
+  <div class="prose prose-slate max-w-none space-y-12 md:space-y-16">
+    <p class="text-slate-600 mb-8 border-l-4 border-indigo-200 pl-4 py-1 bg-slate-50/50 rounded-r-lg text-sm md:text-base">
+      この利用規約（以下「本規約」といいます）は、morphe0（以下「本サービス」といいます）の利用条件を定めるものです。ユーザーの皆様には、本規約に従って本サービスをご利用いただきます。
+    </p>
+
+    <%# 第1章 %>
+    <section>
+      <div class="flex items-center gap-3 mb-4 pb-2 border-b border-slate-100">
+        <span class="text-indigo-200 font-['Shippori_Mincho'] text-3xl font-bold -mt-1">01</span>
+        <h2 class="text-base md:text-lg font-bold text-slate-800">適用の範囲</h2>
+      </div>
+      <ol class="list-decimal pl-5 space-y-2 text-sm text-slate-600">
+        <li>本規約は、ユーザーと本サービス運営者（以下「運営者」といいます）との間の、本サービスの利用に関わる一切の関係に適用されるものとします。</li>
+        <li>本サービスは、クリエイターの思考プロセスの記録・整理を目的としたデジタルアトリエです。</li>
+      </ol>
+    </section>
+
+    <%# 第2章 %>
+    <section>
+      <div class="flex items-center gap-3 mb-4 pb-2 border-b border-slate-100">
+        <span class="text-indigo-200 font-['Shippori_Mincho'] text-3xl font-bold -mt-1">02</span>
+        <h2 class="text-base md:text-lg font-bold text-slate-800">アカウント管理</h2>
+      </div>
+      <p class="mb-4 text-sm">ユーザーは、自己の責任において、ユーザーIDおよびパスワードを適切に管理するものとします。</p>
+      <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 text-sm space-y-2">
+        <div class="flex items-start gap-2 text-slate-600">
+          <i data-lucide="shield-alert" class="w-4 h-4 text-slate-400 shrink-0 mt-0.5"></i>
+          <span>パスワードを第三者に譲渡・貸与することはできません。</span>
+        </div>
+        <div class="flex items-start gap-2 text-slate-600">
+          <i data-lucide="shield-alert" class="w-4 h-4 text-slate-400 shrink-0 mt-0.5"></i>
+          <span>アカウントの不正利用による損害について、運営者は責任を負いません。</span>
+        </div>
+      </div>
+    </section>
+
+    <%# 第3章 %>
+    <section>
+      <div class="flex items-center gap-3 mb-4 pb-2 border-b border-slate-100">
+        <span class="text-indigo-200 font-['Shippori_Mincho'] text-3xl font-bold -mt-1">03</span>
+        <h2 class="text-base md:text-lg font-bold text-slate-800">コンテンツの権利</h2>
+      </div>
+      <p class="mb-4 text-sm">
+        <strong class="text-indigo-900 bg-indigo-50 px-1 rounded">投稿したコンテンツの著作権は、あなた自身に帰属します。</strong>
+      </p>
+      <div class="grid grid-cols-1 gap-4 text-sm">
+        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+          <h3 class="font-bold text-slate-800 mb-2 flex items-center gap-2 text-xs">
+            <i data-lucide="check-circle-2" class="w-3 h-3 text-indigo-500"></i> ライセンスの付与
+          </h3>
+          <p class="text-xs text-slate-600 leading-relaxed">
+            サービスの提供・改善・バックアップのために、投稿コンテンツを使用・保存・表示する非独占的なライセンスを運営者に付与します。（勝手に販売等はしません）
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <%# 第4章（禁止事項） %>
+    <section>
+      <div class="flex items-center gap-3 mb-4 pb-2 border-b border-slate-100">
+        <span class="text-indigo-200 font-['Shippori_Mincho'] text-3xl font-bold -mt-1">04</span>
+        <h2 class="text-base md:text-lg font-bold text-slate-800">禁止事項</h2>
+      </div>
+      <div class="grid grid-cols-1 gap-2 text-sm text-slate-600">
+        <div class="bg-slate-50 px-3 py-2 rounded border border-slate-100 flex items-center gap-2"><span class="text-rose-400 font-bold">×</span> 法令・公序良俗に違反する行為</div>
+        <div class="bg-slate-50 px-3 py-2 rounded border border-slate-100 flex items-center gap-2"><span class="text-rose-400 font-bold">×</span> 犯罪行為に関連する行為</div>
+        <div class="bg-slate-50 px-3 py-2 rounded border border-slate-100 flex items-center gap-2"><span class="text-rose-400 font-bold">×</span> 他者へのなりすまし</div>
+        
+        <div class="bg-rose-50 px-3 py-3 rounded border border-rose-100 text-slate-700 flex items-start gap-2">
+          <i data-lucide="ban" class="w-4 h-4 text-rose-500 shrink-0 mt-0.5"></i>
+          <div>
+            <strong class="text-rose-700 block mb-1 text-xs">模倣・解析行為</strong>
+            <span class="text-xs opacity-80">ソースコードの逆コンパイル、UI/UXや機能の模倣サービスの作成。</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <%# 第5章（免責） %>
+    <section>
+      <div class="flex items-center gap-3 mb-4 pb-2 border-b border-slate-100">
+        <span class="text-indigo-200 font-['Shippori_Mincho'] text-3xl font-bold -mt-1">05</span>
+        <h2 class="text-base md:text-lg font-bold text-slate-800">免責事項</h2>
+      </div>
+      <div class="bg-gradient-to-br from-indigo-50 to-slate-50 p-5 rounded-xl border border-indigo-100/50 text-sm text-slate-700 leading-relaxed">
+        <ul class="list-disc pl-4 space-y-3">
+          <li><strong>現状有姿（AS-IS）：</strong>本サービスは現状有姿で提供され、バグや欠陥がないことを保証しません。</li>
+          <li><strong>変更・終了：</strong>予告なくサービス内容を変更・終了する場合があり、それに伴う損害の責任を負いません。</li>
+          <li><strong>データ消失：</strong>システム障害等によるデータ消失について、復旧や賠償の責任を負いません。</li>
+        </ul>
+      </div>
+    </section>
+
+    <%# 第6章 %>
+    <section>
+      <div class="flex items-center gap-3 mb-4 pb-2 border-b border-slate-100">
+        <span class="text-indigo-200 font-['Shippori_Mincho'] text-3xl font-bold -mt-1">06</span>
+        <h2 class="text-base md:text-lg font-bold text-slate-800">規約の変更</h2>
+      </div>
+      <p class="text-sm text-slate-600">
+        運営者は必要に応じて本規約を変更でき、変更後の利用をもって同意とみなします。
+      </p>
+    </section>
+  </div>
+</div>

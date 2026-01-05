@@ -10,6 +10,9 @@
     <link rel="icon" href="/icon.png" type="image/png">
     <link rel="apple-touch-icon" href="/icon.png">
     
+    <%# ▼▼▼ 追加：Android/Chrome用の設定（これで警告が消えます） ▼▼▼ %>
+    <meta name="mobile-web-app-capable" content="yes">
+
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="morphe0">
@@ -65,10 +68,9 @@
   </style>
 </head>
 
-<%# ▼ 48行目付近：data-install-guide-is-new-user-value を追加 %>
-<body data-controller="install-guide" data-install-guide-is-new-user-value="<%= user_signed_in? && current_user.created_at > 5.minutes.ago %>"class="h-full text-slate-700 font-['Inter'] antialiased overflow-x-hidden m-0 p-0">
+<body data-controller="install-guide" data-install-guide-is-new-user-value="<%= user_signed_in? && current_user.created_at > 1.hour.ago %>" class="h-full text-slate-700 font-['Inter'] antialiased overflow-x-hidden m-0 p-0">
 
-<%# --- 追加: ローディング・オーバーレイ --- %>
+<%# --- ローディング・オーバーレイ --- %>
 <div id="loader" class="fixed inset-0 z-[9999] bg-white flex flex-col items-center justify-center transition-opacity duration-700 pointer-events-none opacity-0">
   <div class="relative flex items-center justify-center">
     <div class="w-16 h-16 border-2 border-indigo-600/20 rounded-full"></div>
@@ -80,7 +82,7 @@
   </p>
 </div>
 
-<%# 1. Welcomeページ以外でヘッダーを表示 %>
+<%# ヘッダー (Welcomeページ以外で表示) %>
 <% unless controller_name == 'welcome' %>
   <header class="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-slate-100 py-4 px-6 md:px-12 flex justify-between items-center transition-all">
     <%= link_to root_path, class: "group flex items-center gap-2" do %>
@@ -149,6 +151,7 @@
         <%= link_to "Log in", new_user_session_path, class: "text-slate-500" %>
       <% end %>
 
+      <%# ヘルプボタン %>
       <button type="button" 
          data-action="click->install-guide#open" 
          class="ml-2 w-10 h-10 flex items-center justify-center rounded-full text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 transition-colors" 
@@ -167,7 +170,7 @@
   <audio id="morphe-global-player" loop preload="none"></audio>
 </div>
 
-<%# --- 追加: ローディング制御用のJavaScript --- %>
+<%# ローディング制御JS %>
 <script>
   document.addEventListener("turbo:before-visit", () => {
     document.body.classList.add("is-loading");
@@ -196,11 +199,15 @@
       <% end %>
     </div>
     <p>&copy; 2026 morphe0. All rights reserved.</p>
+    <%# 著作権表示 %>
+    <p class="text-[10px] md:text-xs text-slate-400 leading-relaxed font-['Noto_Sans_JP']">
+        「morphe0」のデザイン、機能、および掲載されているコンテンツに関する著作権は、<br class="block md:hidden">
+        開発者（Yena）に帰属します。無断での複製・転載を禁じます。
+    </p>
   </div>
 </footer>
 
-   <div class="relative z-[9999]">
-
+<div class="relative z-[9999]">
   <%# 1. 背景の黒いモヤ %>
   <div data-install-guide-target="backdrop" 
        data-action="click->install-guide#close"
@@ -249,9 +256,8 @@
             class="bg-indigo-600 text-white w-full py-3.5 rounded-full font-bold text-sm tracking-widest hover:bg-indigo-700 transition-all shadow-md hover:shadow-lg active:scale-95">
       確認しました
     </button>
-
   </div>
-  </div>
+</div>
 
-  </body>
+</body>
 </html>

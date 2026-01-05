@@ -6,6 +6,14 @@
   .animate-form {
     animation: formReveal 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
   }
+  /* モーダル表示時のアニメーション */
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease-out forwards;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
 </style>
 
 <div class="min-h-[60vh] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
@@ -51,8 +59,8 @@
 
       <div class="text-xs text-center text-slate-400 mb-4 font-['Inter']">
         アカウントを作成することにより、<br>
-        <button type="button" onclick="document.getElementById('terms-modal').classList.remove('hidden')" class="underline hover:text-indigo-600 outline-none">利用規約</button> と 
-        <button type="button" onclick="document.getElementById('privacy-modal').classList.remove('hidden')" class="underline hover:text-indigo-600 outline-none">プライバシーポリシー</button>
+        <button type="button" onclick="document.getElementById('terms-modal').classList.remove('hidden')" class="underline hover:text-indigo-600 outline-none font-bold">利用規約</button> と 
+        <button type="button" onclick="document.getElementById('privacy-modal').classList.remove('hidden')" class="underline hover:text-indigo-600 outline-none font-bold">プライバシーポリシー</button>
         に<br>同意したものとみなされます。
       </div>
 
@@ -67,116 +75,52 @@
   </div>
 </div>
 
+<%# ▼▼▼ 利用規約モーダル（内容を共通部品から呼び出し） ▼▼▼ %>
 <div id="terms-modal" class="hidden fixed inset-0 z-[100] bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
-  <div class="bg-white w-full max-w-2xl max-h-[80vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden">
-    <div class="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
-      <h3 class="font-bold text-slate-700">利用規約</h3>
+  <div class="bg-white w-full max-w-3xl max-h-[85vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden">
+    <%# ヘッダー %>
+    <div class="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50 shrink-0">
+      <h3 class="font-bold text-slate-700 font-['Shippori_Mincho'] text-lg">利用規約</h3>
       <button type="button" onclick="document.getElementById('terms-modal').classList.add('hidden')" class="p-2 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-200 transition">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
       </button>
     </div>
-    <div class="p-6 overflow-y-auto text-sm text-slate-600 leading-relaxed space-y-6">
-      <p>この利用規約（以下「本規約」）は、morphe0（以下「当サービス」）の利用条件を定めるものです。ユーザーの皆様は、本規約に同意の上で当サービスをご利用ください。</p>
-
-      <section>
-        <h4 class="font-bold text-slate-800 mb-2">第1条（著作権について）</h4>
-        <p class="mb-2">当サービスは、クリエイターの「思考」や「過程」を大切にする場所です。そのため、投稿データの権利は以下のように定めます。</p>
-        <ul class="list-disc pl-5 space-y-1">
-          <li>ユーザーが投稿した文章、画像、手書きデータ等の著作権は、全て投稿したユーザー自身に帰属します。</li>
-          <li>運営者がユーザーの許可なく、投稿データを無断で出版・販売することはありません。</li>
-          <li>ただし、当サービスのプロモーション（サイト内の紹介や公式SNSでの紹介など）に必要な範囲内でのみ、運営者は投稿データを利用できるものとします。</li>
-        </ul>
-      </section>
-
-      <section>
-        <h4 class="font-bold text-slate-800 mb-2">第2条（禁止事項）</h4>
-        <p>ユーザーは以下の行為を行ってはなりません。</p>
-        <ul class="list-disc pl-5 mt-2 space-y-1">
-          <li>法令または公序良俗に違反する行為</li>
-          <li>犯罪行為に関連する行為</li>
-          <li>他のユーザーや第三者の著作権、肖像権、プライバシーを侵害する行為</li>
-          <li>過度に暴力的、差別的、または他人に不快感を与えるコンテンツを投稿する行為</li>
-          <li>当サービスの運営を妨害する行為</li>
-        </ul>
-      </section>
-
-      <section>
-        <h4 class="font-bold text-slate-800 mb-2">第3条（免責事項・ベータ版について）</h4>
-        <ul class="list-disc pl-5 space-y-1">
-          <li>当サービスは開発中の「ベータ版」として提供されています。予告なく機能が変更されたり、停止したりする場合があります。</li>
-          <li>システムの不具合やサーバーのトラブル等により、投稿したデータが消失した場合でも、運営者はその復旧や損害賠償の責任を負いません。大切なデータはご自身でもバックアップを取ることを推奨します。</li>
-        </ul>
-      </section>
-
-      <section>
-        <h4 class="font-bold text-slate-800 mb-2">第4条（退会・データ削除）</h4>
-        <p>ユーザーはいつでも退会し、自身のアカウントと投稿データを削除することができます。退会後のデータ復旧はできませんのでご注意ください。</p>
-      </section>
-
-      <section>
-        <h4 class="font-bold text-slate-800 mb-2">第5条（規約の変更）</h4>
-        <p>運営者は、必要と判断した場合には、ユーザーに通知することなくいつでも本規約を変更することができるものとします。</p>
-      </section>
-      
-      <p class="text-right text-xs text-slate-400">2026年1月3日 制定</p>
+    
+    <%# コンテンツ（スクロールエリア） %>
+    <div class="p-6 md:p-8 overflow-y-auto">
+      <%= render 'pages/terms_content' %>
     </div>
-    <div class="p-4 border-t border-slate-100 bg-slate-50 text-center">
-      <button type="button" onclick="document.getElementById('terms-modal').classList.add('hidden')" class="px-8 py-2.5 bg-indigo-600 text-white text-sm font-bold rounded-full hover:bg-indigo-700 transition shadow-lg shadow-indigo-500/30">確認して閉じる</button>
+
+    <%# フッター %>
+    <div class="p-4 border-t border-slate-100 bg-slate-50 text-center shrink-0">
+      <button type="button" onclick="document.getElementById('terms-modal').classList.add('hidden')" class="px-8 py-2.5 bg-indigo-600 text-white text-sm font-bold rounded-full hover:bg-indigo-700 transition shadow-lg shadow-indigo-500/30">
+        確認して閉じる
+      </button>
     </div>
   </div>
 </div>
 
+<%# ▼▼▼ プライバシーポリシーモーダル（内容を共通部品から呼び出し） ▼▼▼ %>
 <div id="privacy-modal" class="hidden fixed inset-0 z-[100] bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
-  <div class="bg-white w-full max-w-2xl max-h-[80vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden">
-    <div class="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
-      <h3 class="font-bold text-slate-700">プライバシーポリシー</h3>
+  <div class="bg-white w-full max-w-3xl max-h-[85vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden">
+    <%# ヘッダー %>
+    <div class="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50 shrink-0">
+      <h3 class="font-bold text-slate-700 font-['Shippori_Mincho'] text-lg">プライバシーポリシー</h3>
       <button type="button" onclick="document.getElementById('privacy-modal').classList.add('hidden')" class="p-2 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-200 transition">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
       </button>
     </div>
-    <div class="p-6 overflow-y-auto text-sm text-slate-600 leading-relaxed space-y-6">
-      <p>morphe0（以下「当サービス」）は、ユーザーの個人情報の取扱いについて、以下の通りプライバシーポリシー（以下「本ポリシー」）を定めます。</p>
-
-      <section>
-        <h4 class="font-bold text-slate-800 mb-2">1. 収集する情報</h4>
-        <p>当サービスでは、以下の情報を取得・利用します。</p>
-        <ul class="list-disc pl-5 mt-2 space-y-1">
-          <li>アカウント登録時のメールアドレス、ユーザー名、パスワード</li>
-          <li>ユーザーが自ら投稿したコンテンツ（テキスト、画像、手書きデータ等）</li>
-          <li>アクセスログ、Cookie等の利用状況データ</li>
-        </ul>
-      </section>
-
-      <section>
-        <h4 class="font-bold text-slate-800 mb-2">2. 利用目的</h4>
-        <p>取得した情報は、以下の目的で利用します。</p>
-        <ul class="list-disc pl-5 mt-2 space-y-1">
-          <li>サービスの提供・運営のため（ログイン認証やデータの保存など）</li>
-          <li>ユーザーからのお問い合わせに対応するため</li>
-          <li>利用規約に違反する行為への対応のため</li>
-          <li>サービスの改善や新機能の開発のため</li>
-        </ul>
-      </section>
-
-      <section>
-        <h4 class="font-bold text-slate-800 mb-2">3. 第三者への提供</h4>
-        <p>当サービスは、法令に基づく場合を除き、あらかじめユーザーの同意を得ることなく、第三者に個人情報を提供することはありません。</p>
-      </section>
-
-      <section>
-        <h4 class="font-bold text-slate-800 mb-2">4. アクセス解析ツールについて</h4>
-        <p>当サービスでは、サービスの品質向上のためにGoogle Analyticsなどのアクセス解析ツールを利用する場合があります。これらはトラフィックデータの収集のためにCookieを使用しますが、個人を特定するものではありません。</p>
-      </section>
-
-      <section>
-        <h4 class="font-bold text-slate-800 mb-2">5. お問い合わせ</h4>
-        <p>本ポリシーに関するお問い合わせは、運営者のSNSアカウント等までご連絡ください。</p>
-      </section>
-
-      <p class="text-right text-xs text-slate-400">2026年1月3日 制定</p>
+    
+    <%# コンテンツ（スクロールエリア） %>
+    <div class="p-6 md:p-8 overflow-y-auto">
+      <%= render 'pages/privacy_content' %>
     </div>
-    <div class="p-4 border-t border-slate-100 bg-slate-50 text-center">
-      <button type="button" onclick="document.getElementById('privacy-modal').classList.add('hidden')" class="px-8 py-2.5 bg-indigo-600 text-white text-sm font-bold rounded-full hover:bg-indigo-700 transition shadow-lg shadow-indigo-500/30">確認して閉じる</button>
+
+    <%# フッター %>
+    <div class="p-4 border-t border-slate-100 bg-slate-50 text-center shrink-0">
+      <button type="button" onclick="document.getElementById('privacy-modal').classList.add('hidden')" class="px-8 py-2.5 bg-indigo-600 text-white text-sm font-bold rounded-full hover:bg-indigo-700 transition shadow-lg shadow-indigo-500/30">
+        確認して閉じる
+      </button>
     </div>
   </div>
 </div>

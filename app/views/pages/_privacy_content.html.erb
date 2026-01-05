@@ -1,0 +1,67 @@
+<%# --- app/views/pages/_privacy_content.html.erb --- %>
+<div class="font-['Noto_Sans_JP'] text-slate-700 leading-relaxed">
+  <div class="prose prose-slate max-w-none space-y-12">
+    
+    <%# 1. 取得情報 %>
+    <section>
+      <div class="flex items-center gap-3 mb-4 border-b border-slate-200 pb-2">
+        <i data-lucide="database" class="w-5 h-5 text-indigo-500"></i>
+        <h2 class="text-base md:text-lg font-bold text-slate-800 m-0">取得する情報</h2>
+      </div>
+      <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 text-sm">
+        <ul class="space-y-3 text-slate-600">
+          <li class="flex gap-2">
+            <i data-lucide="check" class="w-4 h-4 text-indigo-500 mt-0.5"></i>
+            <span><strong>Googleアカウント情報：</strong><br>名前、メールアドレス、プロフィール画像。</span>
+          </li>
+          <li class="flex gap-2">
+            <i data-lucide="check" class="w-4 h-4 text-indigo-500 mt-0.5"></i>
+            <span><strong>制作データ：</strong><br>投稿したメモ、画像、設定情報。</span>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <%# 2. 利用目的 %>
+    <section>
+      <div class="flex items-center gap-3 mb-4 border-b border-slate-200 pb-2">
+        <i data-lucide="sparkles" class="w-5 h-5 text-emerald-500"></i>
+        <h2 class="text-base md:text-lg font-bold text-slate-800 m-0">利用目的</h2>
+      </div>
+      <ul class="space-y-2 text-sm text-slate-600 pl-2">
+        <li class="flex gap-2"><span class="w-1.5 h-1.5 bg-emerald-400 rounded-full mt-2"></span> サービスの提供とカスタマイズ</li>
+        <li class="flex gap-2"><span class="w-1.5 h-1.5 bg-emerald-400 rounded-full mt-2"></span> 安全性の確保と不正利用の防止</li>
+        <li class="flex gap-2"><span class="w-1.5 h-1.5 bg-emerald-400 rounded-full mt-2"></span> 機能改善のための分析</li>
+      </ul>
+    </section>
+
+    <%# 3. 情報共有 %>
+    <section>
+      <div class="flex items-center gap-3 mb-4 border-b border-slate-200 pb-2">
+        <i data-lucide="share-2" class="w-5 h-5 text-rose-500"></i>
+        <h2 class="text-base md:text-lg font-bold text-slate-800 m-0">情報の共有</h2>
+      </div>
+      <div class="bg-rose-50/50 p-4 rounded-xl border border-rose-100 text-sm">
+        <p class="font-bold text-slate-800 mb-2">第三者への販売は行いません。</p>
+        <p class="text-slate-600 mb-2">ただし、以下のインフラ提供者とはシステム上情報を共有します。</p>
+        <div class="flex gap-2 text-xs font-bold text-slate-500">
+          <span class="bg-white px-2 py-1 rounded border border-slate-200">Google</span>
+          <span class="bg-white px-2 py-1 rounded border border-slate-200">Render</span>
+          <span class="bg-white px-2 py-1 rounded border border-slate-200">AWS</span>
+        </div>
+      </div>
+    </section>
+
+    <%# 4. 削除 %>
+    <section>
+      <div class="flex items-center gap-3 mb-4 border-b border-slate-200 pb-2">
+        <i data-lucide="trash-2" class="w-5 h-5 text-slate-400"></i>
+        <h2 class="text-base md:text-lg font-bold text-slate-800 m-0">データの削除</h2>
+      </div>
+      <p class="text-sm text-slate-600">
+        アカウントを削除すると、サーバー上のあなたのデータは速やかに削除されます。
+      </p>
+    </section>
+
+  </div>
+</div>
