@@ -5,24 +5,20 @@ export default class extends Controller {
   static values = { isNewUser: Boolean }
 
   connect() {
-    // 診断ログ（コンソールで確認用）
     console.log("Install Guide: Loaded")
-    console.log("Is New User?", this.isNewUserValue)
-
+    
+    // localStorageを確認（既読なら "true" が入っている）
     const hasSeen = localStorage.getItem("morphe0_install_guide_seen")
     
-    // ▼ ロジック変更：新規ユーザーなら、過去に見たことがあっても強制的に出す！
-    // （開発中や、家族でPCを共有している場合に親切です）
-    if (this.isNewUserValue) {
-      console.log("Install Guide: 新規ユーザーなので表示します")
-      // もし「見た」記憶があっても、新規登録直後ならリセットしてあげる
-      localStorage.removeItem("morphe0_install_guide_seen")
+    // 「新規ユーザーである」かつ「まだ一度も見ていない」場合のみ表示
+    if (this.isNewUserValue && !hasSeen) {
+      console.log("Install Guide: 条件一致、表示します")
       
       setTimeout(() => {
         this.open()
       }, 1000)
     } else {
-       console.log("Install Guide: 新規ユーザーではない、または期間外なので表示しません")
+      console.log("Install Guide: 既に閲覧済み、または表示対象外です")
     }
   }
 
