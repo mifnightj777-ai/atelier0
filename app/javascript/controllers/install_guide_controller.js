@@ -33,5 +33,9 @@ export default class extends Controller {
     
     // 閉じた時だけ「見た」と記録する
     localStorage.setItem("morphe0_install_guide_seen", "true")
+    setTimeout(() => {
+    window.dispatchEvent(new CustomEvent("start-main-tutorial"))
+  }, 600)
   }
+  
 }
