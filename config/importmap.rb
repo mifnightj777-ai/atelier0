@@ -4,6 +4,7 @@ pin "application"
 pin "@hotwired/turbo-rails", to: "turbo.min.js"
 pin "@hotwired/stimulus", to: "stimulus.min.js"
 pin "@hotwired/stimulus-loading", to: "stimulus-loading.js"
+
 pin "controllers/application", to: "controllers/application.js"
 pin "controllers/hello_controller", to: "controllers/hello_controller.js"
 pin "controllers/color_picker_controller", to: "controllers/color_picker_controller.js"
@@ -26,3 +27,5 @@ pin "controllers/image_preview_controller", to: "controllers/image_preview_contr
 pin "controllers/install_guide_controller", to: "controllers/install_guide_controller.js"
 pin "controllers/profile_tabs_controller", to: "controllers/profile_tabs_controller.js"
 pin "controllers/palette_controller", to: "controllers/palette_controller.js"
+
+pin "entrypoint", to: "controllers/index.js"
