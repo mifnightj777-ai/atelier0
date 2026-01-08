@@ -23,7 +23,14 @@ class FragmentColorsController < ApplicationController
     
     if @color.fragment.user == current_user
       @color.destroy
-      render turbo_stream: turbo_stream.remove(@color)
+      
+      # ★ここが最重要ポイント★
+      # respond_to を使って「TurboStreamなら削除命令だけ、HTMLならリダイレクト」と分けます
+      # これで、もしTurboが効かなくてもエラーにならず、効けば爆速になります
+      respond_to do |format|
+        format.turbo_stream { render turbo_stream: turbo_stream.remove(@color) }
+        format.html { redirect_to fragment_path(@color.fragment), notice: 'Color deleted.' }
+      end
     else
       head :forbidden
     end

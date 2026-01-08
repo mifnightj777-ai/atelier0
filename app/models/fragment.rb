@@ -38,8 +38,8 @@ class Fragment < ApplicationRecord
 
   # 2. 画像の色抽出 (これが自動抽出の本丸です)
   #    create(新規) または update(更新) の後、画像があるなら実行します
-  after_commit :extract_auto_colors, on: [:create, :update], 
-               if: -> { image.attached? && !audio.attached? }
+  after_save :extract_auto_colors, 
+             if: -> { attachment_changes['image'].present? && !audio.attached? }
 
   # --- ▲ Callback 設定ここまで ▲ ---
 
