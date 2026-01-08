@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
   def show
-    @user = User.find_by!(username: params[:username])
+    @user = User.find_by("lower(username) = ?", params[:username].to_s.downcase) || User.find_by(id: params[:username])
     is_owner = (current_user == @user)
     is_teammate = user_signed_in? && (current_user.following.include?(@user) || @user.following.include?(current_user))
     

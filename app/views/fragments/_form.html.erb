@@ -1,139 +1,317 @@
-<div class="max-w-2xl mx-auto px-6 py-0" 
-     data-controller="fragment-upload" 
-     data-action="paste->fragment-upload#paste">
+<%# 
+  ★重要: ここでコントローラーを呼び出します。
+  これがないと中のスクリプトは動きません。
+%>
+<div class="relative" 
+     data-controller="form-tour" 
+     data-form-tour-active-value="<%= @show_tutorial %>">
 
-  <%= form_with(model: fragment, class: "block") do |form| %>
-    <%= form.hidden_field :prompt_id %>
-    <%= form.hidden_field :parent_id %>
+  <%# === ツアー用の吹き出し（ポップオーバー） === %>
+  <div data-form-tour-target="popover" 
+       class="hidden absolute z-50 w-72 bg-white text-slate-600 p-6 rounded-2xl shadow-xl shadow-indigo-100/50 transition-all duration-300 ease-out border-2 border-indigo-50"
+       style="transition: top 0.4s ease, left 0.4s ease;">
 
-    <%# --- Daily Prompt 表示 --- %>
-    <div class="text-center mb-12">
-      <% if fragment.prompt %>
-        <div class="inline-flex items-center gap-2 px-4 py-1.5 bg-indigo-50 rounded-full text-indigo-600 text-xs font-['Space_Grotesk'] font-bold uppercase tracking-widest mb-4">
-          <span class="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse"></span>
-          Daily Prompt
-        </div>
-        <h2 class="text-3xl font-['Poppins'] font-bold text-slate-900 leading-tight">
-          "<%= fragment.prompt.content %>"
-        </h2>
-      <% end %>
+    <div data-form-tour-target="arrow" 
+         class="absolute -left-2 top-1/2 -translate-y-1/2 w-4 h-4 bg-white border-b-2 border-l-2 border-indigo-50 transform rotate-45 transition-all duration-300">
     </div>
 
-    <div class="space-y-10 mb-12">
-        <div>
-            <%= form.label :title, "TITLE", class: "block text-xs font-['Space_Grotesk'] font-bold text-slate-400 uppercase tracking-widest ml-1 mb-2" %>
-            <%= form.text_field :title, placeholder: "Untitled Fragment", class: "w-full text-left bg-transparent border-b-2 border-transparent hover:border-slate-100 focus:border-slate-900 px-4 py-2 text-3xl font-['Poppins'] font-bold text-slate-900 placeholder-slate-200 outline-none transition-colors" %>
-        </div>
-
-        <div>
-            <%= form.label :description, "STORY / MEMO", class: "block text-xs font-['Space_Grotesk'] font-bold text-slate-400 uppercase tracking-widest ml-1 mb-2" %>
-            <%= form.text_area :description, rows: 4, placeholder: "Add a caption or story...", class: "w-full bg-slate-50 border-none rounded-2xl px-6 py-4 text-sm font-['Inter'] text-slate-700 placeholder-slate-400 focus:ring-2 focus:ring-slate-200 outline-none resize-none leading-relaxed" %>
-        </div>
-    </div>
-
-    <%# --- ARTWORK SECTION --- %>
-    <div class="mb-10 space-y-3" data-controller="image-preview">
-        <label class="block text-xs font-['Space_Grotesk'] font-bold text-slate-400 uppercase tracking-widest ml-1">ARTWORK</label>
-        <div class="border-2 border-dashed border-slate-200 rounded-2xl p-4 text-center cursor-pointer hover:border-indigo-300 hover:bg-indigo-50/30 transition-all group relative overflow-hidden min-h-[240px] flex items-center justify-center">
-          <%= form.file_field :image, 
-              class: "absolute inset-0 w-full h-full opacity-0 cursor-pointer z-30",
-              data: { 
-                image_preview_target: "input",
-                fragment_upload_target: "imageInput",
-                action: "change->image-preview#preview" 
-              } %>
-          
-          <% preview_image = fragment.image.attached? ? fragment.image : "" %>
-          <% is_hidden = !fragment.image.attached? %>
-          <%= image_tag preview_image, 
-              class: "absolute inset-0 w-full h-full object-contain bg-slate-100 rounded-xl z-20 #{'hidden' if is_hidden}",
-              data: { image_preview_target: "output" } %>
-
-          <div class="py-8 flex flex-col items-center justify-center gap-3 text-slate-400 group-hover:text-indigo-500 transition-colors <%= 'hidden' unless is_hidden %>"
-               data-image-preview-target="placeholder">
-            <div class="w-16 h-16 rounded-full bg-slate-100 group-hover:bg-indigo-100 flex items-center justify-center transition-colors">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-            </div>
-            <span class="font-['Poppins'] font-bold text-sm">Choose or Paste Image</span>
-            <span class="text-xs opacity-60">Ctrl + V (Win) / Cmd + V (Mac)</span>
-          </div>
-        </div>
-    </div>
-
-    <%# --- MEDIA SECTION (mp4, mov対応) --- %>
-    <div class="mb-12 space-y-3">
-        <div class="flex items-center justify-between ml-1">
-          <label class="block text-xs font-['Space_Grotesk'] font-bold text-slate-400 uppercase tracking-widest">Media Fragment (Audio / Video)</label>
-          <button type="button" 
-                  data-action="click->fragment-upload#toggleRecording"
-                  data-fragment-upload-target="recordButton"
-                  class="flex items-center gap-3 px-4 py-2 bg-white border border-slate-100 rounded-full shadow-sm hover:shadow-md transition-all text-[10px] font-bold text-slate-600">
-            <span class="relative flex h-2 w-2">
-            <%# 録音中に点滅・拡大するインジケーター %>
-              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-0" data-fragment-upload-target="recordPing"></span>
-              <span class="relative inline-flex rounded-full h-2 w-2 bg-slate-300" data-fragment-upload-target="recordIndicator"></span>
-            </span>
-            <span data-fragment-upload-target="recordLabel">START RECORDING</span>
-            <%# --- 追加：波形ビジュアライザー --- %>
-            <div class="flex items-end gap-[2px] h-3 ml-1 hidden" data-fragment-upload-target="visualizer">
-              <div class="w-[2px] bg-indigo-500 rounded-full transition-all duration-75 ease-out h-1"></div>
-              <div class="w-[2px] bg-indigo-500 rounded-full transition-all duration-75 ease-out h-2"></div>
-              <div class="w-[2px] bg-indigo-500 rounded-full transition-all duration-75 ease-out h-3"></div>
-              <div class="w-[2px] bg-indigo-500 rounded-full transition-all duration-75 ease-out h-1"></div>
-            </div>
-          </button>
-        </div>
-        
-        <div class="bg-slate-50 rounded-2xl p-6 border-2 border-transparent focus-within:border-slate-100 transition-all">
-          <%# エラーの原因だったコメントタグを削除しました %>
-          <%= form.file_field :audio, 
-              accept: "audio/*,video/mp4,video/quicktime",
-              class: "w-full text-xs text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-[10px] file:font-bold file:bg-slate-200 file:text-slate-600 hover:file:bg-slate-300",
-              data: { fragment_upload_target: "audioInput" } %>
-          <p class="mt-3 text-[10px] text-slate-400 italic font-['Inter']" data-fragment-upload-target="audioStatus">
-            Upload Audio, MP4, MOV or Record a voice memo
-          </p>
-        </div>
-    </div>
-
-    <%# --- Visibility Setting (以前の大きなカード形式へ復旧) --- %>
-    <div class="space-y-4 pt-6">
-      <label class="block text-xs font-['Space_Grotesk'] font-bold text-slate-400 uppercase tracking-widest ml-1">Visibility Setting</label>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <label class="cursor-pointer group relative">
-          <%= form.radio_button :visibility, :public_view, class: "peer sr-only" %>
-          <div class="h-full p-6 rounded-2xl border-2 border-slate-100 bg-white text-slate-400 transition-all duration-300 ease-out flex flex-col items-center justify-center gap-2 peer-checked:border-indigo-500 peer-checked:bg-indigo-50/30 peer-checked:text-indigo-600 hover:border-indigo-200 hover:shadow-lg hover:-translate-y-1">
-            <div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center transition-colors duration-300 group-hover:bg-white peer-checked:bg-indigo-100 peer-checked:text-indigo-600">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
-            </div>
-            <div class="text-center"><span class="block font-['Poppins'] font-bold text-sm">Public</span><span class="block text-[10px] opacity-60 mt-0.5">Visible to everyone</span></div>
-          </div>
-        </label>
-
-        <label class="cursor-pointer group relative">
-          <%= form.radio_button :visibility, :private_view, class: "peer sr-only" %>
-          <div class="h-full p-6 rounded-2xl border-2 border-slate-100 bg-white text-slate-400 transition-all duration-300 ease-out flex flex-col items-center justify-center gap-2 peer-checked:border-slate-800 peer-checked:bg-slate-50 peer-checked:text-slate-800 hover:border-slate-300 hover:shadow-lg hover:-translate-y-1">
-            <div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center transition-colors duration-300 group-hover:bg-white peer-checked:bg-slate-200 peer-checked:text-slate-800">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
-            </div>
-            <div class="text-center"><span class="block font-['Poppins'] font-bold text-sm">Private</span><span class="block text-[10px] opacity-60 mt-0.5">Only you can see</span></div>
-          </div>
-        </label>
-
-        <label class="cursor-pointer group relative">
-          <%= form.radio_button :visibility, :teammates_view, class: "peer sr-only" %>
-          <div class="h-full p-6 rounded-2xl border-2 border-slate-100 bg-white text-slate-400 transition-all duration-300 ease-out flex flex-col items-center justify-center gap-2 peer-checked:border-amber-400 peer-checked:bg-amber-50 peer-checked:text-amber-700 hover:border-amber-200 hover:shadow-lg hover:-translate-y-1">
-            <div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center transition-colors duration-300 group-hover:bg-white peer-checked:bg-amber-100 peer-checked:text-amber-500">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
-            </div>
-            <div class="text-center"><span class="block font-['Poppins'] font-bold text-sm">Teammates</span><span class="block text-[10px] opacity-60 mt-0.5">Visible to teammates</span></div>
-          </div>
-        </label>
+    <div class="relative z-10">
+      <div class="flex justify-between items-start mb-3">
+        <h4 data-form-tour-target="title" class="font-['Space_Grotesk'] font-bold text-indigo-600 text-sm tracking-wider uppercase"></h4>
+        <span data-form-tour-target="counter" class="text-[10px] text-slate-400 font-mono pt-0.5"></span>
+      </div>
+      
+      <p data-form-tour-target="content" class="text-xs text-slate-600 font-['Inter'] leading-relaxed mb-6 min-h-[40px]"></p>
+      
+      <div class="flex justify-end">
+        <button type="button" 
+                data-form-tour-target="nextBtn"
+                class="bg-indigo-600 text-white hover:bg-indigo-700 shadow-sm shadow-indigo-200/50 px-5 py-2 rounded-full text-[10px] font-bold tracking-widest transition-all hover:-translate-y-0.5">
+          NEXT
+        </button>
       </div>
     </div>
+  </div>
 
-    <div class="pt-10 border-t border-slate-100 flex items-center gap-6">    
-      <%= form.submit "DROP FRAGMENT", class: "flex-1 bg-slate-900 text-white font-['Poppins'] font-bold py-5 rounded-2xl shadow-xl shadow-slate-200 hover:bg-indigo-600 hover:shadow-indigo-200 hover:-translate-y-0.5 transition-all cursor-pointer tracking-widest text-sm" %>
-    </div>
-  <% end %>
+
+  <%# === メインフォーム === %>
+  <div class="max-w-2xl mx-auto px-6 py-0" 
+       data-controller="fragment-upload" 
+       data-action="paste->fragment-upload#paste">
+
+    <%= form_with(model: fragment, class: "block") do |form| %>
+      <%= form.hidden_field :prompt_id %>
+      <%= form.hidden_field :parent_id %>
+
+      <%# --- Daily Prompt 表示 --- %>
+      <div id="tour-prompt" class="text-center mb-12 scroll-mt-24">
+        <% if fragment.prompt %>
+          <div class="inline-flex items-center gap-2 px-4 py-1.5 bg-indigo-50 rounded-full text-indigo-600 text-xs font-['Space_Grotesk'] font-bold uppercase tracking-widest mb-4">
+            <span class="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse"></span>
+            Daily Prompt
+          </div>
+          <h2 class="text-3xl font-['Poppins'] font-bold text-slate-900 leading-tight">
+            "<%= fragment.prompt.content %>"
+          </h2>
+        <% end %>
+      </div>
+
+      <div id="tour-text" class="space-y-10 mb-12 scroll-mt-24">
+          <div>
+              <%= form.label :title, "TITLE", class: "block text-xs font-['Space_Grotesk'] font-bold text-slate-400 uppercase tracking-widest ml-1 mb-2" %>
+              <%= form.text_field :title, placeholder: "Untitled Fragment", class: "w-full text-left bg-transparent border-b-2 border-transparent hover:border-slate-100 focus:border-slate-900 px-4 py-2 text-3xl font-['Poppins'] font-bold text-slate-900 placeholder-slate-200 outline-none transition-colors" %>
+          </div>
+
+          <div>
+              <%= form.label :description, "STORY / MEMO", class: "block text-xs font-['Space_Grotesk'] font-bold text-slate-400 uppercase tracking-widest ml-1 mb-2" %>
+              <%= form.text_area :description, rows: 4, placeholder: "Add a caption or story...", class: "w-full bg-slate-50 border-none rounded-2xl px-6 py-4 text-sm font-['Inter'] text-slate-700 placeholder-slate-400 focus:ring-2 focus:ring-slate-200 outline-none resize-none leading-relaxed" %>
+          </div>
+      </div>
+
+      <%# --- ARTWORK SECTION --- %>
+      <div id="tour-image" class="mb-10 space-y-3 scroll-mt-24" data-controller="image-preview">
+          <label class="block text-xs font-['Space_Grotesk'] font-bold text-slate-400 uppercase tracking-widest ml-1">ARTWORK</label>
+          <div class="border-2 border-dashed border-slate-200 rounded-2xl p-4 text-center cursor-pointer hover:border-indigo-300 hover:bg-indigo-50/30 transition-all group relative overflow-hidden min-h-[240px] flex items-center justify-center">
+            <%= form.file_field :image, 
+                class: "absolute inset-0 w-full h-full opacity-0 cursor-pointer z-30",
+                data: { 
+                  image_preview_target: "input",
+                  fragment_upload_target: "imageInput",
+                  action: "change->image-preview#preview" 
+                } %>
+            
+            <% preview_image = fragment.image.attached? ? fragment.image : "" %>
+            <% is_hidden = !fragment.image.attached? %>
+            <%= image_tag preview_image, 
+                class: "absolute inset-0 w-full h-full object-contain bg-slate-100 rounded-xl z-20 #{'hidden' if is_hidden}",
+                data: { image_preview_target: "output" } %>
+
+            <div class="py-8 flex flex-col items-center justify-center gap-3 text-slate-400 group-hover:text-indigo-500 transition-colors <%= 'hidden' unless is_hidden %>"
+                 data-image-preview-target="placeholder">
+              <div class="w-16 h-16 rounded-full bg-slate-100 group-hover:bg-indigo-100 flex items-center justify-center transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+              </div>
+              <span class="font-['Poppins'] font-bold text-sm">Choose or Paste Image</span>
+              <span class="text-xs opacity-60">Ctrl + V (Win) / Cmd + V (Mac)</span>
+            </div>
+          </div>
+      </div>
+
+      <%# --- MEDIA SECTION --- %>
+      <div id="tour-media" class="mb-12 space-y-3 scroll-mt-24">
+          <div class="flex items-center justify-between ml-1">
+            <label class="block text-xs font-['Space_Grotesk'] font-bold text-slate-400 uppercase tracking-widest">Media Fragment (Audio / Video)</label>
+            <button type="button" 
+                    data-action="click->fragment-upload#toggleRecording"
+                    data-fragment-upload-target="recordButton"
+                    class="flex items-center gap-3 px-4 py-2 bg-white border border-slate-100 rounded-full shadow-sm hover:shadow-md transition-all text-[10px] font-bold text-slate-600">
+              <span class="relative flex h-2 w-2">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-0" data-fragment-upload-target="recordPing"></span>
+                <span class="relative inline-flex rounded-full h-2 w-2 bg-slate-300" data-fragment-upload-target="recordIndicator"></span>
+              </span>
+              <span data-fragment-upload-target="recordLabel">START RECORDING</span>
+              <div class="flex items-end gap-[2px] h-3 ml-1 hidden" data-fragment-upload-target="visualizer">
+                <div class="w-[2px] bg-indigo-500 rounded-full transition-all duration-75 ease-out h-1"></div>
+                <div class="w-[2px] bg-indigo-500 rounded-full transition-all duration-75 ease-out h-2"></div>
+                <div class="w-[2px] bg-indigo-500 rounded-full transition-all duration-75 ease-out h-3"></div>
+                <div class="w-[2px] bg-indigo-500 rounded-full transition-all duration-75 ease-out h-1"></div>
+              </div>
+            </button>
+          </div>
+          
+          <div class="bg-slate-50 rounded-2xl p-6 border-2 border-transparent focus-within:border-slate-100 transition-all">
+            <%= form.file_field :audio, 
+                accept: "audio/*,video/mp4,video/quicktime",
+                class: "w-full text-xs text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-[10px] file:font-bold file:bg-slate-200 file:text-slate-600 hover:file:bg-slate-300",
+                data: { fragment_upload_target: "audioInput" } %>
+            <p class="mt-3 text-[10px] text-slate-400 italic font-['Inter']" data-fragment-upload-target="audioStatus">
+              Upload Audio, MP4, MOV or Record a voice memo
+            </p>
+          </div>
+      </div>
+
+      <%# --- Visibility Setting --- %>
+      <div id="tour-visibility" class="space-y-4 pt-6 scroll-mt-24">
+        <label class="block text-xs font-['Space_Grotesk'] font-bold text-slate-400 uppercase tracking-widest ml-1">Visibility Setting</label>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <label class="cursor-pointer group relative">
+            <%= form.radio_button :visibility, :public_view, class: "peer sr-only" %>
+            <div class="h-full p-6 rounded-2xl border-2 border-slate-100 bg-white text-slate-400 transition-all duration-300 ease-out flex flex-col items-center justify-center gap-2 peer-checked:border-indigo-500 peer-checked:bg-indigo-50/30 peer-checked:text-indigo-600 hover:border-indigo-200 hover:shadow-lg hover:-translate-y-1">
+              <div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center transition-colors duration-300 group-hover:bg-white peer-checked:bg-indigo-100 peer-checked:text-indigo-600">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+              </div>
+              <div class="text-center"><span class="block font-['Poppins'] font-bold text-sm">Public</span><span class="block text-[10px] opacity-60 mt-0.5">Visible to everyone</span></div>
+            </div>
+          </label>
+
+          <label class="cursor-pointer group relative">
+            <%= form.radio_button :visibility, :private_view, class: "peer sr-only" %>
+            <div class="h-full p-6 rounded-2xl border-2 border-slate-100 bg-white text-slate-400 transition-all duration-300 ease-out flex flex-col items-center justify-center gap-2 peer-checked:border-slate-800 peer-checked:bg-slate-50 peer-checked:text-slate-800 hover:border-slate-300 hover:shadow-lg hover:-translate-y-1">
+              <div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center transition-colors duration-300 group-hover:bg-white peer-checked:bg-slate-200 peer-checked:text-slate-800">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+              </div>
+              <div class="text-center"><span class="block font-['Poppins'] font-bold text-sm">Private</span><span class="block text-[10px] opacity-60 mt-0.5">Only you can see</span></div>
+            </div>
+          </label>
+
+          <label class="cursor-pointer group relative">
+            <%= form.radio_button :visibility, :teammates_view, class: "peer sr-only" %>
+            <div class="h-full p-6 rounded-2xl border-2 border-slate-100 bg-white text-slate-400 transition-all duration-300 ease-out flex flex-col items-center justify-center gap-2 peer-checked:border-amber-400 peer-checked:bg-amber-50 peer-checked:text-amber-700 hover:border-amber-200 hover:shadow-lg hover:-translate-y-1">
+              <div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center transition-colors duration-300 group-hover:bg-white peer-checked:bg-amber-100 peer-checked:text-amber-500">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+              </div>
+              <div class="text-center"><span class="block font-['Poppins'] font-bold text-sm">Teammates</span><span class="block text-[10px] opacity-60 mt-0.5">Visible to teammates</span></div>
+            </div>
+          </label>
+        </div>
+      </div>
+
+      <div class="pt-10 border-t border-slate-100 flex items-center gap-6">    
+        <%= form.submit "DROP FRAGMENT", class: "flex-1 bg-slate-900 text-white font-['Poppins'] font-bold py-5 rounded-2xl shadow-xl shadow-slate-200 hover:bg-indigo-600 hover:shadow-indigo-200 hover:-translate-y-0.5 transition-all cursor-pointer tracking-widest text-sm" %>
+      </div>
+    <% end %>
+  </div>
 </div>
+<%# ▲ここまでがフォーム全体を囲う div の終わりです ▲ %>
+
+
+<script type="module">
+  import { Controller } from "https://unpkg.com/@hotwired/stimulus/dist/stimulus.js"
+
+  const app = window.Stimulus || window.application
+
+  if (app) {
+    app.register("form-tour", class extends Controller {
+      static targets = ["popover", "title", "content", "counter", "arrow", "nextBtn"]
+      static values = { active: Boolean }
+
+      connect() {
+        console.log("🚀 Inline Tour Controller: 起動成功！")
+
+        // 【リリース時は以下のコメントアウトを外してください】
+        // -----------------------------------------------------
+        // 1. Rails側が「表示不要（false）」と判断したら終了
+        if (!this.activeValue) return
+        
+        // 2. 過去に「確認しました」を押したブラウザなら終了
+        if (localStorage.getItem("fragment_tour_completed")) return
+        // -----------------------------------------------------
+        
+        if (!this.hasPopoverTarget) {
+          console.error("❌ エラー: HTML内に 'popover' ターゲットが見つかりません")
+          return
+        }
+
+        this.popoverEl = this.popoverTarget
+        this.titleEl = this.titleTarget
+        this.contentEl = this.contentTarget
+        this.counterEl = this.counterTarget
+        this.nextBtnEl = this.nextBtnTarget
+        this.arrowEl = this.hasArrowTarget ? this.arrowTarget : null
+
+        this.boundNext = this.next.bind(this)
+        this.nextBtnEl.addEventListener("click", this.boundNext)
+
+        document.body.appendChild(this.popoverEl)
+
+        this.steps = [
+          { target: "tour-text", title: "Title & Story", content: "タイトルと、その瞬間の物語やメモを記録します。" },
+          { target: "tour-image", title: "Artwork", content: "画像をここにドラッグ＆ドロップ。クリップボードからの貼り付けも可能です。" },
+          { target: "tour-media", title: "Media Fragment", content: "音声や動画ファイルがある場合はここへ。録音ボタンでボイスメモも残せます。" },
+          { target: "tour-visibility", title: "Visibility", content: "公開範囲を選択し、最後に「確認しました」を押してください。" }
+        ]
+        
+        this.currentIndex = 0
+        
+        setTimeout(() => {
+          this.start()
+        }, 500)
+
+        this.boundReposition = this.reposition.bind(this)
+        window.addEventListener('resize', this.boundReposition)
+      }
+
+      disconnect() {
+        if (this.nextBtnEl) this.nextBtnEl.removeEventListener("click", this.boundNext)
+        if (this.popoverEl && document.body.contains(this.popoverEl)) this.popoverEl.remove()
+        window.removeEventListener('resize', this.boundReposition)
+      }
+
+      start() {
+        this.popoverEl.classList.remove("hidden")
+        this.showStep()
+      }
+
+      next() {
+        if (this.currentIndex >= this.steps.length - 1) {
+          this.finish()
+          return
+        }
+        this.currentIndex++
+        this.showStep()
+      }
+
+      finish() {
+        // 【リリース時は以下のコメントアウトを外してください】
+        localStorage.setItem("fragment_tour_completed", "true")
+
+        this.popoverEl.classList.add("opacity-0", "scale-95")
+        setTimeout(() => {
+          if (this.popoverEl && document.body.contains(this.popoverEl)) this.popoverEl.remove()
+        }, 300)
+      }
+
+      showStep() {
+        const step = this.steps[this.currentIndex]
+        const targetEl = document.getElementById(step.target)
+        if (!targetEl) {
+          console.warn("ターゲットが見つかりません:", step.target)
+          this.next()
+          return
+        }
+        this.titleEl.textContent = step.title
+        this.contentEl.textContent = step.content
+        this.counterEl.textContent = `${this.currentIndex + 1} / ${this.steps.length}`
+
+        if (this.currentIndex === this.steps.length - 1) {
+          this.nextBtnEl.textContent = "確認しました"
+          this.nextBtnEl.classList.remove("bg-indigo-600", "hover:bg-indigo-700")
+          this.nextBtnEl.classList.add("bg-slate-900", "hover:bg-black")
+        } else {
+          this.nextBtnEl.textContent = "NEXT"
+          this.nextBtnEl.classList.add("bg-indigo-600", "hover:bg-indigo-700")
+          this.nextBtnEl.classList.remove("bg-slate-900", "hover:bg-black")
+        }
+
+        targetEl.scrollIntoView({ behavior: "smooth", block: "center" })
+        this.updatePosition(targetEl)
+      }
+
+      reposition() {
+        if (!this.popoverEl || this.popoverEl.classList.contains("hidden")) return
+        const step = this.steps[this.currentIndex]
+        if (step) {
+          const targetEl = document.getElementById(step.target)
+          if (targetEl) this.updatePosition(targetEl)
+        }
+      }
+
+      updatePosition(targetEl) {
+        const rect = targetEl.getBoundingClientRect()
+        const popoverRect = this.popoverEl.getBoundingClientRect()
+        const scrollX = window.scrollX || window.pageXOffset
+        const scrollY = window.scrollY || window.pageYOffset
+        
+        let left = rect.right + scrollX + 15
+        let top = rect.top + scrollY + (rect.height / 2) - (popoverRect.height / 2)
+        
+        if (left + popoverRect.width > document.body.clientWidth - 10) {
+          left = document.body.clientWidth - popoverRect.width - 10
+        }
+        
+        this.popoverEl.style.top = `${top}px`
+        this.popoverEl.style.left = `${left}px`
+      }
+    })
+  }
+</script>

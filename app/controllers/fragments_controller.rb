@@ -25,6 +25,7 @@ class FragmentsController < ApplicationController
   # GET /fragments/new
   def new
     @fragment = Fragment.new
+    @show_tutorial = current_user.fragments.empty?
 
     if params[:parent_id]
       @fragment.parent_id = params[:parent_id]

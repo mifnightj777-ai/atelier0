@@ -38,6 +38,10 @@ class User < ApplicationRecord
 
   validate :password_complexity
 
+  def to_param
+    username
+  end
+
   def password_complexity
     return if password.blank?
     unless password.match?(/\A(?=.*?[a-z])(?=.*?\d).{8,100}\z/i)

@@ -9,14 +9,13 @@ Rails.application.routes.draw do
   root "welcome#index"
   get 'terms', to: 'pages#terms'
   get 'privacy', to: 'pages#privacy'
-  
   get 'guide', to: 'welcome#guide', as: :guide
   get 'welcome/index'
   get 'prompts/index'
   get 'prompts/show'
   get "up" => "rails/health#show", as: :rails_health_check
   get 'focus/index'
-  get '/@:username', to: 'users#show', as: :user_profile
+  get '/@:username', to: 'users#show', as: :user_profile, constraints: { username: /[^\/]+/ }
   get 'notifications/index'
   get 'users/show'
   get 'focus', to: 'ideas#new', as: :focus_studio
