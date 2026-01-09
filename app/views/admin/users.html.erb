@@ -47,14 +47,10 @@
               <%# ▼ 追加：削除ボタン（自分以外に表示） %>
               <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                 <% if user != current_user %>
-                  <%= link_to admin_destroy_user_path(user), 
-                      data: { turbo_method: :delete, turbo_confirm: "本当にこのユーザー(@#{user.username})を削除しますか？\nこの操作は取り消せません。" }, 
-                      class: "text-slate-300 hover:text-red-600 transition-colors flex items-center justify-end gap-1" do %>
-                    <span class="hidden group-hover:inline text-xs">Delete</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
-                      <path fill-rule="evenodd" d="M16.5 4.478v.227a48.816 48.816 0 013.878.512.75.75 0 11-.49 1.478l-.56 5.211h-12.65l-.56-5.211a.75.75 0 11-.49-1.478.75.75 0 0115.376 0zM4.756 19.936A1.5 1.5 0 016.245 21h11.51a1.5 1.5 0 011.489-1.064l.413-5.212H4.342l.414 5.212z" clip-rule="evenodd" />
-                    </svg>
-                  <% end %>
+                  <%= button_to "削除", admin_destroy_user_path(user.id),
+                      method: :delete,
+                      onclick: "return confirm('本当に削除しますか？ユーザーに関連するデータも全て消えます。');",
+                      class: "text-red-500 hover:text-red-700 font-bold border border-red-200 bg-red-50 px-3 py-1 rounded cursor-pointer" %>
                 <% else %>
                   <span class="text-slate-200 cursor-not-allowed">
                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">

@@ -22,7 +22,6 @@ Rails.application.routes.draw do
   get 'mailbox', to: 'letters#index', as: :mailbox
   get 'gallery', to: 'fragments#gallery', as: 'gallery'
   
-  
 
 
 
