@@ -1,180 +1,257 @@
 <style>
-  /* ヒーロー用：ゆっくり現れるアニメーション */
-  @keyframes slowFadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
+  /* --- 共通アニメーション --- */
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
   }
+  @keyframes slowFadeIn {
+    from { opacity: 0; transform: translateY(30px) scale(0.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  /* --- ヒーローセクション装飾 --- */
+  .hero-float-item {
+    position: absolute;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    opacity: 0; /* JSで表示制御 */
+    animation: float 6s ease-in-out infinite;
+    transition: transform 0.1s ease-out; /* パララックス用 */
+    pointer-events: none; /* 文字の邪魔をしないように */
+  }
+  /* 浮遊アイテムごとの遅延設定 */
+  .hero-item-1 { animation-delay: 0s; }
+  .hero-item-2 { animation-delay: 1s; }
+  .hero-item-3 { animation-delay: 2s; }
+  .hero-item-4 { animation-delay: 3s; }
+
   .fade-in { 
     animation: slowFadeIn 1s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; 
     opacity: 0;
   }
-  .delay-1 { animation-delay: 0.2s; }
-  .delay-2 { animation-delay: 0.4s; }
-  .delay-3 { animation-delay: 0.6s; }
+  .delay-1 { animation-delay: 0.1s; }
+  .delay-2 { animation-delay: 0.3s; }
+  .delay-3 { animation-delay: 0.5s; }
 
-  /* 縦長カードのホバーエフェクト */
+  /* --- 3Dカードエフェクト --- */
+  .card-container {
+    perspective: 1000px; /* 3D空間の奥行き */
+  }
   .feature-card {
-    transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: all 0.1s ease-out; /* 即座に反応するように */
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
   }
-  .feature-card:hover {
-    transform: translateY(-8px);
-    border-color: #6366f1;
-    box-shadow: 0 30px 60px -15px rgba(0,0,0,0.08);
+  
+  /* カードの中身が浮き出るように */
+  .card-content {
+    transform: translateZ(20px);
+  }
+  
+  /* グレア（光沢）エフェクト */
+  .card-glare {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    border-radius: 40px;
+    background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.4), transparent 70%);
+    opacity: 0;
+    pointer-events: none;
+    mix-blend-mode: overlay;
+    transition: opacity 0.3s;
+  }
+  .feature-card:hover .card-glare {
+    opacity: 1;
   }
 
-  /* 動画のスタイリング */
-  .video-container {
+  /* 画像コンテナのスタイル調整 */
+  .image-container {
     width: 100%;
     height: 100%;
     overflow: hidden;
-    border-radius: 24px;
+    border-radius: 16px;
     background: #f8fafc;
   }
-  video {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    opacity: 0.9;
-  }
 
-  /* カードが隠れている時の状態 */
+  /* スクロール出現アニメーション */
   .reveal-card {
     opacity: 0;
-    transform: translateY(40px);
-    transition: all 0.8s cubic-bezier(0.2, 1, 0.3, 1);
+    transform: translateY(60px) rotateX(10deg);
+    transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
   }
-
-  /* 表示された時の状態 */
   .reveal-card.is-visible {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) rotateX(0);
   }
-
-  /* 1番目から5番目まで、少しずつ遅れて表示させる設定 */
-  .reveal-card:nth-child(1) { transition-delay: 0.1s; }
-  .reveal-card:nth-child(2) { transition-delay: 0.2s; }
-  .reveal-card:nth-child(3) { transition-delay: 0.3s; }
-  .reveal-card:nth-child(4) { transition-delay: 0.4s; }
-  .reveal-card:nth-child(5) { transition-delay: 0.5s; }
 </style>
 
-<div class="w-full bg-white text-slate-900 font-['Inter'] selection:bg-indigo-50">
+<div class="w-full bg-[#FAFAFA] text-slate-900 font-['Inter'] selection:bg-indigo-100 overflow-x-hidden">
 
-  <%# --- 1. HERO: 静かな始まり (維持) --- %>
-  <section class="relative min-h-[95vh] flex flex-col items-center justify-center px-6">
-    <div class="absolute inset-0 flex justify-center items-center opacity-40 pointer-events-none overflow-hidden">
-      <div class="w-[800px] h-[800px] bg-indigo-50/50 rounded-full blur-3xl translate-y-1/4"></div>
+  <%# --- 1. HERO: ダイナミック・パララックス空間 --- %>
+  <section id="hero-section" class="relative min-h-screen flex flex-col items-center justify-center px-6 overflow-hidden perspective-container">
+    
+    <%# --- パララックス背景要素（浮遊する断片たち） --- %>
+    <div class="hero-float-item hero-item-1 w-24 h-24 bg-gradient-to-br from-indigo-200 to-purple-200 top-[15%] left-[10%] rotate-12 blur-sm" data-speed="0.05"></div>
+    <div class="hero-float-item hero-item-2 w-32 h-40 bg-white border border-slate-100 top-[20%] right-[15%] -rotate-6 shadow-xl" data-speed="-0.03"></div>
+    <div class="hero-float-item hero-item-3 w-16 h-16 bg-pink-100 rounded-full bottom-[20%] left-[20%] blur-md" data-speed="0.08"></div>
+    <div class="hero-float-item hero-item-4 w-40 h-28 bg-slate-900/5 border border-slate-200 bottom-[15%] right-[10%] rotate-3 backdrop-blur-sm" data-speed="-0.06"></div>
+
+    <%# 中央の光 %>
+    <div class="absolute inset-0 flex justify-center items-center pointer-events-none">
+      <div class="w-[600px] h-[600px] md:w-[900px] md:h-[900px] bg-indigo-500/10 rounded-full blur-[100px] animate-pulse"></div>
     </div>
 
-    <div class="relative z-10 text-center max-w-3xl mx-auto">
-      <span class="inline-block text-[10px] font-['Space_Grotesk'] font-bold tracking-[0.4em] text-indigo-600 uppercase mb-6 fade-in">
-        The Digital Atelier for Process
+    <div class="relative z-10 text-center max-w-4xl mx-auto" data-speed="0.01">
+      <span class="inline-block text-[11px] font-['Space_Grotesk'] font-bold tracking-[0.3em] text-indigo-600 bg-indigo-50 px-4 py-1.5 rounded-full mb-8 fade-in uppercase border border-indigo-100">
+        The Digital Atelier
       </span>
-      <h1 class="text-5xl md:text-7xl font-['Poppins'] font-bold tracking-tight leading-[1.1] mb-8 fade-in delay-1">
-        This is your new <br>
-        Digital <span class="text-indigo-600">Atelier.</span>
+      
+      <h1 class="text-6xl md:text-8xl font-['Poppins'] font-bold tracking-tight leading-[1] mb-8 fade-in delay-1 text-slate-900 drop-shadow-sm">
+        Preserve Your <br>
+        <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">Creation.</span>
       </h1>
-      <p class="text-lg text-slate-500 leading-relaxed font-medium mb-12 max-w-xl mx-auto fade-in delay-2">
-        完成を急ぐ必要はありません。morphe0は、あなたの思考の揺らぎと、創作の過程そのものを美しく記録する場所です。
+      
+      <p class="text-lg md:text-xl text-slate-500 leading-relaxed font-medium mb-12 max-w-xl mx-auto fade-in delay-2 font-['Noto_Sans_JP']">
+        完成を急ぐ必要はありません。<br class="md:hidden">morphe0は、あなたの思考の揺らぎと、<br>創作の過程そのものを美しく記録する場所です。
       </p>
       
-      <div class="flex flex-col sm:flex-row items-center justify-center gap-4 fade-in delay-3">
-        <%= link_to new_user_registration_path, class: "px-10 py-4 bg-slate-900 text-white rounded-full font-['Poppins'] font-bold text-sm tracking-wider hover:bg-indigo-600 hover:shadow-lg transition-all duration-300" do %>
-          Start Your Studio
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-5 fade-in delay-3">
+        <%= link_to new_user_registration_path, class: "group relative px-10 py-4 bg-slate-900 text-white rounded-full font-['Poppins'] font-bold text-sm tracking-wider overflow-hidden shadow-2xl shadow-indigo-200" do %>
+          <div class="absolute inset-0 w-full h-full bg-indigo-600 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-in-out"></div>
+          <span class="relative z-10">Start Your Studio</span>
         <% end %>
+        <a href="#features" class="px-8 py-4 text-slate-500 font-['Poppins'] font-bold text-sm hover:text-indigo-600 transition-colors">
+          Explore Features
+        </a>
       </div>
     </div>
 
-    <div class="absolute bottom-10 left-1/2 py-5 -translate-x-1/2 flex flex-col items-center gap-3 fade-in delay-3">
-      <%# 文字も少しだけ動かすとおしゃれです %>
-      <span class="text-[13px] font-['Space_Grotesk'] font-bold tracking-[0.4em] text-slate-400 uppercase">
-        Scroll here
-      </span>
-      
-      <%# クリックすると #features セクションへスムーズに移動します %>
-      <a href="#features" class="group flex flex-col items-center">
-        <%# Tailwind標準の animate-bounce (弾む動き) を使用 %>
-        <div class="animate-bounce">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-slate-400 group-hover:text-indigo-600 transition-colors">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 13.5L12 21m0 0l-7.5-7.5M12 21V3" />
-          </svg>
-        </div>
-      </a>
+    <%# スクロールダウン %>
+    <div class="absolute bottom-10 left-1/2 -translate-x-1/2 fade-in delay-3">
+      <div class="w-[1px] h-24 bg-gradient-to-b from-slate-200 to-slate-400 opacity-50 relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-full h-1/2 bg-indigo-600 animate-[moveDown_1.5s_infinite]"></div>
+      </div>
     </div>
+    <style>@keyframes moveDown { 0% { transform: translateY(-100%); } 100% { transform: translateY(200%); } }</style>
   </section>
 
-  <%# --- 2. THE MODULES: 縦長カードの横並びセクション --- %>
-  <section id="features" class="w-full py-16 px-4 md:px-8 bg-[#FBFCFD]">
-    <div class="w-full max-w-[1600px] mx-auto">
-      
-      <div class="mb-12 px-4 flex justify-center items-end">
-        <div>
-          <h2 class="text-2xl font-['Poppins'] font-bold tracking-tight text-slate-900">Core Function</h2>
-          <p class="text-[10px] text-slate-400 font-bold uppercase tracking-[0.2em] mt-1">helps your record.</p>
-        </div>
+  <%# --- 2. THE MODULES: 3Dチルトカード（巨大化版） --- %>
+  <section id="features" class="w-full py-24 px-4 md:px-8 bg-white relative">
+    <div class="absolute inset-0 bg-[linear-gradient(to_right,#f0f0f0_1px,transparent_1px),linear-gradient(to_bottom,#f0f0f0_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-40 pointer-events-none"></div>
+
+    <div class="w-full max-w-[1400px] mx-auto relative z-10">
+      <div class="mb-24 px-4 text-center">
+        <h2 class="text-4xl md:text-6xl font-['Poppins'] font-bold tracking-tight text-slate-900 mb-6">Core Modules</h2>
+        <p class="text-sm md:text-base text-slate-500 font-['Space_Grotesk'] font-bold uppercase tracking-[0.2em]">Everything helps your record.</p>
       </div>
 
-      <%# 5つのメイン機能を横に並べるグリッド %>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+      <%# グリッド設定を変更：PCでは3列にして大きく表示 %>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10 px-4 justify-center">
         
-        <%# Card 1: Process Timeline %>
-        <div class="feature-card reveal-card bg-white rounded-[40px] border border-slate-100 p-8 flex flex-col aspect-[3/4.5]">
-          <div class="mb-6">
-            <span class="text-[9px] font-bold text-indigo-600 tracking-widest uppercase block mb-2">01 / Track</span>
-            <h3 class="text-xl font-['Poppins'] font-bold">Process Timeline</h3>
+        <%# --- Card 1: Timeline --- %>
+        <div class="card-container reveal-card w-full" style="transition-delay: 0.1s;">
+          <div class="feature-card bg-white rounded-[40px] border border-slate-100 p-8 flex flex-col aspect-[4/5] shadow-xl shadow-slate-200/50 relative overflow-hidden group h-full">
+            <div class="card-glare"></div>
+            <div class="card-content flex flex-col h-full z-10">
+              <div class="mb-6 flex justify-between items-start">
+                <span class="text-[10px] font-bold text-white bg-indigo-600 px-3 py-1.5 rounded-full tracking-widest uppercase">01 / Track</span>
+                <div class="w-3 h-3 rounded-full bg-slate-100 group-hover:bg-green-400 transition-colors shadow-inner"></div>
+              </div>
+              <div class="flex-1 video-container mb-8 rounded-3xl overflow-hidden shadow-inner bg-slate-50 relative transform group-hover:scale-105 transition-transform duration-500">
+                <video autoplay loop muted playsinline class="w-full h-full object-cover"><source src="/videos/demo_timeline.mp4" type="video/mp4"></video>
+                <div class="absolute inset-0 bg-indigo-900/0 group-hover:bg-indigo-900/10 transition-colors duration-300"></div>
+              </div>
+              <div>
+                <h3 class="text-2xl font-['Poppins'] font-bold mb-3 group-hover:text-indigo-600 transition-colors">Timeline</h3>
+                <p class="text-xs text-slate-400 leading-relaxed font-medium">全ての思考の軌跡を、<br>一本の美しい時間軸としてアーカイブ。</p>
+              </div>
+            </div>
           </div>
-          <div class="flex-1 video-container mb-6">
-            <video autoplay loop muted playsinline><source src="/videos/demo_timeline.mp4" type="video/mp4"></video>
-          </div>
-          <p class="text-[11px] text-slate-400 leading-relaxed">全ての思考の軌跡を一本の美しい時間軸としてアーカイブします。</p>
         </div>
 
-        <%# Card 2: Collections %>
-        <div class="feature-card reveal-card bg-white rounded-[40px] border border-slate-100 p-8 flex flex-col aspect-[3/4.5]">
-          <div class="mb-6">
-            <span class="text-[9px] font-bold text-indigo-600 tracking-widest uppercase block mb-2">02 / Organize</span>
-            <h3 class="text-xl font-['Poppins'] font-bold">Collections</h3>
+        <%# --- Card 2: Collections --- %>
+        <div class="card-container reveal-card w-full" style="transition-delay: 0.2s;">
+          <div class="feature-card bg-white rounded-[40px] border border-slate-100 p-8 flex flex-col aspect-[4/5] shadow-xl shadow-slate-200/50 relative overflow-hidden group h-full">
+            <div class="card-glare"></div>
+            <div class="card-content flex flex-col h-full z-10">
+              <div class="mb-6 flex justify-between items-start">
+                <span class="text-[10px] font-bold text-white bg-slate-900 px-3 py-1.5 rounded-full tracking-widest uppercase">02 / Organize</span>
+                <div class="w-3 h-3 rounded-full bg-slate-100 group-hover:bg-indigo-400 transition-colors shadow-inner"></div>
+              </div>
+              <div class="flex-1 video-container mb-8 rounded-3xl overflow-hidden shadow-inner bg-slate-50 relative transform group-hover:scale-105 transition-transform duration-500">
+                <video autoplay loop muted playsinline class="w-full h-full object-cover"><source src="/videos/demo_collections.mp4" type="video/mp4"></video>
+              </div>
+              <div>
+                <h3 class="text-2xl font-['Poppins'] font-bold mb-3 group-hover:text-indigo-600 transition-colors">Collections</h3>
+                <p class="text-xs text-slate-400 leading-relaxed font-medium">断片を束ね、Zineのように<br>一つの物語を編む場所。</p>
+              </div>
+            </div>
           </div>
-          <div class="flex-1 video-container mb-6">
-            <video autoplay loop muted playsinline><source src="/videos/demo_collections.mp4" type="video/mp4"></video>
-          </div>
-          <p class="text-[11px] text-slate-400 leading-relaxed">断片を束ね、Zineのように一つの物語としてコレクションを編みます。</p>
         </div>
 
-        <%# Card 3: Version Up %>
-        <div class="feature-card reveal-card bg-slate-900 text-white rounded-[40px] p-8 flex flex-col aspect-[3/4.5]">
-          <div class="mb-6">
-            <span class="text-[9px] font-bold text-indigo-400 tracking-widest uppercase block mb-2">03 / Evolve</span>
-            <h3 class="text-xl font-['Poppins'] font-bold">Version Up</h3>
+        <%# --- Card 3: Version Up --- %>
+        <div class="card-container reveal-card w-full" style="transition-delay: 0.3s;">
+          <div class="feature-card bg-slate-900 text-white rounded-[40px] border border-slate-800 p-8 flex flex-col aspect-[4/5] shadow-2xl shadow-slate-900/30 relative overflow-hidden group h-full">
+            <div class="card-glare"></div>
+            <div class="card-content flex flex-col h-full z-10">
+              <div class="mb-6 flex justify-between items-start">
+                <span class="text-[10px] font-bold text-slate-900 bg-white px-3 py-1.5 rounded-full tracking-widest uppercase">03 / Evolve</span>
+                <div class="w-3 h-3 rounded-full bg-slate-700 group-hover:bg-indigo-400 transition-colors shadow-inner"></div>
+              </div>
+              <div class="flex-1 video-container mb-8 rounded-3xl overflow-hidden shadow-inner bg-slate-800 relative transform group-hover:scale-105 transition-transform duration-500">
+                <video autoplay loop muted playsinline class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"><source src="/videos/demo_version.mp4" type="video/mp4"></video>
+              </div>
+              <div>
+                <h3 class="text-2xl font-['Poppins'] font-bold mb-3 text-indigo-200">Version Up</h3>
+                <p class="text-xs text-slate-400 leading-relaxed font-medium">修正ではなく「進化」を。<br>無限の系譜を作成。</p>
+              </div>
+            </div>
           </div>
-          <div class="flex-1 video-container bg-slate-800 mb-6">
-            <video autoplay loop muted playsinline class="opacity-80"><source src="/videos/demo_version.mp4" type="video/mp4"></video>
-          </div>
-          <p class="text-[11px] text-slate-500 leading-relaxed">一つの断片から、修正ではなく「進化」を。無限の系譜を作成します。</p>
         </div>
 
-        <%# Card 4: Dialogue (Letters & Chat) %>
-        <div class="feature-card reveal-card bg-white rounded-[40px] border border-slate-100 p-8 flex flex-col aspect-[3/4.5]">
-          <div class="mb-6">
-            <span class="text-[9px] font-bold text-indigo-600 tracking-widest uppercase block mb-2">04 / Dialogue</span>
-            <h3 class="text-xl font-['Poppins'] font-bold">Dialogue Letters</h3>
+        <%# --- 下段: 中央寄せにするためのラッパー --- %>
+        <%# PC画面(lg)の時だけ、この2枚を中央に寄せる配置にします %>
+        <div class="contents lg:flex lg:col-span-3 lg:justify-center lg:gap-10 lg:w-full">
+          
+          <%# --- Card 4: Letters --- %>
+          <div class="card-container reveal-card w-full lg:w-[calc(33.333%-1.25rem)]" style="transition-delay: 0.4s;">
+            <div class="feature-card bg-white rounded-[40px] border border-slate-100 p-8 flex flex-col aspect-[4/5] shadow-xl shadow-slate-200/50 relative overflow-hidden group h-full">
+              <div class="card-glare"></div>
+              <div class="card-content flex flex-col h-full z-10">
+                <div class="mb-6 flex justify-between items-start">
+                  <span class="text-[10px] font-bold text-white bg-slate-900 px-3 py-1.5 rounded-full tracking-widest uppercase">04 / Dialogue</span>
+                  <div class="w-3 h-3 rounded-full bg-slate-100 group-hover:bg-pink-400 transition-colors shadow-inner"></div>
+                </div>
+                <div class="flex-1 video-container mb-8 rounded-3xl overflow-hidden shadow-inner bg-slate-50 relative transform group-hover:scale-105 transition-transform duration-500">
+                  <video autoplay loop muted playsinline class="w-full h-full object-cover"><source src="/videos/demo_dialogue.mp4" type="video/mp4"></video>
+                </div>
+                <div>
+                  <h3 class="text-2xl font-['Poppins'] font-bold mb-3 group-hover:text-indigo-600 transition-colors">Letters</h3>
+                  <p class="text-xs text-slate-400 leading-relaxed font-medium">承認された仲間とだけ深く繋がる、<br>静かな対話空間。</p>
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="flex-1 video-container mb-6">
-            <video autoplay loop muted playsinline><source src="/videos/demo_dialogue.mp4" type="video/mp4"></video>
-          </div>
-          <p class="text-[11px] text-slate-400 leading-relaxed">一通の手紙から。承認された仲間とだけ深く繋がる、静かな対話空間。</p>
-        </div>
 
-        <%# Card 5: Compare Studio %>
-        <div class="feature-card reveal-card bg-white rounded-[40px] border border-slate-100 p-8 flex flex-col aspect-[3/4.5]">
-          <div class="mb-6">
-            <span class="text-[9px] font-bold text-indigo-600 tracking-widest uppercase block mb-2">05 / Analysis</span>
-            <h3 class="text-xl font-['Poppins'] font-bold">Compare Studio</h3>
+          <%# --- Card 5: Studio --- %>
+          <div class="card-container reveal-card w-full lg:w-[calc(33.333%-1.25rem)]" style="transition-delay: 0.5s;">
+            <div class="feature-card bg-white rounded-[40px] border border-slate-100 p-8 flex flex-col aspect-[4/5] shadow-xl shadow-slate-200/50 relative overflow-hidden group h-full">
+              <div class="card-glare"></div>
+              <div class="card-content flex flex-col h-full z-10">
+                <div class="mb-6 flex justify-between items-start">
+                  <span class="text-[10px] font-bold text-white bg-slate-900 px-3 py-1.5 rounded-full tracking-widest uppercase">05 / Analysis</span>
+                  <div class="w-3 h-3 rounded-full bg-slate-100 group-hover:bg-blue-400 transition-colors shadow-inner"></div>
+                </div>
+                <div class="flex-1 video-container mb-8 rounded-3xl overflow-hidden shadow-inner bg-slate-50 relative transform group-hover:scale-105 transition-transform duration-500">
+                  <video autoplay loop muted playsinline class="w-full h-full object-cover"><source src="/videos/demo_studio.mp4" type="video/mp4"></video>
+                </div>
+                <div>
+                  <h3 class="text-2xl font-['Poppins'] font-bold mb-3 group-hover:text-indigo-600 transition-colors">Compare Studio</h3>
+                  <p class="text-xs text-slate-400 leading-relaxed font-medium">色彩や筆致の微細な変化を<br>詳細に分析。</p>
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="flex-1 video-container mb-6">
-            <video autoplay loop muted playsinline><source src="/videos/demo_compare.mp4" type="video/mp4"></video>
-          </div>
-          <p class="text-[11px] text-slate-400 leading-relaxed">異なるバージョンを並列表示。色彩や筆致の微細な変化を詳細に分析。</p>
+          
         </div>
 
       </div>
@@ -182,36 +259,98 @@
   </section>
 
   <%# --- 3. FINAL CTA --- %>
-    <section class="py-32 px-6 text-center border-t border-slate-50">
-      <div class="max-w-2xl mx-auto">
-        <h2 class="text-4xl font-['Poppins'] font-bold mb-8 text-slate-900 tracking-tight">Ready to open your studio?</h2>
-        <%= link_to "Start here", new_user_registration_path, class: "px-14 py-5 bg-slate-900 text-white rounded-full font-['Poppins'] font-bold text-[11px] tracking-widest hover:bg-indigo-600 transition-all shadow-xl shadow-indigo-100" %>
-      </div>
-    </section>
+  <section class="py-32 px-6 text-center border-t border-slate-50 relative overflow-hidden">
+    <div class="absolute inset-0 flex justify-center items-center pointer-events-none opacity-30">
+       <div class="w-[600px] h-[600px] bg-gradient-to-tr from-indigo-100 to-pink-100 rounded-full blur-3xl"></div>
+    </div>
+    <div class="relative z-10 max-w-2xl mx-auto">
+      <h2 class="text-4xl font-['Poppins'] font-bold mb-8 text-slate-900 tracking-tight">Ready to open your studio?</h2>
+      <%= link_to "Start here", new_user_registration_path, class: "px-14 py-5 bg-slate-900 text-white rounded-full font-['Poppins'] font-bold text-[11px] tracking-widest hover:bg-indigo-600 hover:scale-105 transition-all duration-300 shadow-xl shadow-indigo-100" %>
+    </div>
+  </section>
 
-    <script>
+  <%# --- JAVASCRIPT: ダイナミック効果用（変更なし） --- %>
+  <script>
     document.addEventListener('turbo:load', () => {
-      const observerOptions = {
-        root: null,
-        rootMargin: '0px',
-        threshold: 0.1 // 10%見えたら実行
-      };
+      
+      // 1. ヒーローセクションのパララックス効果
+      const heroSection = document.getElementById('hero-section');
+      const floatItems = document.querySelectorAll('.hero-float-item');
+      
+      setTimeout(() => {
+        floatItems.forEach(item => item.style.opacity = '0.6');
+      }, 500);
 
+      if (heroSection) {
+        heroSection.addEventListener('mousemove', (e) => {
+          const x = e.clientX / window.innerWidth;
+          const y = e.clientY / window.innerHeight;
+
+          floatItems.forEach(item => {
+            const speed = parseFloat(item.getAttribute('data-speed'));
+            const moveX = (window.innerWidth * speed * x);
+            const moveY = (window.innerHeight * speed * y);
+            
+            item.style.transform = `translate(${moveX}px, ${moveY}px)`;
+          });
+        });
+      }
+
+      // 2. 3Dカードチルト効果
+      const cards = document.querySelectorAll('.feature-card');
+      
+      cards.forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+          const rect = card.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          
+          const centerX = rect.width / 2;
+          const centerY = rect.height / 2;
+          
+          const rotateX = ((y - centerY) / 20) * -1;
+          const rotateY = (x - centerX) / 20;
+
+          const glareX = (x / rect.width) * 100;
+          const glareY = (y / rect.height) * 100;
+
+          card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+          
+          const glare = card.querySelector('.card-glare');
+          if(glare) {
+            glare.style.background = `radial-gradient(circle at ${glareX}% ${glareY}%, rgba(255,255,255,0.3), transparent 70%)`;
+          }
+        });
+
+        card.addEventListener('mouseleave', () => {
+          card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)';
+          const glare = card.querySelector('.card-glare');
+          if(glare) glare.style.opacity = '0';
+        });
+        
+        card.addEventListener('mouseenter', () => {
+          const glare = card.querySelector('.card-glare');
+          if(glare) glare.style.opacity = '1';
+        });
+      });
+
+
+      // 3. スクロール時の出現アニメーション
+      const observerOptions = {
+        root: null, rootMargin: '0px', threshold: 0.15 
+      };
       const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
             entry.target.classList.add('is-visible');
-          // 一度表示されたら監視を止める場合は以下を有効に
-            // observer.unobserve(entry.target);
+            observer.unobserve(entry.target);
           }
         });
       }, observerOptions);
 
-      // すべての reveal-card を監視対象にする
       document.querySelectorAll('.reveal-card').forEach(card => {
         observer.observe(card);
       });
     });
   </script>
-
 </div>
