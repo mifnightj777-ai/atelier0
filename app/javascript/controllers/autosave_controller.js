@@ -2,35 +2,79 @@ import { Controller } from "@hotwired/stimulus"
 
 // Connects to data-controller="autosave"
 export default class extends Controller {
-  static targets = ["form"]
+  static targets = ["status"]
 
   connect() {
     this.timeout = null
   }
 
+  // 文字入力のたびに呼ばれる
   submit() {
-    // 連続で入力している間は送信を待つ（0.5秒待機）
     clearTimeout(this.timeout)
     
+    // 0.5秒後に保存処理を実行
     this.timeout = setTimeout(() => {
-      this.element.requestSubmit()
-      this.showSavingIndicator()
+      this.save()
     }, 500)
   }
 
-  showSavingIndicator() {
-    const status = document.getElementById("save_status")
-    if (status) {
-      status.style.opacity = "1"
-      status.innerText = "SAVING..."
+  // データを裏側でこっそり送る処理（Fetch）
+  async save() {
+    this.showSaving()
+
+    const form = this.element
+    const formData = new FormData(form)
+    
+    // Railsのセキュリティトークンを取得（これがないとエラーになる）
+    const token = document.querySelector('meta[name="csrf-token"]').content
+
+    try {
+      const response = await fetch(form.action, {
+        method: "PATCH",
+        headers: {
+          "X-CSRF-Token": token,
+          "Accept": "text/vnd.turbo-stream.html" // サーバーに「Turboだよ」と伝える
+        },
+        body: formData
+      })
+
+      if (response.ok) {
+        this.showSaved()
+      } else {
+        this.showError()
+      }
+    } catch (error) {
+      console.error(error)
+      this.showError()
+    }
+  }
+
+  // --- 表示の制御 ---
+
+  showSaving() {
+    if (this.hasStatusTarget) {
+      this.statusTarget.style.opacity = "1"
+      this.statusTarget.style.color = "#6366f1" // インディゴ
+      this.statusTarget.innerText = "SAVING..."
+    }
+  }
+
+  showSaved() {
+    if (this.hasStatusTarget) {
+      this.statusTarget.style.color = "#10b981" // 緑
+      this.statusTarget.innerText = "SAVED ✓"
       
-      // 1秒後に "SAVED" にして、その後消す
+      // 2秒後に消す
       setTimeout(() => {
-        status.innerText = "SAVED ✓"
-        setTimeout(() => {
-          status.style.opacity = "0"
-        }, 2000)
-      }, 1000)
+        this.statusTarget.style.opacity = "0"
+      }, 2000)
+    }
+  }
+
+  showError() {
+    if (this.hasStatusTarget) {
+      this.statusTarget.style.color = "#ef4444" // 赤
+      this.statusTarget.innerText = "ERROR!"
     }
   }
 }

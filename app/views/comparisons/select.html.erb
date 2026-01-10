@@ -15,16 +15,35 @@
     
     <% @candidates.each do |candidate| %>
       <% 
+         # --- 魔法のロジック開始 ---
+         
+         # 1. すでに選んである「もう片方」がいるか確認
          current_kept_id = @other_id.presence || @base_fragment&.id
 
-         next_params = if @target == 'a'
-           { fragment_a_id: candidate.id, fragment_b_id: current_kept_id }
+         if current_kept_id.present?
+           # A. もう片方がいる場合 → 「完了！作成（POST）」へ進む
+           target_url = comparisons_path
+           target_method = :post
+           
+           if @target == 'a'
+             final_params = { fragment_a_id: candidate.id, fragment_b_id: current_kept_id }
+           else
+             final_params = { fragment_a_id: current_kept_id, fragment_b_id: candidate.id }
+           end
+
          else
-           { fragment_a_id: current_kept_id, fragment_b_id: candidate.id }
+           # B. まだ1枚目の場合 → 「次（もう片方）を選ぶ画面（GET）」へ進む
+           target_url = select_comparisons_path
+           target_method = :get
+           
+           # 次は逆サイド（AならB、BならA）を選ぶように指示
+           next_target = (@target == 'a' ? 'b' : 'a')
+           final_params = { target: next_target, keep_id: candidate.id }
          end
+         # --- ロジック終了 ---
       %>
       
-      <%= link_to studio_comparisons_path(next_params), class: "group relative block bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-slate-100" do %>
+      <div class="group relative block bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-slate-100">
         
         <div class="aspect-square bg-slate-100 relative overflow-hidden">
           <% if candidate.image.attached? %>
@@ -46,14 +65,15 @@
             <%= candidate.created_at.strftime("%Y.%m.%d") %>
           </p>
         </div>
-        
-      <% end %>
-    <% end %>
 
-    <% if @candidates.empty? %>
-      <div class="col-span-full text-center py-20 bg-slate-50 rounded-3xl border border-dashed border-slate-300">
-        <p class="text-slate-400 font-bold mb-4">No other fragments found.</p>
-        <%= link_to "Create New Fragment", new_fragment_path, class: "px-6 py-3 bg-slate-900 text-white rounded-full text-sm font-bold hover:bg-indigo-600 transition-colors" %>
+        <%= button_to target_url, 
+              params: final_params, 
+              method: target_method, 
+              class: "absolute inset-0 w-full h-full z-10 opacity-0 cursor-pointer",
+              form: { class: "absolute inset-0 w-full h-full z-10" } do %>
+           <span class="sr-only">Select</span>
+        <% end %>
+
       </div>
     <% end %>
 
