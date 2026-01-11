@@ -3,24 +3,36 @@ import { Controller } from "@hotwired/stimulus"
 export default class extends Controller {
   static targets = ["background", "worldLink", "teammatesLink"]
 
-  switchToWorld() {
+  connect() {
+    // 読み込み時に何かする必要があればここに書きます
+  }
 
-    this.backgroundTarget.className = "absolute top-1.5 bottom-1.5 rounded-full transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] left-1 w-[calc(50%-4px)] bg-indigo-600 shadow-[0_4px_14px_0_rgba(79,70,229,0.39)]"
+  switchToWorld() {
+    // 1. 背景ピルを左（インディゴ）へ
+    this.backgroundTarget.className = "absolute top-1 bottom-1 rounded-full transition-all duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] left-1 w-[calc(50%-4px)] bg-indigo-600 shadow-md shadow-indigo-500/30 border border-indigo-500"
     
-    this.worldLinkTarget.classList.remove("text-slate-400", "hover:text-indigo-600")
+    // 2. Worldの文字を白く
+    this.worldLinkTarget.classList.remove("text-slate-500", "hover:text-indigo-600")
     this.worldLinkTarget.classList.add("text-white")
     
-    this.teammatesLinkTarget.classList.remove("text-white")
-    this.teammatesLinkTarget.classList.add("text-slate-400", "hover:text-amber-600")
+    // 3. Teammatesの文字をグレーに
+    // (存在する場合のみ実行)
+    if (this.hasTeammatesLinkTarget) {
+      this.teammatesLinkTarget.classList.remove("text-white")
+      this.teammatesLinkTarget.classList.add("text-slate-500", "hover:text-amber-600")
+    }
   }
 
   switchToTeammates() {
-    this.backgroundTarget.className = "absolute top-1.5 bottom-1.5 rounded-full transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] left-[calc(50%+4px)] w-[calc(50%-8px)] bg-amber-500 shadow-[0_4px_14px_0_rgba(245,158,11,0.39)]"
+    // 1. 背景ピルを右（アンバー）へ
+    this.backgroundTarget.className = "absolute top-1 bottom-1 rounded-full transition-all duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] left-[calc(50%+2px)] w-[calc(50%-4px)] bg-amber-500 shadow-md shadow-amber-500/30 border border-amber-400"
     
-    this.worldLinkTarget.classList.remove("text-white")
-    this.worldLinkTarget.classList.add("text-slate-400", "hover:text-indigo-600")
-    
-    this.teammatesLinkTarget.classList.remove("text-slate-400", "hover:text-amber-600")
+    // 2. Teammatesの文字を白く
+    this.teammatesLinkTarget.classList.remove("text-slate-500", "hover:text-amber-600")
     this.teammatesLinkTarget.classList.add("text-white")
+
+    // 3. Worldの文字をグレーに
+    this.worldLinkTarget.classList.remove("text-white")
+    this.worldLinkTarget.classList.add("text-slate-500", "hover:text-indigo-600")
   }
 }
