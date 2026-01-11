@@ -7,7 +7,7 @@
     
     <link rel="manifest" href="/manifest.json">
     
-    <link rel="icon" href="icon.png" type="image/png">
+    <link rel="icon" href="/icon.png" type="image/png">
     <link rel="apple-touch-icon" href="/icon.png">
     
     <meta name="mobile-web-app-capable" content="yes">
@@ -85,6 +85,7 @@
     <%# ロゴエリア %>
     <%= link_to root_path, class: "group flex items-center gap-2.5" do %>
       <div class="relative flex items-center justify-center w-8 h-8 rounded-xl overflow-hidden shadow-lg shadow-indigo-900/20 group-hover:scale-105 transition-transform duration-300">
+        <%# public/icon.png を参照 %>
         <%= image_tag "/icon.png", class: "w-full h-full object-cover" %>
       </div>
       <span class="font-['Poppins'] font-bold text-xl tracking-tight text-slate-900 group-hover:text-indigo-900 transition-colors hidden md:inline">Morphe0.</span>
@@ -93,12 +94,12 @@
     <nav class="flex items-center gap-2 md:gap-3 font-['Poppins'] text-sm font-medium">
       <% if user_signed_in? %>
         
-        <%# ▼▼▼ Createボタン (ガイドブックの左、つまり一番左に配置) ▼▼▼ %>
+        <%# Createボタン %>
         <%= link_to new_fragment_path, class: "flex items-center justify-center gap-2 bg-slate-900 text-white rounded-full w-9 h-9 md:w-auto md:h-auto md:px-4 md:py-2 hover:bg-indigo-600 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 group shadow-md mr-1" do %>
            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 md:w-4 md:h-4 group-hover:rotate-12 transition-transform">
              <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 00-1.423 1.423z" />
            </svg>
-           <span class="text-xs font-bold tracking-wide hidden md:block">tap to Drop</span>
+           <span class="text-xs font-bold tracking-wide hidden md:block">Create</span>
         <% end %>
 
         <%# --- ツールバーエリア (左側：Floating Tokens) --- %>
@@ -172,6 +173,13 @@
               <%= current_user.username.first.upcase %>
             </div>
           <% end %>
+        <% end %>
+
+        <%# ▼▼▼ 修正: 確認ダイアログ付きのログアウトボタン ▼▼▼ %>
+        <%= link_to destroy_user_session_path, data: { turbo_method: :delete, turbo_confirm: "Are you sure you want to log out?" }, class: "group flex items-center justify-center w-9 h-9 md:w-10 md:h-10 rounded-full border border-slate-200 hover:border-slate-300 hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-all", title: "Log out" do %>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 md:w-5 md:h-5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12" />
+          </svg>
         <% end %>
 
       <% else %>

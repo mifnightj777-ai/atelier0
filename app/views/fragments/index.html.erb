@@ -139,12 +139,6 @@
                 </div>
                 <span class="text-[9px] text-white/90 font-['Space_Grotesk'] truncate max-w-[60px]">@<%= fragment.user.username %></span>
               <% end %>
-
-              <% if user_signed_in? %>
-                <div class="scale-75 relative z-20 text-white origin-right">
-                  <%= render 'likes/like_button', fragment: fragment %>
-                </div>
-              <% end %>
             </div>
 
             <%= link_to "", fragment, class: "absolute inset-0 z-0", data: { turbo_frame: "_top" } %>
