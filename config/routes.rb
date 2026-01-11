@@ -38,7 +38,9 @@ Rails.application.routes.draw do
 
   resources :letters, only: [:update]
 
-  devise_for :users
+  devise_for :users, controllers: {
+    registrations: 'users/registrations'
+  }
   
   resources :fragments do
     resource :likes, only: [:create, :destroy]
