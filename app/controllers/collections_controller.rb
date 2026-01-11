@@ -5,7 +5,31 @@ class CollectionsController < ApplicationController
   before_action :authorize_owner!, only: [:edit, :update, :destroy]
 
   def index
-    @collections = current_user.collections.order(created_at: :desc)
+    if params[:username]
+      # 1. ユーザー指定がある場合（View Allから来た場合）
+      @user = User.find_by(username: params[:username])
+      
+      # 権限チェック（本人? チームメイト? 他人?）
+      if current_user == @user
+        @collections = @user.collections
+      elsif user_signed_in? && current_user.teammate_with?(@user)
+        @collections = @user.collections.where(visibility: [:public_view, :teammates_view])
+      else
+        @collections = @user.collections.where(visibility: :public_view)
+      end
+      
+      # ビューで使うためのタイトル設定など
+      @page_title = "#{@user.username}'s Collections"
+      
+    else
+      # 2. 指定がない場合（自分のコレクション、または全公開コレクションなど）
+      # ここではとりあえず「自分のコレクション」を表示する設定にします
+      @collections = current_user&.collections || Collection.none
+      @page_title = "My Collections"
+    end
+    
+    # 新しい順に並び替え
+    @collections = @collections.order(created_at: :desc)
   end
 
   def show
