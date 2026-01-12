@@ -46,12 +46,17 @@
       <%= form_with(model: [@room, @message], 
           class: "flex-1 flex items-center gap-2 w-full", 
           data: { chat_target: "form", action: "turbo:submit-end->chat#resetForm" }) do |f| %>
-        <%= f.text_field :content, placeholder: "Type your message...", class: "flex-1 bg-transparent border-none px-5 py-3 text-sm font-['Inter'] text-slate-700 focus:ring-0 h-12" %>
+        
+        <%# ▼変更点: focus:outline-none を追加しました %>
+        <%= f.text_field :content, 
+            placeholder: "Type your message...", 
+            class: "flex-1 bg-transparent border-none px-5 py-3 text-sm font-['Inter'] text-slate-700 focus:ring-0 focus:outline-none h-12 placeholder-slate-400" %>
+            
         <button type="submit" class="group shrink-0 w-11 h-11 bg-slate-900 text-white rounded-full flex items-center justify-center transition-all hover:bg-indigo-600 active:scale-90">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 ml-0.5"><path d="M3.478 2.405a.75.75 0 00-.926.94l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.405z" /></svg>
         </button>
       <% end %>
     </div>
-  </div>
+
 
 </div>

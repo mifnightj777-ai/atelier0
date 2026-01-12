@@ -222,6 +222,12 @@
   document.addEventListener("turbo:submit-start", () => {
     document.body.classList.add("is-loading");
   });
+
+  document.addEventListener("turbo:submit-end", () => {
+    setTimeout(() => {
+      document.body.classList.remove("is-loading");
+    }, 500);
+  });
 </script>
 
 <footer class="bg-slate-50 py-8 mt-20 border-t border-slate-200">

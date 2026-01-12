@@ -50,12 +50,18 @@
         
         <div class="mb-6">
           <label class="block text-[10px] font-['Space_Grotesk'] font-bold text-slate-300 uppercase tracking-widest mb-1">Subject</label>
-          <%= f.text_field :subject, placeholder: "Enter a subject...", class: "w-full bg-transparent border-0 border-b border-slate-100 px-0 py-2 text-xl font-['Poppins'] font-bold text-slate-800 placeholder-slate-200 focus:ring-0 focus:border-indigo-500 transition-colors" %>
+          <%# ▼修正: focus:border-indigo-500 を削除し、focus:outline-none を追加 %>
+          <%= f.text_field :subject, 
+              placeholder: "Enter a subject...", 
+              class: "w-full bg-transparent border-0 border-b border-slate-100 px-0 py-2 text-xl font-['Poppins'] font-bold text-slate-800 placeholder-slate-200 focus:ring-0 focus:outline-none transition-colors" %>
         </div>
 
         <div class="flex-1 relative">
           <label class="block text-[10px] font-['Space_Grotesk'] font-bold text-slate-300 uppercase tracking-widest mb-2">Message</label>
-          <%= f.text_area :body, placeholder: "Write your thoughts warmly...", class: "w-full h-[300px] bg-transparent border-none p-0 text-sm font-['Inter'] text-slate-600 placeholder-slate-200 focus:ring-0 resize-none leading-7 tracking-wide custom-scrollbar" %>
+          <%# ▼修正: focus:outline-none を追加 %>
+          <%= f.text_area :body, 
+              placeholder: "Write your thoughts warmly...", 
+              class: "w-full h-[300px] bg-transparent border-none p-0 text-sm font-['Inter'] text-slate-600 placeholder-slate-200 focus:ring-0 focus:outline-none resize-none leading-7 tracking-wide custom-scrollbar" %>
           
           <div class="absolute inset-0 pointer-events-none bg-[linear-gradient(transparent_27px,#f1f5f9_1px)] bg-[length:100%_28px] opacity-30 mt-6"></div>
         </div>
