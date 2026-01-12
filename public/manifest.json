@@ -2,19 +2,61 @@
   "name": "morphe0",
   "short_name": "morphe0",
   "start_url": "/",
+  "id": "/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#4338ca",
+  "orientation": "portrait",
+  "description": "思考の断片を集める、デジタルアトリエ。Studio Dropsで世界中のアイデアに触れ、Focus Modeで創作に没頭する。手紙（Letters）を通じた静かな交流や、比較（Compare）による推敲まで、クリエイターのプロセスを支えます。",
+  "categories": ["productivity", "art", "social", "lifestyle"],
   "icons": [
-    {
-      "src": "/icon.png",
-      "sizes": "512x512",
-      "type": "image/png"
-    },
     {
       "src": "/icon.png",
       "sizes": "192x192",
       "type": "image/png"
+    },
+    {
+      "src": "/icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshots/01_home.png",
+      "sizes": "1170x2532",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Studio Drops: 無限のインスピレーション"
+    },
+    {
+      "src": "/screenshots/02_focus.png",
+      "sizes": "1170x2532",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Focus Studio: 多様な環境音と共に没頭する"
+    },
+    {
+      "src": "/screenshots/03_mailbox.png",
+      "sizes": "1170x2532",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Mailbox: クリエイター同士の静かな文通"
+    },
+    {
+      "src": "/screenshots/04_compare.png",
+      "sizes": "1170x2532",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Compare Studio: 案を並べて、最良を選ぶ"
+    },
+    {
+      "src": "/screenshots/05_collection.png",
+      "sizes": "1170x2532",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Collections: 作品のアイデアをアーカイブ"
     }
   ],
   "shortcuts": [
@@ -26,10 +68,10 @@
       "icons": [{ "src": "/icon.png", "sizes": "192x192" }]
     },
     {
-      "name": "My Studio",
-      "short_name": "Studio",
-      "description": "Go to timeline",
-      "url": "/?action=studio",
+      "name": "Focus Mode",
+      "short_name": "Focus",
+      "description": "Start your Focus Mode",
+      "url": "/focus_studio",
       "icons": [{ "src": "/icon.png", "sizes": "192x192" }]
     }
   ]
